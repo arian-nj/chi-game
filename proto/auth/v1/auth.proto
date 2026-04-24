@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package auth.v1;
+
+// functions related to auth
+service AuthService {
+  rpc ValidateGuest(ValidateGuestRequest) returns (ValidateGuestResponse) {}
+  // rpc IsTokenValid(IsTokenValidRequest) returns (IsTokenValidResponse) {}
+}
+
+message ValidateGuestRequest {
+  string device_id = 1;  // client sends existing device ID, empty if first time
+}
+
+message ValidateGuestResponse {
+  string device_id = 1;  // same or newly generated
+  string token = 2;
+}
+
+message IsTokenValidRequest {
+  string token = 1;
+}
+
+message IsTokenValidResponse {
+  bool is_valid = 1;
+}
+
+// validate telegram user
+// rpc ValidateTelegramInitData(ValidateTelegramInitDataRequest) returns (ValidateTelegramInitDataResponse) {}
+// validate guest user
+
+// message ValidateTelegramInitDataRequest {
+  // string init_data = 1;
+// }
+
+// message ValidateTelegramInitDataResponse {
+  // string token = 1;
+// }

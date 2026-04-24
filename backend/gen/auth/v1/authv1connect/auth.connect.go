@@ -33,9 +33,6 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
-	// AuthServiceValidateTelegramInitDataProcedure is the fully-qualified name of the AuthService's
-	// ValidateTelegramInitData RPC.
-	AuthServiceValidateTelegramInitDataProcedure = "/auth.v1.AuthService/ValidateTelegramInitData"
 	// AuthServiceValidateGuestProcedure is the fully-qualified name of the AuthService's ValidateGuest
 	// RPC.
 	AuthServiceValidateGuestProcedure = "/auth.v1.AuthService/ValidateGuest"
@@ -43,9 +40,6 @@ const (
 
 // AuthServiceClient is a client for the auth.v1.AuthService service.
 type AuthServiceClient interface {
-	// validate telegram user
-	ValidateTelegramInitData(context.Context, *connect.Request[v1.ValidateTelegramInitDataRequest]) (*connect.Response[v1.ValidateTelegramInitDataResponse], error)
-	// validate guest user
 	ValidateGuest(context.Context, *connect.Request[v1.ValidateGuestRequest]) (*connect.Response[v1.ValidateGuestResponse], error)
 }
 
@@ -60,12 +54,6 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 	baseURL = strings.TrimRight(baseURL, "/")
 	authServiceMethods := v1.File_auth_v1_auth_proto.Services().ByName("AuthService").Methods()
 	return &authServiceClient{
-		validateTelegramInitData: connect.NewClient[v1.ValidateTelegramInitDataRequest, v1.ValidateTelegramInitDataResponse](
-			httpClient,
-			baseURL+AuthServiceValidateTelegramInitDataProcedure,
-			connect.WithSchema(authServiceMethods.ByName("ValidateTelegramInitData")),
-			connect.WithClientOptions(opts...),
-		),
 		validateGuest: connect.NewClient[v1.ValidateGuestRequest, v1.ValidateGuestResponse](
 			httpClient,
 			baseURL+AuthServiceValidateGuestProcedure,
@@ -77,13 +65,7 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // authServiceClient implements AuthServiceClient.
 type authServiceClient struct {
-	validateTelegramInitData *connect.Client[v1.ValidateTelegramInitDataRequest, v1.ValidateTelegramInitDataResponse]
-	validateGuest            *connect.Client[v1.ValidateGuestRequest, v1.ValidateGuestResponse]
-}
-
-// ValidateTelegramInitData calls auth.v1.AuthService.ValidateTelegramInitData.
-func (c *authServiceClient) ValidateTelegramInitData(ctx context.Context, req *connect.Request[v1.ValidateTelegramInitDataRequest]) (*connect.Response[v1.ValidateTelegramInitDataResponse], error) {
-	return c.validateTelegramInitData.CallUnary(ctx, req)
+	validateGuest *connect.Client[v1.ValidateGuestRequest, v1.ValidateGuestResponse]
 }
 
 // ValidateGuest calls auth.v1.AuthService.ValidateGuest.
@@ -93,9 +75,6 @@ func (c *authServiceClient) ValidateGuest(ctx context.Context, req *connect.Requ
 
 // AuthServiceHandler is an implementation of the auth.v1.AuthService service.
 type AuthServiceHandler interface {
-	// validate telegram user
-	ValidateTelegramInitData(context.Context, *connect.Request[v1.ValidateTelegramInitDataRequest]) (*connect.Response[v1.ValidateTelegramInitDataResponse], error)
-	// validate guest user
 	ValidateGuest(context.Context, *connect.Request[v1.ValidateGuestRequest]) (*connect.Response[v1.ValidateGuestResponse], error)
 }
 
@@ -106,12 +85,6 @@ type AuthServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	authServiceMethods := v1.File_auth_v1_auth_proto.Services().ByName("AuthService").Methods()
-	authServiceValidateTelegramInitDataHandler := connect.NewUnaryHandler(
-		AuthServiceValidateTelegramInitDataProcedure,
-		svc.ValidateTelegramInitData,
-		connect.WithSchema(authServiceMethods.ByName("ValidateTelegramInitData")),
-		connect.WithHandlerOptions(opts...),
-	)
 	authServiceValidateGuestHandler := connect.NewUnaryHandler(
 		AuthServiceValidateGuestProcedure,
 		svc.ValidateGuest,
@@ -120,8 +93,6 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 	)
 	return "/auth.v1.AuthService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
-		case AuthServiceValidateTelegramInitDataProcedure:
-			authServiceValidateTelegramInitDataHandler.ServeHTTP(w, r)
 		case AuthServiceValidateGuestProcedure:
 			authServiceValidateGuestHandler.ServeHTTP(w, r)
 		default:
@@ -132,10 +103,6 @@ func NewAuthServiceHandler(svc AuthServiceHandler, opts ...connect.HandlerOption
 
 // UnimplementedAuthServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedAuthServiceHandler struct{}
-
-func (UnimplementedAuthServiceHandler) ValidateTelegramInitData(context.Context, *connect.Request[v1.ValidateTelegramInitDataRequest]) (*connect.Response[v1.ValidateTelegramInitDataResponse], error) {
-	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.ValidateTelegramInitData is not implemented"))
-}
 
 func (UnimplementedAuthServiceHandler) ValidateGuest(context.Context, *connect.Request[v1.ValidateGuestRequest]) (*connect.Response[v1.ValidateGuestResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("auth.v1.AuthService.ValidateGuest is not implemented"))

@@ -8,14 +8,21 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type GuestUser struct {
+type Person struct {
+	ID        int32
+	Username  string
+	Coins     int32
+	IsGuest   bool
+	MergedAt  pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
+	CreatedAt pgtype.Timestamp
 }
 
-type Person struct {
-	ID        int
-	Username  pgtype.Text
-	IsGuest   pgtype.Bool
-	UpdatedAt pgtype.Timestamp
+type PersonAuthMethod struct {
+	ID        int32
+	UserID    int32
+	AuthType  string
+	AuthValue string
 	CreatedAt pgtype.Timestamp
 }
 

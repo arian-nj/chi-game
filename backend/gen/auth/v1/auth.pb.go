@@ -21,103 +21,16 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type ValidateTelegramInitDataRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	InitData      string                 `protobuf:"bytes,1,opt,name=init_data,json=initData,proto3" json:"init_data,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ValidateTelegramInitDataRequest) Reset() {
-	*x = ValidateTelegramInitDataRequest{}
-	mi := &file_auth_v1_auth_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ValidateTelegramInitDataRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ValidateTelegramInitDataRequest) ProtoMessage() {}
-
-func (x *ValidateTelegramInitDataRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ValidateTelegramInitDataRequest.ProtoReflect.Descriptor instead.
-func (*ValidateTelegramInitDataRequest) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *ValidateTelegramInitDataRequest) GetInitData() string {
-	if x != nil {
-		return x.InitData
-	}
-	return ""
-}
-
-type ValidateTelegramInitDataResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ValidateTelegramInitDataResponse) Reset() {
-	*x = ValidateTelegramInitDataResponse{}
-	mi := &file_auth_v1_auth_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ValidateTelegramInitDataResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ValidateTelegramInitDataResponse) ProtoMessage() {}
-
-func (x *ValidateTelegramInitDataResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ValidateTelegramInitDataResponse.ProtoReflect.Descriptor instead.
-func (*ValidateTelegramInitDataResponse) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *ValidateTelegramInitDataResponse) GetToken() string {
-	if x != nil {
-		return x.Token
-	}
-	return ""
-}
-
 type ValidateGuestRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	DeviceId      string                 `protobuf:"bytes,1,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"` // client sends existing device ID, empty if first time
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ValidateGuestRequest) Reset() {
 	*x = ValidateGuestRequest{}
-	mi := &file_auth_v1_auth_proto_msgTypes[2]
+	mi := &file_auth_v1_auth_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -129,7 +42,7 @@ func (x *ValidateGuestRequest) String() string {
 func (*ValidateGuestRequest) ProtoMessage() {}
 
 func (x *ValidateGuestRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[2]
+	mi := &file_auth_v1_auth_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -142,19 +55,27 @@ func (x *ValidateGuestRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ValidateGuestRequest.ProtoReflect.Descriptor instead.
 func (*ValidateGuestRequest) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{2}
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *ValidateGuestRequest) GetDeviceId() string {
+	if x != nil {
+		return x.DeviceId
+	}
+	return ""
 }
 
 type ValidateGuestResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	DeviceId      string                 `protobuf:"bytes,1,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"` // same or newly generated
+	Token         string                 `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ValidateGuestResponse) Reset() {
 	*x = ValidateGuestResponse{}
-	mi := &file_auth_v1_auth_proto_msgTypes[3]
+	mi := &file_auth_v1_auth_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -166,7 +87,7 @@ func (x *ValidateGuestResponse) String() string {
 func (*ValidateGuestResponse) ProtoMessage() {}
 
 func (x *ValidateGuestResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_auth_v1_auth_proto_msgTypes[3]
+	mi := &file_auth_v1_auth_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -179,7 +100,14 @@ func (x *ValidateGuestResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ValidateGuestResponse.ProtoReflect.Descriptor instead.
 func (*ValidateGuestResponse) Descriptor() ([]byte, []int) {
-	return file_auth_v1_auth_proto_rawDescGZIP(), []int{3}
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *ValidateGuestResponse) GetDeviceId() string {
+	if x != nil {
+		return x.DeviceId
+	}
+	return ""
 }
 
 func (x *ValidateGuestResponse) GetToken() string {
@@ -189,20 +117,109 @@ func (x *ValidateGuestResponse) GetToken() string {
 	return ""
 }
 
+type IsTokenValidRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IsTokenValidRequest) Reset() {
+	*x = IsTokenValidRequest{}
+	mi := &file_auth_v1_auth_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IsTokenValidRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsTokenValidRequest) ProtoMessage() {}
+
+func (x *IsTokenValidRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_v1_auth_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsTokenValidRequest.ProtoReflect.Descriptor instead.
+func (*IsTokenValidRequest) Descriptor() ([]byte, []int) {
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *IsTokenValidRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type IsTokenValidResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IsValid       bool                   `protobuf:"varint,1,opt,name=is_valid,json=isValid,proto3" json:"is_valid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *IsTokenValidResponse) Reset() {
+	*x = IsTokenValidResponse{}
+	mi := &file_auth_v1_auth_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *IsTokenValidResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*IsTokenValidResponse) ProtoMessage() {}
+
+func (x *IsTokenValidResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_auth_v1_auth_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use IsTokenValidResponse.ProtoReflect.Descriptor instead.
+func (*IsTokenValidResponse) Descriptor() ([]byte, []int) {
+	return file_auth_v1_auth_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *IsTokenValidResponse) GetIsValid() bool {
+	if x != nil {
+		return x.IsValid
+	}
+	return false
+}
+
 var File_auth_v1_auth_proto protoreflect.FileDescriptor
 
 const file_auth_v1_auth_proto_rawDesc = "" +
 	"\n" +
-	"\x12auth/v1/auth.proto\x12\aauth.v1\">\n" +
-	"\x1fValidateTelegramInitDataRequest\x12\x1b\n" +
-	"\tinit_data\x18\x01 \x01(\tR\binitData\"8\n" +
-	" ValidateTelegramInitDataResponse\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\"\x16\n" +
-	"\x14ValidateGuestRequest\"-\n" +
-	"\x15ValidateGuestResponse\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token2\xd2\x01\n" +
-	"\vAuthService\x12q\n" +
-	"\x18ValidateTelegramInitData\x12(.auth.v1.ValidateTelegramInitDataRequest\x1a).auth.v1.ValidateTelegramInitDataResponse\"\x00\x12P\n" +
+	"\x12auth/v1/auth.proto\x12\aauth.v1\"3\n" +
+	"\x14ValidateGuestRequest\x12\x1b\n" +
+	"\tdevice_id\x18\x01 \x01(\tR\bdeviceId\"J\n" +
+	"\x15ValidateGuestResponse\x12\x1b\n" +
+	"\tdevice_id\x18\x01 \x01(\tR\bdeviceId\x12\x14\n" +
+	"\x05token\x18\x02 \x01(\tR\x05token\"+\n" +
+	"\x13IsTokenValidRequest\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\"1\n" +
+	"\x14IsTokenValidResponse\x12\x19\n" +
+	"\bis_valid\x18\x01 \x01(\bR\aisValid2_\n" +
+	"\vAuthService\x12P\n" +
 	"\rValidateGuest\x12\x1d.auth.v1.ValidateGuestRequest\x1a\x1e.auth.v1.ValidateGuestResponse\"\x00B\x8d\x01\n" +
 	"\vcom.auth.v1B\tAuthProtoP\x01Z6github.com/arian-nj/chigame/backend/gen/auth/v1;authv1\xa2\x02\x03AXX\xaa\x02\aAuth.V1\xca\x02\aAuth\\V1\xe2\x02\x13Auth\\V1\\GPBMetadata\xea\x02\bAuth::V1b\x06proto3"
 
@@ -220,18 +237,16 @@ func file_auth_v1_auth_proto_rawDescGZIP() []byte {
 
 var file_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_auth_v1_auth_proto_goTypes = []any{
-	(*ValidateTelegramInitDataRequest)(nil),  // 0: auth.v1.ValidateTelegramInitDataRequest
-	(*ValidateTelegramInitDataResponse)(nil), // 1: auth.v1.ValidateTelegramInitDataResponse
-	(*ValidateGuestRequest)(nil),             // 2: auth.v1.ValidateGuestRequest
-	(*ValidateGuestResponse)(nil),            // 3: auth.v1.ValidateGuestResponse
+	(*ValidateGuestRequest)(nil),  // 0: auth.v1.ValidateGuestRequest
+	(*ValidateGuestResponse)(nil), // 1: auth.v1.ValidateGuestResponse
+	(*IsTokenValidRequest)(nil),   // 2: auth.v1.IsTokenValidRequest
+	(*IsTokenValidResponse)(nil),  // 3: auth.v1.IsTokenValidResponse
 }
 var file_auth_v1_auth_proto_depIdxs = []int32{
-	0, // 0: auth.v1.AuthService.ValidateTelegramInitData:input_type -> auth.v1.ValidateTelegramInitDataRequest
-	2, // 1: auth.v1.AuthService.ValidateGuest:input_type -> auth.v1.ValidateGuestRequest
-	1, // 2: auth.v1.AuthService.ValidateTelegramInitData:output_type -> auth.v1.ValidateTelegramInitDataResponse
-	3, // 3: auth.v1.AuthService.ValidateGuest:output_type -> auth.v1.ValidateGuestResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
+	0, // 0: auth.v1.AuthService.ValidateGuest:input_type -> auth.v1.ValidateGuestRequest
+	1, // 1: auth.v1.AuthService.ValidateGuest:output_type -> auth.v1.ValidateGuestResponse
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

@@ -1,7 +1,24 @@
--- name: GetTgUserByID :one
+-- name: GetPersonByAuthMethod :one
+SELECT p.* FROM persons p
+JOIN person_auth_methods pam ON p.id = pam.user_id
+WHERE pam.auth_type = $1 AND pam.auth_value = $2
+LIMIT 1;
+
+-- name: InsertPerson :one
+INSERT INTO persons (username, is_guest)
+VALUES ($1, $2) RETURNING *;
+
+-- name: InsertAuthMethod :one
+INSERT INTO person_auth_methods (user_id,auth_type,auth_value)
+VALUES ($1, $2, $3) RETURNING *;
+
+-- name: GetPersonByID :one
 SELECT * FROM persons
 WHERE id = $1;
 
+-- name: GetUserMethod :one
+SELECT user_id FROM person_auth_methods 
+WHERE auth_type = $1 AND auth_value = $2;
 
 -- -- name: GetTgUserByTgID :one
 -- SELECT * FROM persons

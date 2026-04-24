@@ -1,2 +1,12 @@
 [X] bash script
 [X] database connection
+[X] vue initialize
+[X] setup connect rpc
+[X] health check
+
+[X] jwt authentication
+[X] guest user
+
+[ ] right last updated (for removing inactive accounts)
+[ ] admin user
+[ ] users list page

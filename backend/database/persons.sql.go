@@ -66,7 +66,7 @@ func (q *Queries) CountUsersTgCreatedBetween(ctx context.Context, arg CountUsers
 const getAllTgUsers = `-- name: GetAllTgUsers :many
 
 
-SELECT id, username, is_guest, updated_at, created_at FROM persons
+SELECT id, username, coins, is_guest, merged_at, updated_at, created_at FROM persons
 `
 
 // -- name: GetTgUserByTgID :one
@@ -84,7 +84,9 @@ func (q *Queries) GetAllTgUsers(ctx context.Context) ([]Person, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.Username,
+			&i.Coins,
 			&i.IsGuest,
+			&i.MergedAt,
 			&i.UpdatedAt,
 			&i.CreatedAt,
 		); err != nil {
@@ -98,18 +100,47 @@ func (q *Queries) GetAllTgUsers(ctx context.Context) ([]Person, error) {
 	return items, nil
 }
 
-const getTgUserByID = `-- name: GetTgUserByID :one
-SELECT id, username, is_guest, updated_at, created_at FROM persons
-WHERE id = $1
+const getPersonByAuthMethod = `-- name: GetPersonByAuthMethod :one
+SELECT p.id, p.username, p.coins, p.is_guest, p.merged_at, p.updated_at, p.created_at FROM persons p
+JOIN person_auth_methods pam ON p.id = pam.user_id
+WHERE pam.auth_type = $1 AND pam.auth_value = $2
+LIMIT 1
 `
 
-func (q *Queries) GetTgUserByID(ctx context.Context, id int) (Person, error) {
-	row := q.db.QueryRow(ctx, getTgUserByID, id)
+type GetPersonByAuthMethodParams struct {
+	AuthType  string
+	AuthValue string
+}
+
+func (q *Queries) GetPersonByAuthMethod(ctx context.Context, arg GetPersonByAuthMethodParams) (Person, error) {
+	row := q.db.QueryRow(ctx, getPersonByAuthMethod, arg.AuthType, arg.AuthValue)
 	var i Person
 	err := row.Scan(
 		&i.ID,
 		&i.Username,
+		&i.Coins,
 		&i.IsGuest,
+		&i.MergedAt,
+		&i.UpdatedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getPersonByID = `-- name: GetPersonByID :one
+SELECT id, username, coins, is_guest, merged_at, updated_at, created_at FROM persons
+WHERE id = $1
+`
+
+func (q *Queries) GetPersonByID(ctx context.Context, id int32) (Person, error) {
+	row := q.db.QueryRow(ctx, getPersonByID, id)
+	var i Person
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Coins,
+		&i.IsGuest,
+		&i.MergedAt,
 		&i.UpdatedAt,
 		&i.CreatedAt,
 	)
@@ -143,6 +174,72 @@ func (q *Queries) GetTgUsersStatic(ctx context.Context) (GetTgUsersStaticRow, er
 		&i.UsersCreatedLast24Hours,
 		&i.UsersCreatedLastWeek,
 		&i.UsersCreatedLastMonth,
+	)
+	return i, err
+}
+
+const getUserMethod = `-- name: GetUserMethod :one
+SELECT user_id FROM person_auth_methods 
+WHERE auth_type = $1 AND auth_value = $2
+`
+
+type GetUserMethodParams struct {
+	AuthType  string
+	AuthValue string
+}
+
+func (q *Queries) GetUserMethod(ctx context.Context, arg GetUserMethodParams) (int32, error) {
+	row := q.db.QueryRow(ctx, getUserMethod, arg.AuthType, arg.AuthValue)
+	var user_id int32
+	err := row.Scan(&user_id)
+	return user_id, err
+}
+
+const insertAuthMethod = `-- name: InsertAuthMethod :one
+INSERT INTO person_auth_methods (user_id,auth_type,auth_value)
+VALUES ($1, $2, $3) RETURNING id, user_id, auth_type, auth_value, created_at
+`
+
+type InsertAuthMethodParams struct {
+	UserID    int32
+	AuthType  string
+	AuthValue string
+}
+
+func (q *Queries) InsertAuthMethod(ctx context.Context, arg InsertAuthMethodParams) (PersonAuthMethod, error) {
+	row := q.db.QueryRow(ctx, insertAuthMethod, arg.UserID, arg.AuthType, arg.AuthValue)
+	var i PersonAuthMethod
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.AuthType,
+		&i.AuthValue,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const insertPerson = `-- name: InsertPerson :one
+INSERT INTO persons (username, is_guest)
+VALUES ($1, $2) RETURNING id, username, coins, is_guest, merged_at, updated_at, created_at
+`
+
+type InsertPersonParams struct {
+	Username string
+	IsGuest  bool
+}
+
+func (q *Queries) InsertPerson(ctx context.Context, arg InsertPersonParams) (Person, error) {
+	row := q.db.QueryRow(ctx, insertPerson, arg.Username, arg.IsGuest)
+	var i Person
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Coins,
+		&i.IsGuest,
+		&i.MergedAt,
+		&i.UpdatedAt,
+		&i.CreatedAt,
 	)
 	return i, err
 }

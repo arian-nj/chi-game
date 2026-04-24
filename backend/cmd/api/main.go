@@ -3,12 +3,15 @@ package main
 import (
 	"context"
 	"log"
+	"log/slog"
 	"os"
 	"sync"
 
 	"github.com/arian-nj/chigame/backend/api"
+	"github.com/arian-nj/chigame/backend/database"
 	"github.com/arian-nj/chigame/backend/db"
 	"github.com/arian-nj/chigame/backend/internals/config"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const Version = "1.0.0"
@@ -20,9 +23,10 @@ type Config struct {
 }
 
 type Application struct {
-	config *config.Config
-	logger *log.Logger
-	Wg     *sync.WaitGroup
+	config  *config.Config
+	logger  *log.Logger
+	Wg      *sync.WaitGroup
+	Queries *database.Queries
 }
 
 func main() {
@@ -44,11 +48,20 @@ func main() {
 		app.logger.Fatalln("can not migrate", err)
 	}
 
+	conn, err := pgxpool.New(context.Background(), app.config.DatabseUrl)
+	if err != nil {
+		slog.Error("can not make a new connection ", "err", err)
+		return
+	}
+	defer conn.Close()
+
+	app.Queries = database.New(conn)
+
 	parentCtx, pCancel := context.WithCancel(context.Background())
 	defer pCancel()
 
 	app.logger.Printf("Serving...")
-	apiApp := api.NewApiApplication(app.config, nil)
+	apiApp := api.NewApiApplication(app.config, app.Queries, app.logger)
 	apiApp.RunApi(parentCtx, app.Wg)
 
 }

@@ -1,26 +1,22 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE persons(
-  id BIGSERIAL PRIMARY KEY,
-  username VARCHAR(32) UNIQUE,
-  is_guest BOOLEAN DEFAULT FALSE,
-  updated_at timestamp NOT NULL DEFAULT NOW(),
-  created_at timestamp NOT NULL DEFAULT NOW()
-  );
-
-CREATE TABLE guest_user(
-
+CREATE TABLE persons (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    coins INTEGER NOT NULL DEFAULT 100,
+    is_guest BOOLEAN NOT NULL DEFAULT false,
+    merged_at TIMESTAMP,
+    updated_at timestamp NOT NULL DEFAULT NOW(),
+    created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
-
--- CREATE TABLE user_platforms (
---     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
---     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
---     platform VARCHAR(20) NOT NULL, -- 'telegram', 'bale', 'web'
---     platform_user_id VARCHAR(100) NOT NULL, -- platform's user_id
---     guest_identifier VARCHAR(255), -- for web guests (stored in localStorage)
---     created_at TIMESTAMP DEFAULT NOW(),
---     UNIQUE(platform, platform_user_id)
--- );
+CREATE TABLE person_auth_methods (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL REFERENCES persons(id) ON DELETE CASCADE,
+    auth_type VARCHAR(50) NOT NULL, -- 'guest_device', 'telegram', 'phone', 'email', 'bale'
+    auth_value VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    UNIQUE(auth_type, auth_value)
+);
 
 -- +goose StatementEnd
 

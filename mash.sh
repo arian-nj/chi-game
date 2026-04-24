@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export DATABASE_URL="postgres://admin:adminpass@127.0.0.1:5432/game?sslmode=disable"
+export RELEASE_MODE=dev
+
 set -e
 
 BASE_LOCATION=$(pwd)
@@ -20,10 +23,10 @@ fi
 
 case $COMMAND in
 	run)
-		# generate_sqlc
+		generate_sqlc
 		echo "Starting Core"
 		cd ./backend/
-		go run ./cmd/api/. -dbstr postgres://admin:adminpass@127.0.0.1:5432/game?sslmode=disable
+		go run ./cmd/api/.
 		cd ..
 		echo "The End"
 		;;

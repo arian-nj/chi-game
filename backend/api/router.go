@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	connectcors "connectrpc.com/cors"
+	"github.com/arian-nj/chigame/backend/gen/auth/v1/authv1connect"
 	"github.com/arian-nj/chigame/backend/gen/healthcheck/v1/healthcheckv1connect"
 	"github.com/rs/cors"
 )
@@ -45,6 +46,9 @@ func (app *ApiApplication) createRouter() http.Handler {
 
 	healthPath, healthHandler := healthcheckv1connect.NewHealthcheckServiceHandler(app)
 	mux.Handle(healthPath, healthHandler)
+
+	authPath, authHandler := authv1connect.NewAuthServiceHandler(app)
+	mux.Handle(authPath, authHandler)
 
 	// mux.Handle("/api/session/", app.AuthenticateQuery(http.HandlerFunc(app.sessionWebsocket)))
 	// mux.Handle("/api/match_making/ticket/", app.AuthenticateQuery(http.HandlerFunc(app.makeMatchMakingTicketWS)))

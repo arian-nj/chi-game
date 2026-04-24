@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"log"
 	"log/slog"
 	"net/http"
 	"sync"
@@ -20,9 +21,10 @@ type ApiApplication struct {
 	// MatchMaking *matchmaking.MatchMaking
 }
 
-func NewApiApplication(config *config.Config, queries *database.Queries,
-
-// AllSession *gamesessions.AllSession, matchMaking *matchmaking.MatchMaking
+func NewApiApplication(config *config.Config,
+	queries *database.Queries,
+	logger *log.Logger,
+	// AllSession *gamesessions.AllSession, matchMaking *matchmaking.MatchMaking
 ) *ApiApplication {
 	return &ApiApplication{
 		Config:  config,
