@@ -12,7 +12,7 @@ import { VueQueryPlugin } from '@tanstack/vue-query'
 const app = createApp(App)
 
 app.use(router)
-setupRouterGuards(router, IsReleaseMode)
+setupRouterGuards(router)
 
 app.use(VueQueryPlugin)
 

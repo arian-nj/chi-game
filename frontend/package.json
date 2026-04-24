@@ -11,6 +11,7 @@
   "dependencies": {
     "@connectrpc/connect": "^2.1.1",
     "@connectrpc/connect-web": "^2.1.1",
+    "@lottiefiles/dotlottie-vue": "^0.11.11",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/vue-query": "^5.99.2",
     "gsap": "^3.15.0",

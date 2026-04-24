@@ -4,7 +4,8 @@ import { useRouter } from 'vue-router';
 import { createClient } from "@connectrpc/connect";
 import gsap from 'gsap'
 
-import wasmUrl from "@lottiefiles/dotlottie-web/dist/dotlottie-player.wasm?url";
+// import wasmUrl from "@lottiefiles/dotlottie-web/dist/dotlottie-player.wasm?url";
+import wasmUrl from "@lottiefiles/dotlottie-web/dotlottie-player.wasm?url";
 
 // import { switchInlineQuery } from '@telegram-apps/sdk';
 import { useQuery } from '@tanstack/vue-query';
@@ -13,11 +14,12 @@ import MeComponent from '../components/MeComponent.vue';
 import GameSelectorBtn from '../components/home/GameSelectorBtn.vue';
 import { authTransport } from '../lib/transport';
 import OnlineComponent from '../components/OnlineComponent.vue';
-// onMounted(() => {
-//   // prefetch
-//   import('../views/FinderView.vue')
-//   import(/* @vite-ignore */  wasmUrl)
-// })
+
+onMounted(() => {
+  // prefetch
+  // import('../views/FinderView.vue')
+  import(/* @vite-ignore */  wasmUrl)
+})
 
 const router = useRouter()
 
