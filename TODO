@@ -7,7 +7,7 @@
 [X] jwt authentication
 [X] guest user
 
-[ ] Home user info box
+[X] Home user info box
 [ ] right last updated (for removing inactive accounts)
 [ ] admin user
 [---] users list page (use db viewer instead)

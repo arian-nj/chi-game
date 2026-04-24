@@ -2,13 +2,16 @@ package api
 
 import (
 	"context"
+	"errors"
 	"log"
 	"log/slog"
 	"net/http"
 	"sync"
 	"time"
 
+	"connectrpc.com/connect"
 	"github.com/arian-nj/chigame/backend/database"
+	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
 	"github.com/arian-nj/chigame/backend/internals/config"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
@@ -19,6 +22,20 @@ type ApiApplication struct {
 	Queries *database.Queries
 	// AllSessions *gamesessions.AllSession
 	// MatchMaking *matchmaking.MatchMaking
+}
+
+// GetMe implements [accountv1connect.AccountServiceHandler].
+func (app *ApiApplication) GetMe(ctx context.Context, req *connect.Request[accountv1.GetMeRequest]) (*connect.Response[accountv1.GetMeResponse], error) {
+	personRow := app.AuthenticateHeader(ctx, req.Header())
+	if personRow == nil {
+		return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("can't get user"))
+	}
+	return connect.NewResponse(&accountv1.GetMeResponse{
+		Account: &accountv1.Account{
+			Id:   int64(personRow.ID),
+			Name: personRow.Username,
+		},
+	}), nil
 }
 
 func NewApiApplication(config *config.Config,

@@ -91,7 +91,8 @@ func createGuestToken(userId int, deviceID string) *jwt.Token {
 }
 
 func (app *ApiApplication) ValidateToken(tokenString string) (int, error) {
-	token, err := jwt.ParseWithClaims(tokenString, CustomClaim{}, func(token *jwt.Token) (any, error) {
+
+	token, err := jwt.ParseWithClaims(tokenString, &CustomClaim{}, func(token *jwt.Token) (any, error) {
 		return app.Config.Jwt.SecretKey, nil
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
 	if err != nil {
@@ -99,12 +100,11 @@ func (app *ApiApplication) ValidateToken(tokenString string) (int, error) {
 		return 0, err
 	}
 
-	claims, ok := token.Claims.(CustomClaim)
+	claims, ok := token.Claims.(*CustomClaim)
 	if !ok {
 		slog.Error("error converting Claims to CustomClaims")
 		return 0, err
 	}
-	slog.Info("claims converted", "claims", claims)
 
 	expireAt, err := claims.GetExpirationTime()
 	if err != nil {

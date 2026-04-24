@@ -17,7 +17,10 @@ const { isPending, error, data } = useQuery({
 
 
 <template>
-  <span v-if="isPending">Loading...</span>
-  <span v-else-if="error">{{ error.message }}</span>
-  <h1 v-else>{{ data?.account?.name }}</h1>
+  <div class="font-extrabold text-lg ">
+    <span v-if="isPending">Loading...</span>
+    <span v-else-if="error">{{ error.message }}</span>
+    <h1 v-else>@{{ data?.account?.name }}</h1>
+  </div>
+
 </template>

@@ -73,13 +73,15 @@ const hasSession = computed(() => {
   <main>
     <div
       class="relative min-h-screen w-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white overflow-hidden">
-      <div class="flex justify-center pt-12">
-        <div class="bg-gray-900/60 p-6 rounded-2xl shadow-xl backdrop-blur-md border border-gray-700">
-          <MeComponent />
-          <OnlineComponent />
-        </div>
+      
+        <div class="flex justify-center pt-12">
+    <div class="bg-gray-900/60 p-6 rounded-2xl shadow-xl backdrop-blur-md border border-gray-700">
+      <div class="flex items-center gap-3">
+        <OnlineComponent />
+        <MeComponent />
       </div>
-
+    </div>
+  </div>
       <div class="flex justify-center gap-6 pt-16 flex-wrap">
         <GameSelectorBtn v-for="game in games" :key="game" :game-name="game" :selected="game == selectedGame"
           @choosed="selectedGame = game" />
