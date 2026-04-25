@@ -4,7 +4,7 @@ import (
 	"log/slog"
 	"sync"
 
-	"github.com/arian-nj/chibazi/backend/internals/utils"
+	"github.com/arian-nj/chigame/backend/internals/utils"
 )
 
 type Subscriber interface {

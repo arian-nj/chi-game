@@ -5,12 +5,16 @@ go 1.25.0
 require (
 	connectrpc.com/connect v1.19.2
 	connectrpc.com/cors v0.1.0
+	github.com/coder/websocket v1.8.14
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/jackc/pgx/v5 v5.9.2
 	github.com/pressly/goose/v3 v3.27.0
 	github.com/rs/cors v1.11.1
+	golang.org/x/crypto v0.48.0
 	golang.org/x/net v0.50.0
+	golang.org/x/time v0.15.0
 	google.golang.org/protobuf v1.36.11
+	gopkg.in/telebot.v4 v4.0.0-beta.7
 )
 
 require (

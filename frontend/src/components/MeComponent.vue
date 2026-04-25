@@ -7,19 +7,25 @@ import { authTransport } from '../lib/transport';
 const { isPending, error, data } = useQuery({
   queryKey: ['me'],
   staleTime: 0,
+  retryDelay: 10000,
   queryFn: async () => {
     const client = createClient(AccountService, authTransport)
     const data = await client.getMe({})
     return data
   }
 })
-</script>
 
+// Log error when it occurs
+if (error.value) {
+  console.error('Error fetching user data:', error.value)
+}
+
+</script>
 
 <template>
   <div class="font-extrabold text-lg ">
     <span v-if="isPending">Loading...</span>
-    <span v-else-if="error">{{ error.message }}</span>
+    <span v-else-if="error">Error</span>
     <h1 v-else>@{{ data?.account?.name }}</h1>
   </div>
 

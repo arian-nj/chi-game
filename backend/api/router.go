@@ -52,7 +52,7 @@ func (app *ApiApplication) createRouter() http.Handler {
 	mux.Handle(authPath, authHandler)
 
 	// mux.Handle("/api/session/", app.AuthenticateQuery(http.HandlerFunc(app.sessionWebsocket)))
-	// mux.Handle("/api/match_making/ticket/", app.AuthenticateQuery(http.HandlerFunc(app.makeMatchMakingTicketWS)))
+	mux.Handle("/api/match_making/ticket/", app.AuthenticateQuery(http.HandlerFunc(app.makeMatchMakingTicketWS)))
 
 	return withCORS(mux)
 }

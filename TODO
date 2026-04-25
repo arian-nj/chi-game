@@ -8,6 +8,14 @@
 [X] guest user
 
 [X] Home user info box
-[ ] right last updated (for removing inactive accounts)
-[ ] admin user
 [---] users list page (use db viewer instead)
+
+[X] finder
+[ ] xo game
+[ ] right last updated (for removing inactive accounts)
+
+
+
+[ ] admin user
+
+[ ] screen looks white on new user when backend is off
