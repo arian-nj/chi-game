@@ -24,6 +24,8 @@ onMounted(() => {
 const router = useRouter()
 
 const games = ["xo3x3", "conn4"];
+// const games = ["xo3x3", "conn4","snake","apple","tart","mart","gart","sdar"];
+
 const selectedGame = ref(games[1])
 
 const playBtnRef = ref<HTMLButtonElement | null>(null)
@@ -96,7 +98,7 @@ function handlePlayClick() {
       </div>
     </div>
   </div>
-      <div class="flex justify-center gap-6 pt-16 flex-wrap">
+      <div class="flex justify-center gap-2 pt-16 flex-wrap">
         <GameSelectorBtn v-for="game in games" :key="game" :game-name="game" :selected="game == selectedGame"
           @choosed="selectedGame = game" />
       </div>
