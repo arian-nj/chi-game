@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import type { Account } from '@/gen/account/v1/account_pb';
+import type { Account } from '../../gen/account/v1/account_pb';
 import gsap from 'gsap';
 import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
+import { useToast } from '../Toast.vue';
+import { createClient } from '@connectrpc/connect';
+import { SessionService } from '../../gen/session/v1/session_pb';
+import { authTransport } from '../../lib/transport';
+import { useQueryClient } from '@tanstack/vue-query';
 
 const props = defineProps<{
   winner: Account | undefined,
@@ -42,6 +47,7 @@ onMounted(() => {
 })
 const router = useRouter()
 function goToHome() {
+  handleExistSession()
   router.push('/')
 }
 const remainedSessionTime = ref(30)
@@ -61,6 +67,19 @@ onMounted(() => {
 onBeforeUnmount(() => {
   clearInterval(interval)
 })
+
+async function handleExistSession() {
+  const client = createClient(SessionService,authTransport)
+  const data = await client.closeSession({})
+  const { toast } = useToast()
+  if (!data.isOk) {
+    toast.info("یه مشکلی پیش اومده")
+  }else{
+    toast.success("حله خارج شدی")
+    const queryClient = useQueryClient()
+    queryClient.invalidateQueries({queryKey:["hasSession"]})
+  }
+}
 
 </script>
 

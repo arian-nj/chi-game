@@ -17,10 +17,15 @@
 [X] conn4 game
 [X] refetch hassession
 [X] better game selector
-[ ] close session on home button
-[ ] ai player
-
+[X] home page close session button
+[X] exit session button
 [ ] play with friends
+    [ ] room code
+    [ ] invite link
+[ ] ai player
+[ ] capacitor
+
+[ ] add a per move time
 
 [ ] right last updated (for removing inactive accounts)
 [ ] make home screen better

@@ -190,3 +190,20 @@ func (app *ApiApplication) HasSession(
 		HasSession: hasSession,
 	}), nil
 }
+
+func (app *ApiApplication) CloseSession(
+	ctx context.Context,
+	req *connect.Request[sessionv1.CloseSessionRequest],
+) (*connect.Response[sessionv1.CloseSessionResponse], error) {
+
+	person := app.AuthenticateHeader(ctx, req.Header())
+	if person == nil {
+		return nil, ErrorUnauthenticated
+	}
+
+	isOk := app.AllSessions.Delete(strconv.Itoa(person.ID))
+
+	return connect.NewResponse(&sessionv1.CloseSessionResponse{
+		IsOk: isOk,
+	}), nil
+}

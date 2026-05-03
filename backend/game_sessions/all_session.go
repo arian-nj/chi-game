@@ -18,10 +18,10 @@ func NewAllSessions() *AllSession {
 	}
 }
 
-func (all *AllSession) Get(look_for string) (*GameSession, bool) {
-	all.Mutex.Lock()
-	defer all.Mutex.Unlock()
-	gameSession, ok := all.Sessions[look_for]
+func (allSessions *AllSession) Get(look_for string) (*GameSession, bool) {
+	allSessions.Mutex.Lock()
+	defer allSessions.Mutex.Unlock()
+	gameSession, ok := allSessions.Sessions[look_for]
 	return gameSession, ok
 }
 
@@ -39,6 +39,14 @@ func (allSession *AllSession) Add(key string, gs *GameSession) {
 	defer allSession.Mutex.Unlock()
 
 	allSession.Sessions[key] = gs
+}
+
+func (allSessions *AllSession) Delete(look_for string) bool {
+	allSessions.Mutex.Lock()
+	defer allSessions.Mutex.Unlock()
+	_, ok := allSessions.Sessions[look_for]
+	delete(allSessions.Sessions, look_for)
+	return ok
 }
 
 func ClearDeadGamesCron(allSessions *AllSession) {

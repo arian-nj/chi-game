@@ -52,6 +52,12 @@ service SessionService {
   rpc GetChatHistory(GetChatHistoryRequest) returns (GetChatHistoryResponse) {}
   rpc GetSessionOpponent(GetSessionOpponentRequest) returns (GetSessionOpponentResponse) {}
   rpc HasSession(HasSessionRequest) returns (HasSessionResponse) {}
+  rpc CloseSession(CloseSessionRequest) returns (CloseSessionResponse) {}
+}
+
+message CloseSessionRequest {}
+message CloseSessionResponse {
+  bool is_ok= 1;
 }
 
 message HasSessionRequest {}

@@ -42,6 +42,9 @@ const (
 	// SessionServiceHasSessionProcedure is the fully-qualified name of the SessionService's HasSession
 	// RPC.
 	SessionServiceHasSessionProcedure = "/session.v1.SessionService/HasSession"
+	// SessionServiceCloseSessionProcedure is the fully-qualified name of the SessionService's
+	// CloseSession RPC.
+	SessionServiceCloseSessionProcedure = "/session.v1.SessionService/CloseSession"
 )
 
 // SessionServiceClient is a client for the session.v1.SessionService service.
@@ -49,6 +52,7 @@ type SessionServiceClient interface {
 	GetChatHistory(context.Context, *connect.Request[v1.GetChatHistoryRequest]) (*connect.Response[v1.GetChatHistoryResponse], error)
 	GetSessionOpponent(context.Context, *connect.Request[v1.GetSessionOpponentRequest]) (*connect.Response[v1.GetSessionOpponentResponse], error)
 	HasSession(context.Context, *connect.Request[v1.HasSessionRequest]) (*connect.Response[v1.HasSessionResponse], error)
+	CloseSession(context.Context, *connect.Request[v1.CloseSessionRequest]) (*connect.Response[v1.CloseSessionResponse], error)
 }
 
 // NewSessionServiceClient constructs a client for the session.v1.SessionService service. By
@@ -80,6 +84,12 @@ func NewSessionServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(sessionServiceMethods.ByName("HasSession")),
 			connect.WithClientOptions(opts...),
 		),
+		closeSession: connect.NewClient[v1.CloseSessionRequest, v1.CloseSessionResponse](
+			httpClient,
+			baseURL+SessionServiceCloseSessionProcedure,
+			connect.WithSchema(sessionServiceMethods.ByName("CloseSession")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -88,6 +98,7 @@ type sessionServiceClient struct {
 	getChatHistory     *connect.Client[v1.GetChatHistoryRequest, v1.GetChatHistoryResponse]
 	getSessionOpponent *connect.Client[v1.GetSessionOpponentRequest, v1.GetSessionOpponentResponse]
 	hasSession         *connect.Client[v1.HasSessionRequest, v1.HasSessionResponse]
+	closeSession       *connect.Client[v1.CloseSessionRequest, v1.CloseSessionResponse]
 }
 
 // GetChatHistory calls session.v1.SessionService.GetChatHistory.
@@ -105,11 +116,17 @@ func (c *sessionServiceClient) HasSession(ctx context.Context, req *connect.Requ
 	return c.hasSession.CallUnary(ctx, req)
 }
 
+// CloseSession calls session.v1.SessionService.CloseSession.
+func (c *sessionServiceClient) CloseSession(ctx context.Context, req *connect.Request[v1.CloseSessionRequest]) (*connect.Response[v1.CloseSessionResponse], error) {
+	return c.closeSession.CallUnary(ctx, req)
+}
+
 // SessionServiceHandler is an implementation of the session.v1.SessionService service.
 type SessionServiceHandler interface {
 	GetChatHistory(context.Context, *connect.Request[v1.GetChatHistoryRequest]) (*connect.Response[v1.GetChatHistoryResponse], error)
 	GetSessionOpponent(context.Context, *connect.Request[v1.GetSessionOpponentRequest]) (*connect.Response[v1.GetSessionOpponentResponse], error)
 	HasSession(context.Context, *connect.Request[v1.HasSessionRequest]) (*connect.Response[v1.HasSessionResponse], error)
+	CloseSession(context.Context, *connect.Request[v1.CloseSessionRequest]) (*connect.Response[v1.CloseSessionResponse], error)
 }
 
 // NewSessionServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -137,6 +154,12 @@ func NewSessionServiceHandler(svc SessionServiceHandler, opts ...connect.Handler
 		connect.WithSchema(sessionServiceMethods.ByName("HasSession")),
 		connect.WithHandlerOptions(opts...),
 	)
+	sessionServiceCloseSessionHandler := connect.NewUnaryHandler(
+		SessionServiceCloseSessionProcedure,
+		svc.CloseSession,
+		connect.WithSchema(sessionServiceMethods.ByName("CloseSession")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/session.v1.SessionService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case SessionServiceGetChatHistoryProcedure:
@@ -145,6 +168,8 @@ func NewSessionServiceHandler(svc SessionServiceHandler, opts ...connect.Handler
 			sessionServiceGetSessionOpponentHandler.ServeHTTP(w, r)
 		case SessionServiceHasSessionProcedure:
 			sessionServiceHasSessionHandler.ServeHTTP(w, r)
+		case SessionServiceCloseSessionProcedure:
+			sessionServiceCloseSessionHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -164,4 +189,8 @@ func (UnimplementedSessionServiceHandler) GetSessionOpponent(context.Context, *c
 
 func (UnimplementedSessionServiceHandler) HasSession(context.Context, *connect.Request[v1.HasSessionRequest]) (*connect.Response[v1.HasSessionResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("session.v1.SessionService.HasSession is not implemented"))
+}
+
+func (UnimplementedSessionServiceHandler) CloseSession(context.Context, *connect.Request[v1.CloseSessionRequest]) (*connect.Response[v1.CloseSessionResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("session.v1.SessionService.CloseSession is not implemented"))
 }

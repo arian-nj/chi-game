@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { createClient } from "@connectrpc/connect";
 import gsap from 'gsap'
@@ -8,12 +8,13 @@ import gsap from 'gsap'
 import wasmUrl from "@lottiefiles/dotlottie-web/dotlottie-player.wasm?url";
 
 // import { switchInlineQuery } from '@telegram-apps/sdk';
-import { useQuery } from '@tanstack/vue-query';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { SessionService } from '../gen/session/v1/session_pb';
 import MeComponent from '../components/MeComponent.vue';
 import GameSelectorBtn from '../components/home/GameSelectorBtn.vue';
 import { authTransport } from '../lib/transport';
 import OnlineComponent from '../components/OnlineComponent.vue';
+import { useToast } from '../components/Toast.vue';
 
 onMounted(() => {
   // prefetch
@@ -30,12 +31,23 @@ const selectedGame = ref(games[1])
 
 const playBtnRef = ref<HTMLButtonElement | null>(null)
 
-onMounted(() => {
+watch(playBtnRef,() => {
   if (playBtnRef.value) {
     gsap.from(playBtnRef.value, {
-      yPercent: 100,          // start position below
-      opacity: 0,      // fade in
-      duration: 1,   // animation duration
+      yPercent: 100,
+      opacity: 0,
+      duration: 1,
+    })
+  }
+})
+
+const exitBtnRef = ref<HTMLButtonElement | null>(null)
+watch(exitBtnRef,()=>{
+    if (exitBtnRef.value) {
+    gsap.from(exitBtnRef.value, {
+      yPercent: 100,
+      opacity: 0,
+      duration: 1,
     })
   }
 })
@@ -83,6 +95,19 @@ function handlePlayClick() {
   router.push(`/finder?game=${selectedGame.value}`)
 }
 
+async function handleExistSession() {
+  const client = createClient(SessionService,authTransport)
+  const data = await client.closeSession({})
+  const { toast } = useToast()
+  if (!data.isOk) {
+    toast.info("یه مشکلی پیش اومده")
+  }else{
+    toast.success("حله خارج شدی")
+    const queryClient = useQueryClient()
+    queryClient.invalidateQueries({queryKey:["hasSession"]})
+  }
+}
+
 </script>
 
 <template>
@@ -103,14 +128,27 @@ function handlePlayClick() {
           @choosed="selectedGame = game" />
       </div>
 
-      <div class="absolute bottom-0 left-0 w-full flex flex-col gap-6 items-center justify-center">
-        <button class="bg-linear-to-r from-cyan-400 to-pink-500
+      <div class="absolute bottom-0 left-0 w-full flex flex-col gap-1 items-center justify-center">
+        <button class="bg-linear-to-r to-cyan-500 from-pink-300
                   rounded-2xl px-10 py-4
                  text-2xl font-extrabold text-white tracking-wide
                  shadow-lg hover:shadow-cyan-400/30
                  hover:scale-105 active:scale-95
                  transition-all duration-300 ease-in-out" @click="onPlayFriendsClick()">
           🎮 بازی با دوستان
+        </button>
+        
+        <button v-if="hasSession" ref="exitBtnRef" type="button" :disabled="selectedGame == ''" @click="handleExistSession" :class="[
+          `w-1/3 py-6 text-3xl font-bold
+              focus:outline-none ring-2 ring-gray-900
+              transition-colors duration-400
+              rounded-3xl
+              `,
+          selectedGame
+            ? 'bg-linear-to-r to-red-400 from-pink-300 text-white hover:opacity-95 shadow-xl'
+            : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+        ]">
+       ❌ خروج از بازی قبلی
         </button>
 
         <button ref="playBtnRef" type="button" :disabled="selectedGame == ''" @click="handlePlayClick" :class="[

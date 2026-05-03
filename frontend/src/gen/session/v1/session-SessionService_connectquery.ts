@@ -18,3 +18,8 @@ export const getSessionOpponent = SessionService.method.getSessionOpponent;
  * @generated from rpc session.v1.SessionService.HasSession
  */
 export const hasSession = SessionService.method.hasSession;
+
+/**
+ * @generated from rpc session.v1.SessionService.CloseSession
+ */
+export const closeSession = SessionService.method.closeSession;
