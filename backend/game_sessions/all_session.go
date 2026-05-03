@@ -24,6 +24,7 @@ func (all *AllSession) Get(look_for string) (*GameSession, bool) {
 	gameSession, ok := all.Sessions[look_for]
 	return gameSession, ok
 }
+
 func (allSessions *AllSession) IsSessionEmpty(playerId int) bool {
 	allSessions.Mutex.Lock()
 	defer allSessions.Mutex.Unlock()

@@ -17,7 +17,7 @@ import OnlineComponent from '../components/OnlineComponent.vue';
 
 onMounted(() => {
   // prefetch
-  // import('../views/FinderView.vue')
+  import('../views/FinderView.vue')
   import(/* @vite-ignore */  wasmUrl)
 })
 
@@ -27,14 +27,6 @@ const games = ["xo3x3", "conn4"];
 const selectedGame = ref(games[1])
 
 const playBtnRef = ref<HTMLButtonElement | null>(null)
-
-function handlePlayClick() {
-  if (hasSession.value) {
-    router.push(`/session`)
-    return
-  }
-  router.push(`/finder?game=${selectedGame.value}`)
-}
 
 onMounted(() => {
   if (playBtnRef.value) {
@@ -47,18 +39,32 @@ onMounted(() => {
 })
 
 function onPlayFriendsClick() {
-  // switchInlineQuery("", ["users", "groups"])
 }
+
+
+let coolDownTime = 1_000
+const maxCoolDownTime = 32_000
 
 const { data: hasSessionData } = useQuery({
   queryKey: ['hasSession'],
-  staleTime: 0,
   queryFn: async () => {
     const client = createClient(SessionService, authTransport)
     const data = await client.hasSession({})
     return data
+  },
+  refetchInterval: (query) => {
+    const hasSes = query.state.data?.hasSession
+    if (hasSes) {
+      if (coolDownTime * 2 <= maxCoolDownTime){
+        coolDownTime *= 2
+      }
+      return coolDownTime
+    }
+    coolDownTime = 1_000
+    return false
   }
 })
+
 
 const hasSession = computed(() => {
   if (hasSessionData.value && hasSessionData.value.hasSession) {
@@ -67,12 +73,20 @@ const hasSession = computed(() => {
   return false
 })
 
+function handlePlayClick() {
+  if (hasSession.value) {
+    router.push(`/session`)
+    return
+  }
+  router.push(`/finder?game=${selectedGame.value}`)
+}
+
 </script>
 
 <template>
   <main>
     <div
-      class="relative min-h-screen w-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white overflow-hidden">
+      class="relative min-h-screen w-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white overflow-hidden">
       
         <div class="flex justify-center pt-12">
     <div class="bg-gray-900/60 p-6 rounded-2xl shadow-xl backdrop-blur-md border border-gray-700">
@@ -88,7 +102,7 @@ const hasSession = computed(() => {
       </div>
 
       <div class="absolute bottom-0 left-0 w-full flex flex-col gap-6 items-center justify-center">
-        <button class="bg-gradient-to-r from-cyan-400 to-pink-500
+        <button class="bg-linear-to-r from-cyan-400 to-pink-500
                   rounded-2xl px-10 py-4
                  text-2xl font-extrabold text-white tracking-wide
                  shadow-lg hover:shadow-cyan-400/30
@@ -102,7 +116,7 @@ const hasSession = computed(() => {
               focus:outline-none focus:ring-4 focus:ring-pink-400/40
               transition-colors duration-400`,
           selectedGame
-            ? 'bg-gradient-to-r from-emerald-400 to-green-500 text-white hover:opacity-95 shadow-xl'
+            ? 'bg-linear-to-r from-emerald-400 to-green-500 text-white hover:opacity-95 shadow-xl'
             : 'bg-gray-700 text-gray-400 cursor-not-allowed'
         ]">
           {{ hasSession ?
