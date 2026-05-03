@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE persons (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     coins INTEGER NOT NULL DEFAULT 100,
     is_guest BOOLEAN NOT NULL DEFAULT false,
@@ -9,8 +9,9 @@ CREATE TABLE persons (
     updated_at timestamp NOT NULL DEFAULT NOW(),
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
 CREATE TABLE person_auth_methods (
-    id SERIAL PRIMARY KEY,
+    id BIGSERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES persons(id) ON DELETE CASCADE,
     auth_type VARCHAR(50) NOT NULL, -- 'guest_device', 'telegram', 'phone', 'email', 'bale'
     auth_value VARCHAR(255) NOT NULL,

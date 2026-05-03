@@ -11,8 +11,12 @@
 [---] users list page (use db viewer instead)
 
 [X] finder
-[ ] xo game
+[X] session
+[X] session chat
+[X] xo game
+[X] conn4 game
 [ ] right last updated (for removing inactive accounts)
+[ ] make home screen better
 
 
 

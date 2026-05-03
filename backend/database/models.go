@@ -9,7 +9,7 @@ import (
 )
 
 type Person struct {
-	ID        int32
+	ID        int
 	Username  string
 	Coins     int32
 	IsGuest   bool
@@ -19,7 +19,7 @@ type Person struct {
 }
 
 type PersonAuthMethod struct {
-	ID        int32
+	ID        int
 	UserID    int32
 	AuthType  string
 	AuthValue string

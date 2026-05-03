@@ -42,7 +42,7 @@ func (app *ApiApplication) GetOrCreateGuestUser(deviceID string) (*database.Pers
 
 	// Link auth method
 	_, err = app.Queries.InsertAuthMethod(context.Background(), database.InsertAuthMethodParams{
-		UserID:    newPerson.ID,
+		UserID:    int32(newPerson.ID),
 		AuthType:  AuthTypeGuestDevice,
 		AuthValue: deviceID,
 	})

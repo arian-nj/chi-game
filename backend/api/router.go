@@ -8,6 +8,7 @@ import (
 	"github.com/arian-nj/chigame/backend/gen/account/v1/accountv1connect"
 	"github.com/arian-nj/chigame/backend/gen/auth/v1/authv1connect"
 	"github.com/arian-nj/chigame/backend/gen/healthcheck/v1/healthcheckv1connect"
+	"github.com/arian-nj/chigame/backend/gen/session/v1/sessionv1connect"
 	"github.com/rs/cors"
 )
 
@@ -31,11 +32,8 @@ func (app *ApiApplication) createRouter() http.Handler {
 	// 	})
 	// }
 
-	// sessionPath, sessionHandler := sessionv1connect.NewSessionServiceHandler(app)
-	// mux.Handle(sessionPath, sessionHandler)
-
-	// authPath, authHandler := authv1connect.NewAuthServiceHandler(app)
-	// mux.Handle(authPath, authHandler)
+	sessionPath, sessionHandler := sessionv1connect.NewSessionServiceHandler(app)
+	mux.Handle(sessionPath, sessionHandler)
 
 	// if app.Config.ReleaseMode == config.Develop {
 	// 	dummyAuthPath, dummyAuthHandler := dummy_authv1connect.NewDummyAuthServiceHandler(app)
@@ -51,7 +49,7 @@ func (app *ApiApplication) createRouter() http.Handler {
 	authPath, authHandler := authv1connect.NewAuthServiceHandler(app)
 	mux.Handle(authPath, authHandler)
 
-	// mux.Handle("/api/session/", app.AuthenticateQuery(http.HandlerFunc(app.sessionWebsocket)))
+	mux.Handle("/api/session/", app.AuthenticateQuery(http.HandlerFunc(app.sessionWebsocket)))
 	mux.Handle("/api/match_making/ticket/", app.AuthenticateQuery(http.HandlerFunc(app.makeMatchMakingTicketWS)))
 
 	return withCORS(mux)

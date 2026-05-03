@@ -35,7 +35,7 @@ func (app *ApiApplication) AuthenticateHeader(ctx context.Context, header http.H
 		return nil
 	}
 
-	person, err := app.Queries.GetPersonByID(ctx, int32(userID))
+	person, err := app.Queries.GetPersonByID(ctx, userID)
 	if err != nil {
 		slog.Error("no user found auth header middleware", "err", err)
 		return nil
@@ -87,7 +87,7 @@ func ContextGetAuthenticatedUser(queries *database.Queries, r *http.Request) (*d
 
 	var user database.Person
 	var err error
-	user, err = queries.GetPersonByID(r.Context(), int32(reqConUser.UserID))
+	user, err = queries.GetPersonByID(r.Context(), reqConUser.UserID)
 
 	if err != nil {
 		slog.Error("no user found in context get authticated user", "err", err)

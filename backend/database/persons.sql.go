@@ -132,7 +132,7 @@ SELECT id, username, coins, is_guest, merged_at, updated_at, created_at FROM per
 WHERE id = $1
 `
 
-func (q *Queries) GetPersonByID(ctx context.Context, id int32) (Person, error) {
+func (q *Queries) GetPersonByID(ctx context.Context, id int) (Person, error) {
 	row := q.db.QueryRow(ctx, getPersonByID, id)
 	var i Person
 	err := row.Scan(

@@ -60,11 +60,11 @@ const router = createRouter({
       name: 'finder',
       component: () => import('../views/FinderView.vue')
     },
-    // {
-    //   path: '/session',
-    //   name: 'session',
-    //   component: () => import('../views/SessionView.vue')
-    // },
+    {
+      path: '/session',
+      name: 'session',
+      component: () => import('../views/SessionView.vue')
+    },
     // {
     //   path: '/card',
     //   name: 'card',
