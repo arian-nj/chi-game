@@ -26,7 +26,7 @@ func sendFinderSocketError(socketClient *socket.Socket, errType finderv1.FinderE
 	}
 }
 
-func (app *ApiApplication) makeMatchMakingTicketWS(w http.ResponseWriter, r *http.Request) {
+func (app *ApiApplication) finderWS(w http.ResponseWriter, r *http.Request) {
 	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
 		OriginPatterns: CORS_PATTERNS,
 	})
@@ -71,17 +71,17 @@ func (app *ApiApplication) makeMatchMakingTicketWS(w http.ResponseWriter, r *htt
 
 	NewTicket := matchmaking.NewTicket(PersonRow.Username, int(PersonRow.ID), gameType)
 	app.MatchMaking.PushTicket(NewTicket)
-	defer app.MatchMaking.RemovePlayerTicket(int(PersonRow.ID)) // remove in case of error or canceling
+	defer app.MatchMaking.RemovePlayerTicket(int(PersonRow.ID)) // remove in case of error or canceling or found
 
 	addEvent := finderv1.FinderEvent{
 		Type: finderv1.FinderType_FINDER_TYPE_ADDED,
 	}
 	err = socketClient.SendMessage(&addEvent)
 	if err != nil {
-		slog.Error("", "error", err)
+		slog.Error("send finder add event", "error", err)
 	}
 
-	ticker := time.NewTicker(time.Second * 30)
+	tickerTimeout := time.NewTicker(time.Second * 30)
 
 	for {
 		select {
@@ -91,7 +91,7 @@ func (app *ApiApplication) makeMatchMakingTicketWS(w http.ResponseWriter, r *htt
 			}
 			socketClient.SendMessage(&foundEvent)
 			return
-		case <-ticker.C:
+		case <-tickerTimeout.C:
 			timeoutEvent := finderv1.FinderEvent{
 				Type: finderv1.FinderType_FINDER_TYPE_TIMEOUT,
 			}

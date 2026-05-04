@@ -71,7 +71,7 @@ type Room struct {
 	ShutdownTimer <-chan time.Time
 }
 
-func NewGameRoom(Queries *database.Queries, roomId int, allRoom *AllRooms) *Room {
+func NewRoom(Queries *database.Queries, roomId int, allRoom *AllRooms) *Room {
 	ctx, cancel := context.WithCancel(context.Background())
 	gs := &Room{
 		ID: roomId,
@@ -128,7 +128,7 @@ func (room *Room) StartGame() {
 		room.GameState.OnEnd(room.EndGame)
 		gameErr := room.GameState.StartGame()
 		if gameErr != nil {
-			slog.Error("gamer error", gameErr)
+			slog.Error("gamer error", "error", gameErr)
 			return
 		}
 	})
