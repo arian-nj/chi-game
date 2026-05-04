@@ -11,27 +11,48 @@
 [---] users list page (use db viewer instead)
 
 [X] finder
-[X] session
-[X] session chat
+[X] room
+[X] room chat
 [X] xo game
 [X] conn4 game
-[X] refetch hassession
+[X] refetch hasroom
 [X] better game selector
-[X] home page close session button
-[X] exit session button
+[X] home page close room button
+[X] exit room button
+
+<!-- make backend great again -->
+[X] rename session to room
+
 [ ] play with friends
     [ ] room code
     [ ] invite link
-[ ] ai player
-[ ] capacitor
 
 [ ] add a per move time
+[ ] ai player
+
+[ ] capacitor
 
 [ ] right last updated (for removing inactive accounts)
-[ ] make home screen better
 
 
+[ ] add friends
+[ ] list friends
+[ ] profile page
 
+[ ] invite bonus
+
+# Games
+[ ] dots and boxes
+[ ] go game
+[ ] takhteh (Backgammon)
+[ ] Dominoes
+[ ] mench
+[ ] snake and ladder
+[ ] pool 8-ball
+[ ] Poker
+[ ] Hokm
+[ ] Sea Battle
+
+# not needed now
 [ ] admin user
-
 [ ] screen looks white on new user when backend is off

@@ -6,20 +6,20 @@ import (
 	"time"
 
 	"github.com/arian-nj/chigame/backend/database"
-	gamesessions "github.com/arian-nj/chigame/backend/game_sessions"
 	"github.com/arian-nj/chigame/backend/games/games"
+	"github.com/arian-nj/chigame/backend/rooms"
 )
 
 type MatchMaking struct {
 	WaitingPlayers map[games.GameType][]*Ticket
 	Mutex          sync.Mutex
-	AllSessions    *gamesessions.AllSession
+	AllRooms       *rooms.AllRooms
 	Queries        *database.Queries
 }
 
-func NewMatchMaking(allSessions *gamesessions.AllSession, queries *database.Queries) *MatchMaking {
+func NewMatchMaking(allRooms *rooms.AllRooms, queries *database.Queries) *MatchMaking {
 	mm := &MatchMaking{
-		AllSessions:    allSessions,
+		AllRooms:       allRooms,
 		Queries:        queries,
 		WaitingPlayers: map[games.GameType][]*Ticket{},
 	}
@@ -45,7 +45,7 @@ type Ticket struct {
 	// Platform PlatformType
 	GameType games.GameType
 
-	MatchFoundChan chan *gamesessions.GameSession
+	MatchFoundChan chan *rooms.Room
 
 	Timestamp time.Time
 }
@@ -56,7 +56,7 @@ func NewTicket(name string, userID int, gameType games.GameType) *Ticket {
 		// TgID:           tgID,
 		Name:           name,
 		GameType:       gameType,
-		MatchFoundChan: make(chan *gamesessions.GameSession, 1),
+		MatchFoundChan: make(chan *rooms.Room, 1),
 	}
 }
 
@@ -129,16 +129,16 @@ func (mm *MatchMaking) RemovePlayerTicket(UserID int) bool {
 // 	playerTwo := consoleplayer.NewConsolePlayer(tickets[1].Name, tickets[1].UserID).SetMessageSig(tickets[1].MessageID)
 // 	ClearMatchmakingMessage([]*consoleplayer.ConsolePlayer{playerOne, playerTwo}, mm.Bot)
 //
-// 	var newSession *gamesessions.GameSession
+// 	var newRoom *gamerooms.GameRoom
 // 	switch gameType {
 // 	case gametype.XOGameType3X3, gametype.XOGameType5X5:
 // 		newXOGame := xoconsole.NewXOGame(gametype.XOGameType3X3, mm.Queries)
 // 		newXOGame.AddPlayer(playerOne)
 // 		newXOGame.AddPlayer(playerTwo)
 //
-// 		newSession = gamesessions.NewGameSession(mm.AllSessions, mm.Bot, gameType, newXOGame)
-// 		mm.AllSessions.Add(strconv.Itoa(playerOne.TgID), newSession)
-// 		mm.AllSessions.Add(strconv.Itoa(playerTwo.TgID), newSession)
+// 		newRoom = gamerooms.NewGameRoom(mm.AllRooms, mm.Bot, gameType, newXOGame)
+// 		mm.AllRooms.Add(strconv.Itoa(playerOne.TgID), newRoom)
+// 		mm.AllRooms.Add(strconv.Itoa(playerTwo.TgID), newRoom)
 //
 // 		err := newXOGame.StartGame(mm.Bot)
 // 		if err != nil {
@@ -149,7 +149,7 @@ func (mm *MatchMaking) RemovePlayerTicket(UserID int) bool {
 // 		slog.Error("not possible")
 // 		return
 // 	}
-// 	SendFoundOpponentMessage(newSession.GameState.Players(), mm.Bot)
+// 	SendFoundOpponentMessage(newRoom.GameState.Players(), mm.Bot)
 //
 // }
 //

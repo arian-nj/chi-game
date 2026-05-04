@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import * as XoBuff from "@/gen/xo_game/v1/xo_pb";
-import { SessionSocket } from '@/lib/SessionWs';
+import * as XoBuff from "../../../gen/xo_game/v1/xo_pb";
 import { ref, useTemplateRef } from "vue";
 import { create, toBinary } from "@bufbuild/protobuf";
-import { SessionMessageSchema } from "@/gen/session/v1/session_pb";
-import { useToast } from "@/components/Toast.vue";
+import { useToast } from "../../../components/Toast.vue";
 
-import { AccountService } from '@/gen/account/v1/account_pb';
-import { authTransport } from '@/lib/transport';
+import { AccountService } from '../../../gen/account/v1/account_pb';
+import { authTransport } from '../../../lib/transport';
 import { useQuery } from '@tanstack/vue-query';
 import { createClient } from '@connectrpc/connect'
 import XoBoard from "./XoBoard.vue";
-import EndGame from "@/components/game/EndGame.vue";
-import PlayersBoard from '@/components/game/PlayersBoard.vue';
+import EndGame from "../../../components/game/EndGame.vue";
+import type { RoomSocket } from "../../../lib/RoomWs";
+import { RoomMessageSchema } from "../../../gen/room/v1/room_pb";
+import PlayersBoard from "../PlayersBoard.vue";
 
 const { isPending: meIsPending, error: meErr, data: meData } = useQuery({
   queryKey: ['me'],
@@ -24,8 +24,8 @@ const { isPending: meIsPending, error: meErr, data: meData } = useQuery({
 })
 
 const props = defineProps({
-  sessionSocket: {
-    type: Object as () => SessionSocket,
+  roomSocket: {
+    type: Object as () => RoomSocket,
     required: true
   }
 })
@@ -39,7 +39,7 @@ const XoBoardRef = useTemplateRef('xo-board-ref')
 let boardSize = ref(3)
 
 const { toast } = useToast()
-props.sessionSocket.HandleGameMessage = (gameMessage) => {
+props.roomSocket.HandleGameMessage = (gameMessage) => {
   console.log(gameMessage)
   if (gameMessage.game.case != "xo") {
     throw Error("non xo message ended up in xo")
@@ -63,6 +63,7 @@ props.sessionSocket.HandleGameMessage = (gameMessage) => {
       EndGameData.value = payload.value
   }
 }
+
 const handleMoveAction = (moveData: XoBuff.Move) => {
   XoBoardRef.value?.DoMove(moveData.cellIndex, moveData.cellValue)
   isMyTurn.value = true
@@ -82,7 +83,7 @@ const handlePlayResponse = (playResponse: XoBuff.PlayResponse) => {
 
 
 function sendClick(i: number) {
-  const newSessionMsg = create(SessionMessageSchema, {
+  const newRoomMsg = create(RoomMessageSchema, {
     content: {
       case: "game",
       value: {
@@ -93,8 +94,8 @@ function sendClick(i: number) {
       }
     }
   })
-  const bytes = toBinary(SessionMessageSchema, newSessionMsg)
-  props.sessionSocket.send(bytes)
+  const bytes = toBinary(RoomMessageSchema, newRoomMsg)
+  props.roomSocket.send(bytes)
 }
 
 </script>
@@ -103,7 +104,7 @@ function sendClick(i: number) {
 
   <div class="flex w-full items-center justify-center">
 
-    <PlayersBoard :session-socket="sessionSocket" />
+    <PlayersBoard :room-socket="props.roomSocket" />
     <XoBoard @cell-selected="sendClick" :board-size="boardSize" ref="xo-board-ref" />
 
     <EndGame v-if="EndGameData" :loser="EndGameData.loser" :winner="EndGameData.winner" />

@@ -12,12 +12,12 @@ import (
 	"github.com/arian-nj/chigame/backend/api"
 	"github.com/arian-nj/chigame/backend/database"
 	"github.com/arian-nj/chigame/backend/db"
-	gamesessions "github.com/arian-nj/chigame/backend/game_sessions"
 	"github.com/arian-nj/chigame/backend/games/conn4"
 	"github.com/arian-nj/chigame/backend/games/games"
 	"github.com/arian-nj/chigame/backend/games/xo"
 	"github.com/arian-nj/chigame/backend/internals/config"
 	matchmaking "github.com/arian-nj/chigame/backend/match_making"
+	"github.com/arian-nj/chigame/backend/rooms"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -35,7 +35,7 @@ type Application struct {
 	Wg          *sync.WaitGroup
 	Queries     *database.Queries
 	MatchMaking *matchmaking.MatchMaking
-	AllSessions *gamesessions.AllSession
+	AllRooms    *rooms.AllRooms
 }
 
 func main() {
@@ -66,8 +66,8 @@ func main() {
 
 	app.Queries = database.New(conn)
 
-	app.AllSessions = gamesessions.NewAllSessions()
-	app.MatchMaking = matchmaking.NewMatchMaking(app.AllSessions, app.Queries)
+	app.AllRooms = rooms.NewAllRooms()
+	app.MatchMaking = matchmaking.NewMatchMaking(app.AllRooms, app.Queries)
 
 	parentCtx, pCancel := context.WithCancel(context.Background())
 	defer pCancel()
@@ -75,7 +75,7 @@ func main() {
 	go app.MakeMatches()
 
 	app.logger.Printf("Serving...")
-	apiApp := api.NewApiApplication(app.config, app.Queries, app.logger, app.AllSessions, app.MatchMaking)
+	apiApp := api.NewApiApplication(app.config, app.Queries, app.logger, app.AllRooms, app.MatchMaking)
 	apiApp.RunApi(parentCtx, app.Wg)
 
 }
@@ -103,43 +103,43 @@ func (app *Application) MakeMatches() {
 }
 
 func (app *Application) createRandomGame(gameType games.GameType, ticketOne *matchmaking.Ticket, ticketTwo *matchmaking.Ticket) {
-	newSessionRow, err := app.Queries.CreateSession(context.Background(), string(gamesessions.RandomSession))
+	newRoomRow, err := app.Queries.CreateRoom(context.Background(), string(rooms.RandomRoom))
 	if err != nil {
 		slog.Error("can't create new random game", "error", err)
 	}
-	newGameSession := gamesessions.NewGameSession(app.Queries, newSessionRow.ID, app.AllSessions)
-	// newGameSession.Subscribe(gamesessions.NewSessionTelegramBotListener(ticketOne.UserID, ticketOne.TgID, app.Bot, ""))
-	// newGameSession.Subscribe(gamesessions.NewSessionTelegramBotListener(ticketTwo.UserID, ticketTwo.TgID, app.Bot, ""))
+	newGameRoom := rooms.NewGameRoom(app.Queries, newRoomRow.ID, app.AllRooms)
+	// newGameRoom.Subscribe(rooms.NewRoomTelegramBotListener(ticketOne.UserID, ticketOne.TgID, app.Bot, ""))
+	// newGameRoom.Subscribe(rooms.NewRoomTelegramBotListener(ticketTwo.UserID, ticketTwo.TgID, app.Bot, ""))
 
 	var newGame games.Game
 
 	switch gameType {
 	case games.XOGameType3X3, games.XOGameType5X5:
-		newXoGame := xo.NewXOGame(newGameSession.SessionCtx, games.XOGameType3X3, app.Queries)
+		newXoGame := xo.NewXOGame(newGameRoom.RoomCtx, games.XOGameType3X3, app.Queries)
 		newGame = newXoGame
 	case games.Conn4GameType:
-		newConn4Game := conn4.NewConn4State(newGameSession.SessionCtx, games.Conn4GameType, app.Queries)
+		newConn4Game := conn4.NewConn4State(newGameRoom.RoomCtx, games.Conn4GameType, app.Queries)
 		newGame = newConn4Game
 
 	default:
 		slog.Error("not possible random game")
 		return
 	}
-	newGameSession.GameState = newGame
-	newGameSession.RunBgMonitor()
+	newGameRoom.GameState = newGame
+	newGameRoom.RunBgMonitor()
 
-	playerOne := gamesessions.NewSessionPlayer(ticketOne.UserID, ticketOne.Name)
-	playerTwo := gamesessions.NewSessionPlayer(ticketTwo.UserID, ticketTwo.Name)
+	playerOne := rooms.NewRoomPlayer(ticketOne.UserID, ticketOne.Name)
+	playerTwo := rooms.NewRoomPlayer(ticketTwo.UserID, ticketTwo.Name)
 
-	newGameSession.AddPlayerToSession(playerOne)
-	newGameSession.AddPlayerToSession(playerTwo)
+	newGameRoom.AddPlayerToRoom(playerOne)
+	newGameRoom.AddPlayerToRoom(playerTwo)
 
-	app.AllSessions.Add(strconv.Itoa(playerOne.ID), newGameSession)
-	app.AllSessions.Add(strconv.Itoa(playerTwo.ID), newGameSession)
+	app.AllRooms.Add(strconv.Itoa(playerOne.ID), newGameRoom)
+	app.AllRooms.Add(strconv.Itoa(playerTwo.ID), newGameRoom)
 
 	for _, ticket := range []*matchmaking.Ticket{ticketOne, ticketTwo} {
-		ticket.MatchFoundChan <- newGameSession
+		ticket.MatchFoundChan <- newGameRoom
 	}
 
-	newGameSession.StartGame()
+	newGameRoom.StartGame()
 }

@@ -4,13 +4,13 @@ import (
 	"log/slog"
 
 	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
-	sessionv1 "github.com/arian-nj/chigame/backend/gen/session/v1"
+	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
 	xo_gamev1 "github.com/arian-nj/chigame/backend/gen/xo_game/v1"
 	"github.com/arian-nj/chigame/backend/internals/commander"
 )
 
 // FIXME: make it map handler with auto Converting inputs
-func (game *XOState) SocketRouter(newGameMsg *sessionv1.GameMessage, playerId int) {
+func (game *XOState) SocketRouter(newGameMsg *roomv1.GameMessage, playerId int) {
 
 	newXoMessage := newGameMsg.GetXo()
 	switch newXoMessage.Payload.(type) {
@@ -37,10 +37,10 @@ func (sl *SocketListener) Update(command commander.Command) {
 }
 
 func sendInvalidResponse(player *XoPlayer, errMsg string, cellIndex int32, cellType Cell) error {
-	newSessionMsg := sessionv1.SessionMessage{
-		Content: &sessionv1.SessionMessage_Game{
-			Game: &sessionv1.GameMessage{
-				Game: &sessionv1.GameMessage_Xo{
+	newRoomMsg := roomv1.RoomMessage{
+		Content: &roomv1.RoomMessage_Game{
+			Game: &roomv1.GameMessage{
+				Game: &roomv1.GameMessage_Xo{
 					Xo: &xo_gamev1.XoGameMessage{
 						Payload: &xo_gamev1.XoGameMessage_PlayResponse{
 							PlayResponse: &xo_gamev1.PlayResponse{
@@ -58,7 +58,7 @@ func sendInvalidResponse(player *XoPlayer, errMsg string, cellIndex int32, cellT
 		},
 	}
 
-	return player.Socket.SendMessage(&newSessionMsg)
+	return player.Socket.SendMessage(&newRoomMsg)
 }
 
 func PlayHandlerSocket(game *XOState, playInput *xo_gamev1.Play, playerID int) {
@@ -93,10 +93,10 @@ func PlayHandlerSocket(game *XOState, playInput *xo_gamev1.Play, playerID int) {
 func (sl *SocketListener) SocketBrodcastNewMove(game *XOState, moveIndex int, cellType Cell, playerID int) {
 
 	if sl.Player.ID == playerID {
-		newSessionMessage := sessionv1.SessionMessage{
-			Content: &sessionv1.SessionMessage_Game{
-				Game: &sessionv1.GameMessage{
-					Game: &sessionv1.GameMessage_Xo{
+		newRoomMessage := roomv1.RoomMessage{
+			Content: &roomv1.RoomMessage_Game{
+				Game: &roomv1.GameMessage{
+					Game: &roomv1.GameMessage_Xo{
 						Xo: &xo_gamev1.XoGameMessage{
 							Payload: &xo_gamev1.XoGameMessage_PlayResponse{
 								PlayResponse: &xo_gamev1.PlayResponse{
@@ -113,15 +113,15 @@ func (sl *SocketListener) SocketBrodcastNewMove(game *XOState, moveIndex int, ce
 			},
 		}
 
-		err := sl.Player.Socket.SendMessage(&newSessionMessage)
+		err := sl.Player.Socket.SendMessage(&newRoomMessage)
 		if err != nil {
 			slog.Error("can't send play response", "err", err)
 		}
 	} else {
-		newSessionMessage := sessionv1.SessionMessage{
-			Content: &sessionv1.SessionMessage_Game{
-				Game: &sessionv1.GameMessage{
-					Game: &sessionv1.GameMessage_Xo{
+		newRoomMessage := roomv1.RoomMessage{
+			Content: &roomv1.RoomMessage_Game{
+				Game: &roomv1.GameMessage{
+					Game: &roomv1.GameMessage_Xo{
 						Xo: &xo_gamev1.XoGameMessage{
 							Payload: &xo_gamev1.XoGameMessage_Move{
 								Move: &xo_gamev1.Move{
@@ -134,7 +134,7 @@ func (sl *SocketListener) SocketBrodcastNewMove(game *XOState, moveIndex int, ce
 				},
 			},
 		}
-		err := sl.Player.Socket.SendMessage(&newSessionMessage)
+		err := sl.Player.Socket.SendMessage(&newRoomMessage)
 		if err != nil {
 			slog.Error("can't send new move", "err", err)
 		}
@@ -142,18 +142,18 @@ func (sl *SocketListener) SocketBrodcastNewMove(game *XOState, moveIndex int, ce
 }
 
 func (sl *SocketListener) SocketBrodcastSyncTime(gameState *XOState) {
-	allTimeMessages := []*sessionv1.SessionMessage{}
+	allTimeMessages := []*roomv1.RoomMessage{}
 	for _, player := range gameState.Players {
-		newSessionMessage := sessionv1.SessionMessage{
-			Content: &sessionv1.SessionMessage_SyncTime{
-				SyncTime: &sessionv1.Time{
+		newRoomMessage := roomv1.RoomMessage{
+			Content: &roomv1.RoomMessage_SyncTime{
+				SyncTime: &roomv1.Time{
 					PlayerId:  int64(player.ID),
 					SpentTime: int32(player.Timer.SpentInt()),
 					TotalTime: int32(MAX_ALLOWED_TIME_INT),
 				},
 			},
 		}
-		allTimeMessages = append(allTimeMessages, &newSessionMessage)
+		allTimeMessages = append(allTimeMessages, &newRoomMessage)
 	}
 
 	player := gameState.findByID(sl.Player.ID)
@@ -177,9 +177,9 @@ func (sl *SocketListener) SendEndGameSocket(endGameCommand *EndGameCommand) {
 
 	}
 
-	newSessionMessage := sessionv1.SessionMessage{
-		Content: &sessionv1.SessionMessage_Game{
-			Game: &sessionv1.GameMessage{Game: &sessionv1.GameMessage_Xo{Xo: &xo_gamev1.XoGameMessage{
+	newRoomMessage := roomv1.RoomMessage{
+		Content: &roomv1.RoomMessage_Game{
+			Game: &roomv1.GameMessage{Game: &roomv1.GameMessage_Xo{Xo: &xo_gamev1.XoGameMessage{
 				Payload: &xo_gamev1.XoGameMessage_EndGame{
 					EndGame: &xo_gamev1.EndGame{
 						Reason: reason,
@@ -196,7 +196,7 @@ func (sl *SocketListener) SendEndGameSocket(endGameCommand *EndGameCommand) {
 			}}},
 		},
 	}
-	err := sl.Player.Socket.SendMessage(&newSessionMessage)
+	err := sl.Player.Socket.SendMessage(&newRoomMessage)
 	if err != nil {
 		slog.Error("error sending game state")
 	}
@@ -208,10 +208,10 @@ func SocketSendGameState(gameState *XOState, player *XoPlayer) {
 	for _, cell := range gameState.Board.Board {
 		cells = append(cells, int32(cell))
 	}
-	newSessionMessage := sessionv1.SessionMessage{
-		Content: &sessionv1.SessionMessage_Game{
-			Game: &sessionv1.GameMessage{
-				Game: &sessionv1.GameMessage_Xo{
+	newRoomMessage := roomv1.RoomMessage{
+		Content: &roomv1.RoomMessage_Game{
+			Game: &roomv1.GameMessage{
+				Game: &roomv1.GameMessage_Xo{
 					Xo: &xo_gamev1.XoGameMessage{
 						Payload: &xo_gamev1.XoGameMessage_GameState{
 							GameState: &xo_gamev1.GameState{
@@ -226,7 +226,7 @@ func SocketSendGameState(gameState *XOState, player *XoPlayer) {
 		},
 	}
 
-	err := player.Socket.SendMessage(&newSessionMessage)
+	err := player.Socket.SendMessage(&newRoomMessage)
 	if err != nil {
 		slog.Error("error sending game state")
 	}

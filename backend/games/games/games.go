@@ -1,7 +1,7 @@
 package games
 
 import (
-	sessionv1 "github.com/arian-nj/chigame/backend/gen/session/v1"
+	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
 	"github.com/arian-nj/chigame/backend/internals/socket"
 	"gopkg.in/telebot.v4"
 )
@@ -9,7 +9,7 @@ import (
 type Game interface {
 	AddPlayer(id int, name string, socket *socket.Socket)
 
-	SocketRouter(session *sessionv1.GameMessage, playerId int)
+	SocketRouter(room *roomv1.GameMessage, playerId int)
 	CallBackRouter(c telebot.Context) error
 
 	StartGame() error

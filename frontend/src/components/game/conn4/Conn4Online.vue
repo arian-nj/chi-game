@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import Conn4Board from "@/components/game/conn4/Conn4Board.vue"
-import type { SessionSocket } from "@/lib/SessionWs";
+import Conn4Board from "../../../components/game/conn4/Conn4Board.vue"
 import { ref, useTemplateRef } from "vue";
 
-import * as Conn4Buff from "@/gen/conn4_game/v1/conn4_pb";
-import { SessionMessageSchema } from "@/gen/session/v1/session_pb";
+import * as Conn4Buff from "../../../gen/conn4_game/v1/conn4_pb";
 import { create, toBinary } from "@bufbuild/protobuf";
-import { useToast } from "@/components/Toast.vue";
+import { useToast } from "../../../components/Toast.vue";
 import EndGame from "../EndGame.vue";
 import PlayersBoard from "../PlayersBoard.vue";
+import { RoomMessageSchema } from "../../../gen/room/v1/room_pb";
+import type { RoomSocket } from "../../../lib/RoomWs";
 
 
 const props = defineProps({
-  sessionSocket: {
-    type: Object as () => SessionSocket,
+  roomSocket: {
+    type: Object as () => RoomSocket,
     required: true
   }
 })
@@ -23,7 +23,7 @@ const EndGameData = ref<Conn4Buff.EndGame>()
 
 const { toast } = useToast()
 
-props.sessionSocket.HandleGameMessage = (gameMessage) => {
+props.roomSocket.HandleGameMessage = (gameMessage) => {
   console.log(gameMessage)
   if (gameMessage.game.case != "conn4") {
     throw Error("non xo message ended up in xo")
@@ -53,7 +53,7 @@ const handleMoveAction = (moveData: Conn4Buff.Move) => {
 
 function sendClick(i: number) {
   console.log(i, " clicked")
-  const newSessionMsg = create(SessionMessageSchema, {
+  const newRoomMsg = create(RoomMessageSchema, {
     content: {
       case: "game",
       value: {
@@ -64,8 +64,8 @@ function sendClick(i: number) {
       }
     }
   })
-  const bytes = toBinary(SessionMessageSchema, newSessionMsg)
-  props.sessionSocket.send(bytes)
+  const bytes = toBinary(RoomMessageSchema, newRoomMsg)
+  props.roomSocket.send(bytes)
 }
 
 const handlePlayResponse = (playResponse: Conn4Buff.PlayResponse) => {
@@ -82,7 +82,7 @@ const handlePlayResponse = (playResponse: Conn4Buff.PlayResponse) => {
 </script>
 
 <template>
-  <PlayersBoard :session-socket="sessionSocket" />
+  <PlayersBoard :roomSocket="roomSocket" />
   <Conn4Board ref="conn4-board-ref" @col-selected="sendClick" />
   <EndGame v-if="EndGameData" :loser="EndGameData.loser" :winner="EndGameData.winner" />
 </template>

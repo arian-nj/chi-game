@@ -63,18 +63,18 @@ type CustomClaim struct {
 	jwt.RegisteredClaims
 }
 
-func createRegisteredUserToken(userId int) *jwt.Token {
-	claims := CustomClaim{
-		RegisteredClaims: jwt.RegisteredClaims{
-			Subject:   strconv.Itoa(userId),
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(JWTExpiryDuration)),
-			NotBefore: jwt.NewNumericDate(time.Now()),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-		},
-		IsGuest: false,
-	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-}
+// func createRegisteredUserToken(userId int) *jwt.Token {
+// 	claims := CustomClaim{
+// 		RegisteredClaims: jwt.RegisteredClaims{
+// 			Subject:   strconv.Itoa(userId),
+// 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(JWTExpiryDuration)),
+// 			NotBefore: jwt.NewNumericDate(time.Now()),
+// 			IssuedAt:  jwt.NewNumericDate(time.Now()),
+// 		},
+// 		IsGuest: false,
+// 	}
+// 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+// }
 
 func createGuestToken(userId int, deviceID string) *jwt.Token {
 	claims := CustomClaim{

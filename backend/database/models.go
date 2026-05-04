@@ -26,31 +26,31 @@ type PersonAuthMethod struct {
 	CreatedAt pgtype.Timestamp
 }
 
-type Session struct {
+type Room struct {
 	ID          int
 	Createdmode string
 	CreatedAt   pgtype.Timestamp
 }
 
-type SessionGame struct {
+type RoomGame struct {
 	ID        int
-	SessionID int
+	RoomID    int
 	GameType  string
 	StartedAt pgtype.Timestamp
 	EndedAt   pgtype.Timestamp
 	Status    pgtype.Text
 }
 
-type SessionMessage struct {
-	ID        int
-	SessionID int
-	PlayerID  int
-	Message   string
-	SentAt    pgtype.Timestamp
+type RoomMessage struct {
+	ID       int
+	RoomID   int
+	PlayerID int
+	Message  string
+	SentAt   pgtype.Timestamp
 }
 
-type SessionPlayer struct {
-	ID        int
-	SessionID int
-	PersonID  int
+type RoomPlayer struct {
+	ID       int
+	RoomID   int
+	PersonID int
 }

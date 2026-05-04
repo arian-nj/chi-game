@@ -45,12 +45,12 @@ type Conn4State struct { // of GameInterface type
 }
 
 func NewConn4State(
-	sessionCtx context.Context, gameType games.GameType,
+	roomCtx context.Context, gameType games.GameType,
 	queries *database.Queries) *Conn4State {
 
 	randIndex := random.GenerateRandomNumber(2)
 
-	ctx, cancel := context.WithCancel(sessionCtx)
+	ctx, cancel := context.WithCancel(roomCtx)
 
 	state := &Conn4State{
 		CurrentPlayerIndex: randIndex,

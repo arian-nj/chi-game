@@ -8,7 +8,7 @@ import (
 	"github.com/arian-nj/chigame/backend/gen/account/v1/accountv1connect"
 	"github.com/arian-nj/chigame/backend/gen/auth/v1/authv1connect"
 	"github.com/arian-nj/chigame/backend/gen/healthcheck/v1/healthcheckv1connect"
-	"github.com/arian-nj/chigame/backend/gen/session/v1/sessionv1connect"
+	"github.com/arian-nj/chigame/backend/gen/room/v1/roomv1connect"
 	"github.com/rs/cors"
 )
 
@@ -32,8 +32,8 @@ func (app *ApiApplication) createRouter() http.Handler {
 	// 	})
 	// }
 
-	sessionPath, sessionHandler := sessionv1connect.NewSessionServiceHandler(app)
-	mux.Handle(sessionPath, sessionHandler)
+	roomPath, roomHandler := roomv1connect.NewRoomServiceHandler(app)
+	mux.Handle(roomPath, roomHandler)
 
 	// if app.Config.ReleaseMode == config.Develop {
 	// 	dummyAuthPath, dummyAuthHandler := dummy_authv1connect.NewDummyAuthServiceHandler(app)
@@ -49,7 +49,7 @@ func (app *ApiApplication) createRouter() http.Handler {
 	authPath, authHandler := authv1connect.NewAuthServiceHandler(app)
 	mux.Handle(authPath, authHandler)
 
-	mux.Handle("/api/session/", app.AuthenticateQuery(http.HandlerFunc(app.sessionWebsocket)))
+	mux.Handle("/api/room/", app.AuthenticateQuery(http.HandlerFunc(app.roomWebsocket)))
 	mux.Handle("/api/match_making/ticket/", app.AuthenticateQuery(http.HandlerFunc(app.makeMatchMakingTicketWS)))
 
 	return withCORS(mux)
@@ -82,7 +82,3 @@ func withCORS(next http.Handler) http.Handler {
 	return c.Handler(next)
 
 }
-
-// cannot use app (variable of type *ApiApplication) as sessionv1connect.SessionServiceHandler value in argument to sessionv1connect.NewSessionServiceHandler: *ApiApplication does not implement sessionv1connect.SessionServiceHandler (wrong type for method GetChatHistory)
-// 		have GetChatHistory(context.Context, *"connectrpc.com/connect".Request[sessionv1.GetChatHistoryRequest]) (*"connectrpc.com/connect".Response[sessionv1.GetChatHistoryResponse], error)
-// 		want GetChatHistory(context.Context, *"github.com/bufbuild/connect-go".Request[sessionv1.GetChatHistoryRequest]) (*"github.com/bufbuild/connect-go".Response[sessionv1.GetChatHistoryResponse], error)

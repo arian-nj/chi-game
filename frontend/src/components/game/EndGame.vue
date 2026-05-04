@@ -5,7 +5,7 @@ import { onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from '../Toast.vue';
 import { createClient } from '@connectrpc/connect';
-import { SessionService } from '../../gen/session/v1/session_pb';
+import { RoomService } from '../../gen/room/v1/room_pb';
 import { authTransport } from '../../lib/transport';
 import { useQueryClient } from '@tanstack/vue-query';
 
@@ -47,17 +47,17 @@ onMounted(() => {
 })
 const router = useRouter()
 function goToHome() {
-  handleExistSession()
+  handleExistRoom()
   router.push('/')
 }
-const remainedSessionTime = ref(30)
+const remainedRoomTime = ref(30)
 
 let interval: number | undefined
 
 onMounted(() => {
   interval = setInterval(() => {
-    if (remainedSessionTime.value > 0) {
-      remainedSessionTime.value--;
+    if (remainedRoomTime.value > 0) {
+      remainedRoomTime.value--;
     } else {
       clearInterval(interval)
     }
@@ -68,16 +68,16 @@ onBeforeUnmount(() => {
   clearInterval(interval)
 })
 
-async function handleExistSession() {
-  const client = createClient(SessionService,authTransport)
-  const data = await client.closeSession({})
+async function handleExistRoom() {
+  const client = createClient(RoomService,authTransport)
+  const data = await client.closeRoom({})
   const { toast } = useToast()
   if (!data.isOk) {
     toast.info("یه مشکلی پیش اومده")
   }else{
     toast.success("حله خارج شدی")
     const queryClient = useQueryClient()
-    queryClient.invalidateQueries({queryKey:["hasSession"]})
+    queryClient.invalidateQueries({queryKey:["hasRoom"]})
   }
 }
 
@@ -94,7 +94,7 @@ async function handleExistSession() {
   ">
     <div v-if="props.winner" class="flex flex-col items-center">
       <h1
-        class="text-5xl font-black bg-gradient-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent drop-shadow-lg">
+        class="text-5xl font-black bg-linear-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent drop-shadow-lg">
         🏆 {{ props.winner.name }}
       </h1>
     </div>
@@ -106,8 +106,8 @@ async function handleExistSession() {
     </div>
 
     <hr class="w-1/2 border-slate-600 my-2" />
-    <div v-if="remainedSessionTime != 0">
-      <h1 class="text-4xl font-bold text-red-200">{{ remainedSessionTime }} </h1>
+    <div v-if="remainedRoomTime != 0">
+      <h1 class="text-4xl font-bold text-red-200">{{ remainedRoomTime }} </h1>
       <h1 class="text-lg font-bold text-red-200" dir="auto">ثانیه دیگه چت بسته میشه</h1>
     </div>
     <div v-else>

@@ -272,11 +272,11 @@ const iconClasses = computed(() => (type: ToastType) => {
           </svg>
         </div>
 
-        <div class="text-base font-medium flex-grow mr-2">{{ toast.message }}</div>
+        <div class="text-base font-medium grow mr-2">{{ toast.message }}</div>
 
         <!-- Close Button -->
         <button type="button"
-          class="ml-auto flex-shrink-0 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white inline-flex items-center justify-center h-9 w-9 text-gray-400 hover:text-white hover:bg-gray-700"
+          class="ml-auto shrink-0 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white inline-flex items-center justify-center h-9 w-9 text-gray-400 hover:text-white hover:bg-gray-700"
           :aria-label="`Close toast for notification: ${toast.message}`" @click="remove(toast.id)">
           <span class="sr-only">Close</span>
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">

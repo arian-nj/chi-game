@@ -53,7 +53,7 @@ type XOState struct { // of GameInterface type
 }
 
 func NewXOGame(
-	sessionCtx context.Context, gameType games.GameType,
+	roomCtx context.Context, gameType games.GameType,
 	queries *database.Queries) *XOState {
 
 	maxBoardSize := 3
@@ -64,7 +64,7 @@ func NewXOGame(
 	}
 	randIndex := random.GenerateRandomNumber(2)
 
-	ctx, cancel := context.WithCancel(sessionCtx)
+	ctx, cancel := context.WithCancel(roomCtx)
 
 	state := &XOState{
 		CurrentPlayerIndex: randIndex,

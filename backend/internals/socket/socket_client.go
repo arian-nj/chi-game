@@ -35,7 +35,7 @@ func NewSocketClient(conn *websocket.Conn) *Socket {
 	}
 }
 
-func (sc *Socket) Listen(r *http.Request) {
+func (sc *Socket) ListenInBackground(r *http.Request) {
 	utils.RunBackgroundTask(func() {
 		sc.listen(r)
 	})

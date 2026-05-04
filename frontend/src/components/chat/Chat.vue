@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ChatInput from '../../components/chat/ChatInput.vue';
-import { SessionService, type ChatMessage } from '../../gen/session/v1/session_pb';
-import type { SessionSocket } from '../../lib/SessionWs';
+import { RoomService, type ChatMessage } from '../../gen/room/v1/room_pb';
+import type { RoomSocket } from '../../lib/RoomWs';
 import { Message } from '../../types/Message';
 import { useTemplateRef, watch } from 'vue';
 import { onMounted, onUnmounted, ref } from 'vue';
@@ -25,7 +25,7 @@ const { isPending: meIsPending, error: meErr, data: meData } = useQuery({
 const { isPending: chatHistoryIsPending, error: chatHistoryErr, data: chatHistoryData } = useQuery({
   queryKey: ['chat-history'],
   queryFn: async () => {
-    const client = createClient(SessionService, authTransport)
+    const client = createClient(RoomService, authTransport)
     const data = await client.getChatHistory({})
     return data
   },
@@ -55,8 +55,8 @@ watch(showChat, (isNowVisible) => {
 })
 
 const props = defineProps({
-  sessionSocket: {
-    type: Object as () => SessionSocket,
+  roomSocket: {
+    type: Object as () => RoomSocket,
     required: true,
   }
 })
@@ -65,7 +65,7 @@ function sendMessage(msgText: string) {
   if (msgText == "") {
     return
   }
-  props.sessionSocket.SendChatReqMessage(msgText)
+  props.roomSocket.SendChatReqMessage(msgText)
   if (meData) {
     allChatMessages.value.push(new Message(msgText, meData.value!.account!.id))
   }
@@ -102,7 +102,7 @@ defineExpose({
 
     <div class="flex flex-col w-full h-full justify-end font-[Rubik]">
       <div class="flex flex-col w-full h-full overflow-hidden">
-        <div :class="[`flex flex-col gap-3 px-4 py-2 overflow-y-auto flex-grow transition-all
+        <div :class="[`flex flex-col gap-3 px-4 py-2 overflow-y-auto grow transition-all
 duration-1000 rounded-xl`,
           showChat ? 'opacity-100 bg-gray-800/50' : 'opacity-0']">
           <ChatBubble v-for="msg in allChatMessages" :text="msg.text" :is-me="meData!.account?.id ==

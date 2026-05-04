@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 	"slices"
+	"strconv"
 	"time"
 
 	"github.com/arian-nj/chigame/backend/games/games"
@@ -51,8 +52,9 @@ func (app *ApiApplication) makeMatchMakingTicketWS(w http.ResponseWriter, r *htt
 		return
 	}
 
-	if app.AllSessions.IsSessionEmpty(int(PersonRow.ID)) == false {
-		sendFinderSocketError(socketClient, finderv1.FinderErrorType_FINDER_ERROR_TYPE_HAS_SESSION)
+	_, isFound := app.AllRooms.Get(strconv.Itoa(int(PersonRow.ID)))
+	if isFound {
+		sendFinderSocketError(socketClient, finderv1.FinderErrorType_FINDER_ERROR_TYPE_HAS_ROOM)
 		slog.Error("user already have ticket can't make another one")
 		return
 	}
@@ -65,7 +67,7 @@ func (app *ApiApplication) makeMatchMakingTicketWS(w http.ResponseWriter, r *htt
 	}
 
 	// Every thing is ok
-	socketClient.Listen(r)
+	socketClient.ListenInBackground(r)
 
 	NewTicket := matchmaking.NewTicket(PersonRow.Username, int(PersonRow.ID), gameType)
 	app.MatchMaking.PushTicket(NewTicket)

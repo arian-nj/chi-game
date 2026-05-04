@@ -16,8 +16,8 @@ import { onMounted } from 'vue'
 DotLottieWeb.setWasmUrl(wasmUrl)
 
 onMounted(() => {
-  // Prefetch Session page component
-  // import('../views/SessionView.vue')
+  // Prefetch Room page component
+  import('../views/RoomView.vue')
 })
 const router = useRouter()
 const route = useRoute()
@@ -48,15 +48,15 @@ finderSocket.onmessage = async (msg) => {
   console.log(newFinderEvent)
   if (newFinderEvent.type == FinderType.FOUND) {
     toast.success("Start")
-    router.push("/session")
+    router.push("/room")
   } else if (newFinderEvent.type == FinderType.TIMEOUT) {
     toast.info("sorry time out")
     router.push("/")
   } else if (newFinderEvent?.errType) {
     if (newFinderEvent.errType == FinderErrorType.AUTH) {
       toast.error("invalid user")
-    } else if (newFinderEvent.errType == FinderErrorType.HAS_SESSION) {
-      toast.error("already have session")
+    } else if (newFinderEvent.errType == FinderErrorType.HAS_ROOM) {
+      toast.error("already have room")
     } else if (newFinderEvent.errType == FinderErrorType.HAS_TICKET) {
       toast.error("already have ticket")
     } else if (newFinderEvent.errType == FinderErrorType.INVALID_GAME) {

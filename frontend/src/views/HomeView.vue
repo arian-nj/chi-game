@@ -9,7 +9,7 @@ import wasmUrl from "@lottiefiles/dotlottie-web/dotlottie-player.wasm?url";
 
 // import { switchInlineQuery } from '@telegram-apps/sdk';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
-import { SessionService } from '../gen/session/v1/session_pb';
+import { RoomService } from '../gen/room/v1/room_pb';
 import MeComponent from '../components/MeComponent.vue';
 import GameSelectorBtn from '../components/home/GameSelectorBtn.vue';
 import { authTransport } from '../lib/transport';
@@ -59,15 +59,15 @@ function onPlayFriendsClick() {
 let coolDownTime = 1_000
 const maxCoolDownTime = 32_000
 
-const { data: hasSessionData } = useQuery({
-  queryKey: ['hasSession'],
+const { data: hasRoomData } = useQuery({
+  queryKey: ['hasRoom'],
   queryFn: async () => {
-    const client = createClient(SessionService, authTransport)
-    const data = await client.hasSession({})
+    const client = createClient(RoomService, authTransport)
+    const data = await client.hasRoom({})
     return data
   },
   refetchInterval: (query) => {
-    const hasSes = query.state.data?.hasSession
+    const hasSes = query.state.data?.hasRoom
     if (hasSes) {
       if (coolDownTime * 2 <= maxCoolDownTime){
         coolDownTime *= 2
@@ -80,31 +80,31 @@ const { data: hasSessionData } = useQuery({
 })
 
 
-const hasSession = computed(() => {
-  if (hasSessionData.value && hasSessionData.value.hasSession) {
-    return hasSessionData.value.hasSession
+const hasRoom = computed(() => {
+  if (hasRoomData.value && hasRoomData.value.hasRoom) {
+    return hasRoomData.value.hasRoom
   }
   return false
 })
 
 function handlePlayClick() {
-  if (hasSession.value) {
-    router.push(`/session`)
+  if (hasRoom.value) {
+    router.push(`/room`)
     return
   }
   router.push(`/finder?game=${selectedGame.value}`)
 }
 
-async function handleExistSession() {
-  const client = createClient(SessionService,authTransport)
-  const data = await client.closeSession({})
+async function handleExistRoom() {
+  const client = createClient(RoomService,authTransport)
+  const data = await client.closeRoom({})
   const { toast } = useToast()
   if (!data.isOk) {
     toast.info("یه مشکلی پیش اومده")
   }else{
     toast.success("حله خارج شدی")
     const queryClient = useQueryClient()
-    queryClient.invalidateQueries({queryKey:["hasSession"]})
+    queryClient.invalidateQueries({queryKey:["hasRoom"]})
   }
 }
 
@@ -138,7 +138,7 @@ async function handleExistSession() {
           🎮 بازی با دوستان
         </button>
         
-        <button v-if="hasSession" ref="exitBtnRef" type="button" :disabled="selectedGame == ''" @click="handleExistSession" :class="[
+        <button v-if="hasRoom" ref="exitBtnRef" type="button" :disabled="selectedGame == ''" @click="handleExistRoom" :class="[
           `w-1/3 py-6 text-3xl font-bold
               focus:outline-none ring-2 ring-gray-900
               transition-colors duration-400
@@ -159,7 +159,7 @@ async function handleExistSession() {
             ? 'bg-linear-to-r from-emerald-400 to-green-500 text-white hover:opacity-95 shadow-xl'
             : 'bg-gray-700 text-gray-400 cursor-not-allowed'
         ]">
-          {{ hasSession ?
+          {{ hasRoom ?
             "ادامه بازی"
             : "🚀 شروع بازی" }}
         </button>

@@ -13,7 +13,7 @@ const props = defineProps({
 
   <div :class="['flex items-end gap-2.5', props.isMe ? 'flex-row-reverse' : '']">
     <img :src="profilePic" class='w-10 h-10 rounded-full' alt="profile image" />
-    <div :class="['max-w-1/2 rounded-t-xl p-3 break-words', props.isMe ? 'bg-emerald-100 rounded-l-xl'
+    <div :class="['max-w-1/2 rounded-t-xl p-3 wrap-break-word', props.isMe ? 'bg-emerald-100 rounded-l-xl'
       : 'bg-gray-100 rounded-r-xl']">
       <p dir="auto">{{ props.text }}</p>
     </div>

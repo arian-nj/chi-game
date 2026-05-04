@@ -3,16 +3,16 @@ import { AccountService } from '../../gen/account/v1/account_pb';
 import { authTransport } from '../../lib/transport';
 import { useQuery } from '@tanstack/vue-query';
 import { createClient } from '@connectrpc/connect'
-import { SessionService, type Time } from '../../gen/session/v1/session_pb';
+import { RoomService, type Time } from '../../gen/room/v1/room_pb';
 import gsap from 'gsap'
 import { onMounted, useTemplateRef } from 'vue';
 
-import PlayerCard from '../../components/session/PlayerCard.vue';
-import type { SessionSocket } from '../../lib/SessionWs';
+import PlayerCard from '../../components/room/PlayerCard.vue';
+import type { RoomSocket } from '../../lib/RoomWs';
 
 const props = defineProps({
-  sessionSocket: {
-    type: Object as () => SessionSocket,
+  roomSocket: {
+    type: Object as () => RoomSocket,
     required: true
   }
 })
@@ -41,7 +41,7 @@ const handleTimeSync = (timeSync: Time) => {
     oppPlayerCardRef.value.spentTime = timeSync.spentTime
   }
 }
-props.sessionSocket.HandleGameTimeSyncMessage = handleTimeSync
+props.roomSocket.HandleGameTimeSyncMessage = handleTimeSync
 
 
 
@@ -55,10 +55,10 @@ const { isPending: meIsPending, error: meErr, data: meData } = useQuery({
 })
 
 const { isPending: oppIsPending, error: oppErr, data: oppData } = useQuery({
-  queryKey: ['session_opponent'],
+  queryKey: ['room_opponent'],
   queryFn: async () => {
-    const client = createClient(SessionService, authTransport)
-    const data = await client.getSessionOpponent({})
+    const client = createClient(RoomService, authTransport)
+    const data = await client.getRoomOpponent({})
     return data
   },
   staleTime: 0
@@ -92,7 +92,7 @@ onMounted(() => {
     <PlayerCard v-else-if="meData?.account" :account="meData?.account" :isActive="true" ref="me-card-ref"
       :is-me="true" />
 
-    <div class="flex-shrink-0 w-1.5 h-10 bg-slate-700/50 rounded-full">
+    <div class="shrink-0 w-1.5 h-10 bg-slate-700/50 rounded-full">
     </div>
 
     <span v-if="oppIsPending" class="flex-1 text-center text-gray-400 italic">Finding Opponent...</span>

@@ -11,10 +11,10 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/arian-nj/chigame/backend/database"
-	gamesessions "github.com/arian-nj/chigame/backend/game_sessions"
 	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
 	"github.com/arian-nj/chigame/backend/internals/config"
 	matchmaking "github.com/arian-nj/chigame/backend/match_making"
+	"github.com/arian-nj/chigame/backend/rooms"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -22,7 +22,7 @@ import (
 type ApiApplication struct {
 	Config      *config.Config
 	Queries     *database.Queries
-	AllSessions *gamesessions.AllSession
+	AllRooms    *rooms.AllRooms
 	MatchMaking *matchmaking.MatchMaking
 }
 
@@ -43,13 +43,13 @@ func (app *ApiApplication) GetMe(ctx context.Context, req *connect.Request[accou
 func NewApiApplication(config *config.Config,
 	queries *database.Queries,
 	logger *log.Logger,
-	AllSession *gamesessions.AllSession,
+	AllRoom *rooms.AllRooms,
 	matchMaking *matchmaking.MatchMaking,
 ) *ApiApplication {
 	return &ApiApplication{
 		Config:      config,
 		Queries:     queries,
-		AllSessions: AllSession,
+		AllRooms:    AllRoom,
 		MatchMaking: matchMaking,
 	}
 }
