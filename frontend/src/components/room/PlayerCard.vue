@@ -67,7 +67,7 @@ defineExpose({
     ]"></div>
 
     <div class="absolute inset-0 z-10 text-white
-      flex items-center justify-between px-4
+      flex flex-col items-center justify-between px-4
       drop-shadow-lg
       ">
       <p class="text-lg font-semibold tracking-wider uppercase">{{ name }}</p>

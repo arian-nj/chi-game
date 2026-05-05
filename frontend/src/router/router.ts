@@ -50,12 +50,24 @@ const router = createRouter({
     {
       path: '/finder',
       name: 'finder',
-      component: () => import('../views/FinderView.vue')
+      component: () => import('../views/FinderView.vue'),
+      meta: { showBottomNav: false} 
     },
     {
       path: '/room',
       name: 'room',
-      component: () => import('../views/RoomView.vue')
+      component: () => import('../views/RoomView.vue'),
+      meta: { showBottomNav: false} 
+    },
+    {
+      path: '/rooms',
+      name: 'rooms',
+      component: () => import('../views/RoomsView.vue')
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/ProfileView.vue')
     },
     // {
     //   path: '/card',

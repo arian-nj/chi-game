@@ -1,7 +1,7 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from "vue";
 
-import { CreateGame } from '@/components/game/card/cardboard';
+import { CreateGame } from '../../components/game/card/cardboard';
 
 const gameContainer = ref<HTMLDivElement | null>(null);
 let game: Phaser.Game | null = null;
@@ -29,4 +29,4 @@ onBeforeUnmount(() => {
   width: 800px;
   height: 600px;
 }
-</style>
+</style> -->

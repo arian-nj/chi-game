@@ -113,7 +113,7 @@ async function handleExistRoom() {
 <template>
   <main>
     <div
-      class="relative min-h-screen w-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white overflow-hidden">
+      class="relative min-h-full w-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white overflow-hidden">
       
         <div class="flex justify-center pt-12">
     <div class="bg-gray-900/60 p-6 rounded-2xl shadow-xl backdrop-blur-md border border-gray-700">

@@ -20,12 +20,20 @@
 [X] home page close room button
 [X] exit room button
 
-<!-- make backend great again -->
+# make backend great again
 [X] rename session to room
 
+# new era
+[X] tabs
+[ ] remove rooms timer
+[ ] person can have multiple rooms
+[ ] list active rooms
+[ ] rooms with multiple users
+[ ] chat in rooms
+[ ] games list in db
+
 [ ] play with friends
-    [ ] room code
-    [ ] invite link
+    [ ] room invite link
 
 [ ] add a per move time
 [ ] ai player
@@ -34,23 +42,25 @@
 
 [ ] right last updated (for removing inactive accounts)
 
+# Profile
+[ ] profile page
+[ ] change username (only authenticated users)
 
 [ ] add friends
 [ ] list friends
-[ ] profile page
 
 [ ] invite bonus
 
 # Games
 [ ] dots and boxes
-[ ] go game
 [ ] takhteh (Backgammon)
+[ ] snake and ladder
+[ ] Hokm
+[ ] go game
 [ ] Dominoes
 [ ] mench
-[ ] snake and ladder
 [ ] pool 8-ball
 [ ] Poker
-[ ] Hokm
 [ ] Sea Battle
 
 # not needed now
