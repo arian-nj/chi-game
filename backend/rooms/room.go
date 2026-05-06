@@ -3,7 +3,6 @@ package rooms
 import (
 	"context"
 	"log/slog"
-	"strconv"
 	"time"
 
 	"github.com/arian-nj/chigame/backend/database"
@@ -89,9 +88,9 @@ func NewRoom(Queries *database.Queries, roomId int, allRoom *AllRooms) *Room {
 		CancelRoom: cancel,
 		RoomCtx:    ctx,
 
-		Commander:     commander.NewCommander(),
-		allRooms:      allRoom,
-		ShutdownTimer: make(<-chan time.Time),
+		Commander: commander.NewCommander(),
+		allRooms:  allRoom,
+		// ShutdownTimer: make(<-chan time.Time),
 	}
 	return gs
 }
@@ -156,7 +155,7 @@ func (room *Room) EndGame() {
 	if room.Chat.IsOn == false {
 		return
 	}
-	room.ShutdownTimer = time.After(30 * time.Second)
+	// room.ShutdownTimer = time.After(30 * time.Second)
 
 }
 
@@ -175,21 +174,21 @@ func (room *Room) MonitorGameRoom() {
 				com := room.PopCommand()
 				room.ApplyCommand(com)
 			}
-		case <-room.ShutdownTimer:
-			room.CleanAndDisconnect()
-			return
+			// case <-room.ShutdownTimer:
+			// room.CleanAndDisconnect()
+			// return
 		}
 	}
 }
 
-func (room *Room) CleanAndDisconnect() {
-	room.allRooms.Mutex.Lock()
-	defer room.allRooms.Mutex.Unlock()
+// func (room *Room) CleanAndDisconnect() {
+// 	room.allRooms.Mutex.Lock()
+// 	defer room.allRooms.Mutex.Unlock()
 
-	for _, player := range room.Players {
-		delete(room.allRooms.Rooms, strconv.Itoa(player.ID))
-	}
-}
+// 	for _, player := range room.Players {
+// 		delete(room.allRooms.Rooms, strconv.Itoa(player.ID))
+// 	}
+// }
 
 func (room *Room) HandleCallback(c telebot.Context, queries *database.Queries, allRoom *AllRooms) error {
 	// callbackData := c.Callback().Data
