@@ -47,12 +47,19 @@ func (q *Queries) CountRooms(ctx context.Context) (int64, error) {
 }
 
 const createRoom = `-- name: CreateRoom :one
-INSERT INTO rooms (createdMode) VALUES ($1) RETURNING id, createdmode, created_at
+INSERT INTO rooms (createdMode) VALUES ($1) RETURNING id, name, rtype, created_by, createdmode, created_at
 `
 
 func (q *Queries) CreateRoom(ctx context.Context, createdmode string) (Room, error) {
 	row := q.db.QueryRow(ctx, createRoom, createdmode)
 	var i Room
-	err := row.Scan(&i.ID, &i.Createdmode, &i.CreatedAt)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Rtype,
+		&i.CreatedBy,
+		&i.Createdmode,
+		&i.CreatedAt,
+	)
 	return i, err
 }

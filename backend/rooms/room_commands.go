@@ -11,12 +11,12 @@ import (
 
 type MessageCommand struct {
 	Text     string
-	Sender   *RoomPlayer
-	Reciever *RoomPlayer
+	Sender   *RoomMember
+	Reciever *RoomMember
 	Room     *Room
 }
 
-func NewMessageCommand(room *Room, text string, senderPlayer *RoomPlayer, recPlayer *RoomPlayer) *MessageCommand {
+func NewMessageCommand(room *Room, text string, senderPlayer *RoomMember, recPlayer *RoomMember) *MessageCommand {
 	return &MessageCommand{
 		Text:     text,
 		Room:     room,
@@ -31,8 +31,8 @@ func (message *MessageCommand) Execute() {
 	utils.RunBackgroundTask(func() {
 		_, err := room.Queries.CreateRoomMessage(context.Background(), database.CreateRoomMessageParams{
 			RoomID:   room.ID,
-			PlayerID: message.Sender.ID,
-			Message:  message.Text,
+			PersonID: message.Sender.ID,
+			Content:  message.Text,
 		})
 		if err != nil {
 			slog.Error("error creating new message in db")
@@ -42,10 +42,10 @@ func (message *MessageCommand) Execute() {
 
 type WaitForPlayerCommand struct {
 	Room    *Room
-	Creator *RoomPlayer
+	Creator *RoomMember
 }
 
-func NewWaitForPlayerCommand(room *Room, creatorUser *RoomPlayer) *WaitForPlayerCommand {
+func NewWaitForPlayerCommand(room *Room, creatorUser *RoomMember) *WaitForPlayerCommand {
 	return &WaitForPlayerCommand{
 		Room:    room,
 		Creator: creatorUser,
@@ -57,11 +57,11 @@ func (wait *WaitForPlayerCommand) Execute() {
 
 type JoinRoomCommand struct {
 	Room         *Room
-	JoinedPlayer *RoomPlayer
+	JoinedPlayer *RoomMember
 	AllRoom      *AllRooms
 }
 
-func NewJoinRoomCommand(room *Room, JoinedUser *RoomPlayer, allRoom *AllRooms) *JoinRoomCommand {
+func NewJoinRoomCommand(room *Room, JoinedUser *RoomMember, allRoom *AllRooms) *JoinRoomCommand {
 	return &JoinRoomCommand{
 		Room:         room,
 		JoinedPlayer: JoinedUser,
@@ -105,10 +105,10 @@ func (EndGame *GameStartCommand) Execute() {
 
 type RequestEndRoomCommand struct {
 	Room   *Room
-	Player *RoomPlayer
+	Player *RoomMember
 }
 
-func NewRequestEndRoomCommand(room *Room, player *RoomPlayer) *RequestEndRoomCommand {
+func NewRequestEndRoomCommand(room *Room, player *RoomMember) *RequestEndRoomCommand {
 	return &RequestEndRoomCommand{
 		Room:   room,
 		Player: player,

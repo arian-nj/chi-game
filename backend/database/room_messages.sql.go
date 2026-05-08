@@ -10,30 +10,34 @@ import (
 )
 
 const createRoomMessage = `-- name: CreateRoomMessage :one
-INSERT INTO room_messages (room_id,player_id,message) VALUES ($1,$2,$3) RETURNING id, room_id, player_id, message, sent_at
+INSERT INTO room_messages (room_id,person_id,content) VALUES ($1,$2,$3) RETURNING id, room_id, person_id, reply_to, content, is_edited, edited_at, is_deleted, created_at
 `
 
 type CreateRoomMessageParams struct {
 	RoomID   int
-	PlayerID int
-	Message  string
+	PersonID int
+	Content  string
 }
 
 func (q *Queries) CreateRoomMessage(ctx context.Context, arg CreateRoomMessageParams) (RoomMessage, error) {
-	row := q.db.QueryRow(ctx, createRoomMessage, arg.RoomID, arg.PlayerID, arg.Message)
+	row := q.db.QueryRow(ctx, createRoomMessage, arg.RoomID, arg.PersonID, arg.Content)
 	var i RoomMessage
 	err := row.Scan(
 		&i.ID,
 		&i.RoomID,
-		&i.PlayerID,
-		&i.Message,
-		&i.SentAt,
+		&i.PersonID,
+		&i.ReplyTo,
+		&i.Content,
+		&i.IsEdited,
+		&i.EditedAt,
+		&i.IsDeleted,
+		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getRoomMessages = `-- name: GetRoomMessages :many
-SELECT id, room_id, player_id, message, sent_at
+SELECT id, room_id, person_id, reply_to, content, is_edited, edited_at, is_deleted, created_at
 FROM room_messages
 WHERE room_id = $1
 ORDER BY id DESC
@@ -57,9 +61,13 @@ func (q *Queries) GetRoomMessages(ctx context.Context, arg GetRoomMessagesParams
 		if err := rows.Scan(
 			&i.ID,
 			&i.RoomID,
-			&i.PlayerID,
-			&i.Message,
-			&i.SentAt,
+			&i.PersonID,
+			&i.ReplyTo,
+			&i.Content,
+			&i.IsEdited,
+			&i.EditedAt,
+			&i.IsDeleted,
+			&i.CreatedAt,
 		); err != nil {
 			return nil, err
 		}

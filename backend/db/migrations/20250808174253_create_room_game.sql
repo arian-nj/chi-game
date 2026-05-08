@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE room_games (
     id BIGSERIAL PRIMARY KEY,
-    room_id BIGINT NOT NULL REFERENCES rooms(id) ON DELETE CASCADE,
+    room_id BIGINT NOT NULL REFERENCES rooms(id),
 	game_type TEXT NOT NULL,
     started_at TIMESTAMP NOT NULL DEFAULT NOW(),
     ended_at TIMESTAMP,

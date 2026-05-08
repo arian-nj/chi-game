@@ -8,6 +8,25 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type FriendRequest struct {
+	ID         int
+	SenderID   int
+	ReceiverID int
+	Status     string
+	CreatedAt  pgtype.Timestamptz
+	UpdatedAt  pgtype.Timestamptz
+}
+
+type Game struct {
+	ID          int
+	Name        string
+	Slug        string
+	Description pgtype.Text
+	MinPlayers  pgtype.Int4
+	MaxPlayers  pgtype.Int4
+	CreatedAt   pgtype.Timestamptz
+}
+
 type Person struct {
 	ID        int
 	Username  string
@@ -28,6 +47,9 @@ type PersonAuthMethod struct {
 
 type Room struct {
 	ID          int
+	Name        string
+	Rtype       string
+	CreatedBy   int
 	Createdmode string
 	CreatedAt   pgtype.Timestamp
 }
@@ -42,15 +64,38 @@ type RoomGame struct {
 }
 
 type RoomMessage struct {
-	ID       int
-	RoomID   int
-	PlayerID int
-	Message  string
-	SentAt   pgtype.Timestamp
+	ID        int
+	RoomID    int
+	PersonID  int
+	ReplyTo   pgtype.Int8
+	Content   string
+	IsEdited  pgtype.Bool
+	EditedAt  pgtype.Timestamptz
+	IsDeleted pgtype.Bool
+	CreatedAt pgtype.Timestamptz
+}
+
+type RoomParticipant struct {
+	RoomID            int
+	UserID            int
+	LastReadMessageID int
+	JoinedAt          pgtype.Timestamptz
 }
 
 type RoomPlayer struct {
 	ID       int
 	RoomID   int
 	PersonID int
+}
+
+type UserGameStat struct {
+	UserID       int
+	GameID       int
+	Wins         pgtype.Int4
+	Losses       pgtype.Int4
+	Draws        pgtype.Int4
+	EloRating    pgtype.Int4
+	Xp           pgtype.Int4
+	Level        pgtype.Int4
+	LastPlayedAt pgtype.Timestamptz
 }

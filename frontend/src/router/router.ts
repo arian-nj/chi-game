@@ -60,9 +60,9 @@ const router = createRouter({
       meta: { showBottomNav: false} 
     },
     {
-      path: '/rooms',
-      name: 'rooms',
-      component: () => import('../views/RoomsView.vue')
+      path: '/friends',
+      name: 'friends',
+      component: () => import('../views/FriendsView.vue')
     },
     {
       path: '/profile',

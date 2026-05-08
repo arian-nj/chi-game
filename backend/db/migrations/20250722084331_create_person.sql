@@ -10,9 +10,11 @@ CREATE TABLE persons (
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+CREATE INDEX idx_users_username ON persons(username);
+
 CREATE TABLE person_auth_methods (
     id BIGSERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL REFERENCES persons(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES persons(id),
     auth_type VARCHAR(50) NOT NULL, -- 'guest_device', 'telegram', 'phone', 'email', 'bale'
     auth_value VARCHAR(255) NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),

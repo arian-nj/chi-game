@@ -59,7 +59,7 @@ func (app *ApiApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 
 	socketClient.ListenInBackground(r)
 
-	var roomPlayer *rooms.RoomPlayer
+	var roomPlayer *rooms.RoomMember
 
 	for _, RPlayer := range currentRoom.Players {
 		if RPlayer.ID == personRow.ID {
@@ -136,8 +136,8 @@ func (app *ApiApplication) GetChatHistory(
 	for index, message := range allMessages {
 		response.Messages[messageLen-1-index] = &roomv1.ChatMessage{
 			Id:       int64(message.ID),
-			Text:     message.Message,
-			PlayerId: int64(message.PlayerID),
+			Text:     message.Content,
+			PlayerId: int64(message.PersonID),
 		}
 	}
 
@@ -159,7 +159,7 @@ func (app *ApiApplication) GetRoomOpponent(
 		return nil, connect.NewError(connect.CodeNotFound, errors.New("room not found"))
 	}
 
-	var opponents *rooms.RoomPlayer
+	var opponents *rooms.RoomMember
 	for _, p := range gs.Players {
 		if p.ID != person.ID {
 			opponents = p

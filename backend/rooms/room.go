@@ -12,7 +12,6 @@ import (
 	"github.com/arian-nj/chigame/backend/internals/keybul"
 	"github.com/arian-nj/chigame/backend/internals/socket"
 	"github.com/arian-nj/chigame/backend/internals/utils"
-	"gopkg.in/telebot.v4"
 )
 
 type RoomType string
@@ -22,40 +21,18 @@ const (
 	RandomRoom  RoomType = "random"
 )
 
-const ExpirationDur = 30 * time.Second
-
-type RoomPlayer struct {
-	ID int
-	// TgID   int
-	Name   string
-	Socket *socket.Socket
-}
-
-func NewRoomPlayer(ID int, name string) *RoomPlayer {
-	return &RoomPlayer{
-		ID: ID,
-		// TgID: tgID,
-		Name: keybul.EscapeReserved(name),
-	}
-}
-
-type Chat struct {
-	IsOn bool
-}
-
 type Room struct {
 	ID int
 
-	Bot     *telebot.Bot
 	Queries *database.Queries
 
 	IsGameEnded bool
-	Chat        Chat
+	ChatIsOn    bool
 	GameState   games.Game
 
 	MsgChnl chan *RoomEvent
 
-	Players []*RoomPlayer
+	Players []*RoomMember
 
 	CancelRoom context.CancelFunc
 	RoomCtx    context.Context
@@ -66,20 +43,15 @@ type Room struct {
 	allRooms *AllRooms
 
 	*commander.Commander
-
-	ShutdownTimer <-chan time.Time
 }
 
 func NewRoom(Queries *database.Queries, roomId int, allRoom *AllRooms) *Room {
 	ctx, cancel := context.WithCancel(context.Background())
 	gs := &Room{
-		ID: roomId,
-		// Bot:       bot,
-		CreatedAt: time.Now(),
-		Chat: Chat{
-			IsOn: true,
-		},
-		Players:         []*RoomPlayer{},
+		ID:              roomId,
+		CreatedAt:       time.Now(),
+		ChatIsOn:        true,
+		Players:         []*RoomMember{},
 		ExpireDuaration: 2*time.Minute*2 + 30,
 		MsgChnl:         make(chan *RoomEvent, 10),
 
@@ -90,9 +62,22 @@ func NewRoom(Queries *database.Queries, roomId int, allRoom *AllRooms) *Room {
 
 		Commander: commander.NewCommander(),
 		allRooms:  allRoom,
-		// ShutdownTimer: make(<-chan time.Time),
 	}
 	return gs
+}
+
+type RoomMember struct {
+	ID int
+	// TgID   int
+	Name   string
+	Socket *socket.Socket
+}
+
+func NewRoomPlayer(ID int, name string) *RoomMember {
+	return &RoomMember{
+		ID:   ID,
+		Name: keybul.EscapeReserved(name),
+	}
 }
 
 func (room *Room) RunBgMonitor() {
@@ -115,15 +100,6 @@ func (room *Room) StartGame() {
 			room.GameState.AddPlayer(player.ID, player.Name, player.Socket)
 		}
 
-		for _, suber := range room.Subscribers {
-			// if listener, ok := suber.(*RoomTelegramBotListener); ok {
-			// 	room.GameState.SubToTelegram(listener.UserID, listener.Bot, "")
-			// }
-			if listener, ok := suber.(*RoomTelegramViaListener); ok {
-				room.GameState.SubToTelegram(0, listener.Bot, listener.ViaMessageId)
-			}
-		}
-
 		room.GameState.OnEnd(room.EndGame)
 		gameErr := room.GameState.StartGame()
 		if gameErr != nil {
@@ -133,7 +109,7 @@ func (room *Room) StartGame() {
 	})
 }
 
-func (room *Room) AddPlayerToRoom(player *RoomPlayer) {
+func (room *Room) AddPlayerToRoom(player *RoomMember) {
 	room.Players = append(room.Players, player)
 	utils.RunBackgroundTask(func() {
 		_, err := room.Queries.CreateRoomPlayer(context.Background(), database.CreateRoomPlayerParams{
@@ -152,10 +128,9 @@ func (room *Room) EndGame() {
 	gameEnded := NewGameEndedRoomCommand(room)
 	room.PushCommand(gameEnded)
 
-	if room.Chat.IsOn == false {
+	if room.ChatIsOn == false {
 		return
 	}
-	// room.ShutdownTimer = time.After(30 * time.Second)
 
 }
 
@@ -174,50 +149,6 @@ func (room *Room) MonitorGameRoom() {
 				com := room.PopCommand()
 				room.ApplyCommand(com)
 			}
-			// case <-room.ShutdownTimer:
-			// room.CleanAndDisconnect()
-			// return
 		}
 	}
-}
-
-// func (room *Room) CleanAndDisconnect() {
-// 	room.allRooms.Mutex.Lock()
-// 	defer room.allRooms.Mutex.Unlock()
-
-// 	for _, player := range room.Players {
-// 		delete(room.allRooms.Rooms, strconv.Itoa(player.ID))
-// 	}
-// }
-
-func (room *Room) HandleCallback(c telebot.Context, queries *database.Queries, allRoom *AllRooms) error {
-	// callbackData := c.Callback().Data
-	// if callbackData == "join" {
-	// 	personRow, err := queries.GetPersonByID(context.Background(), int(c.Sender().ID))
-	// 	if err != nil {
-	// 		slog.Error("can not get user at room handle callback", "err", err)
-	// 		return c.RespondText("خطا")
-	// 	}
-	// 	if c.Sender().ID == int64(room.Players[0].TgID) {
-	// 		text := "خودت بازیو ساختی تو بازی هستی"
-	// 		return c.RespondText(text)
-	// 	}
-
-	// 	newJoinCommand := NewJoinRoomCommand(room, NewRoomPlayer(personRow.ID, personRow.TgID, personRow.Name), allRoom)
-	// 	room.PushCommand(newJoinCommand)
-
-	// 	text := "اضافه شدی بازی شروع شد"
-	// 	err = c.RespondText(text)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	return nil
-	// }
-
-	// err := room.GameState.CallBackRouter(c)
-	// if err != nil {
-	// 	slog.Error("error in call back router", "error", err)
-	// 	return c.RespondText("خطا")
-	// }
-	return nil
 }

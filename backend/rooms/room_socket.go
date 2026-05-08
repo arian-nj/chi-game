@@ -10,10 +10,10 @@ import (
 )
 
 type RoomSocketListener struct {
-	Player *RoomPlayer
+	Player *RoomMember
 }
 
-func NewRoomSocketListener(player *RoomPlayer) *RoomSocketListener {
+func NewRoomSocketListener(player *RoomMember) *RoomSocketListener {
 	return &RoomSocketListener{
 		Player: player,
 	}
@@ -32,8 +32,8 @@ func (sl *RoomSocketListener) Update(command commander.Command) {
 	}
 }
 
-func (room *Room) SocketRequestSendMsg(roomPlayer *RoomPlayer, chatMsgReq *roomv1.ChatMessageRequest) {
-	if !room.Chat.IsOn {
+func (room *Room) SocketRequestSendMsg(roomPlayer *RoomMember, chatMsgReq *roomv1.ChatMessageRequest) {
+	if !room.ChatIsOn {
 		return
 	}
 
@@ -45,8 +45,8 @@ func (room *Room) SocketRequestSendMsg(roomPlayer *RoomPlayer, chatMsgReq *roomv
 
 	senderID := roomPlayer.ID
 
-	var senderPlayer *RoomPlayer
-	var recieverPlayer *RoomPlayer
+	var senderPlayer *RoomMember
+	var recieverPlayer *RoomMember
 
 	for _, p := range room.Players {
 		if p.ID == senderID {
@@ -58,7 +58,7 @@ func (room *Room) SocketRequestSendMsg(roomPlayer *RoomPlayer, chatMsgReq *roomv
 
 	room.PushCommand(NewMessageCommand(room, messageText, senderPlayer, recieverPlayer))
 }
-func SendChatMessageInWeb(recieverPlayer *RoomPlayer, senderPlayer *RoomPlayer, messageText string) error {
+func SendChatMessageInWeb(recieverPlayer *RoomMember, senderPlayer *RoomMember, messageText string) error {
 	if recieverPlayer.Socket != nil {
 		newChatMsg := &roomv1.RoomMessage{
 			Content: &roomv1.RoomMessage_Chat{
@@ -73,7 +73,7 @@ func SendChatMessageInWeb(recieverPlayer *RoomPlayer, senderPlayer *RoomPlayer, 
 	return fmt.Errorf("no socket found")
 }
 
-func SendGametypeOverSocket(room *Room, player *RoomPlayer) {
+func SendGametypeOverSocket(room *Room, player *RoomMember) {
 	if room.GameState == nil {
 		slog.Error("can not send game type message game state is nil")
 		return

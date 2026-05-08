@@ -25,7 +25,14 @@
 
 # new era
 [X] tabs
-[ ] remove rooms timer
+[X] remove rooms timer
+[X] friends top menu ui
+[ ] friends add friend functionality
+[ ] add display name
+[ ] list friends
+[ ] search friends
+[ ] chats page
+
 [ ] person can have multiple rooms
 [ ] list active rooms
 [ ] rooms with multiple users
@@ -45,9 +52,6 @@
 # Profile
 [ ] profile page
 [ ] change username (only authenticated users)
-
-[ ] add friends
-[ ] list friends
 
 [ ] invite bonus
 
