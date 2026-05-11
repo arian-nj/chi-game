@@ -26,7 +26,7 @@ if (error.value) {
   <div class="font-extrabold text-lg ">
     <span v-if="isPending">Loading...</span>
     <span v-else-if="error">Error</span>
-    <h1 v-else>@{{ data?.account?.name }}</h1>
+    <h1 v-else>@{{ data?.account?.username }}</h1>
   </div>
 
 </template>

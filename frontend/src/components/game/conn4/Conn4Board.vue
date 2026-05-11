@@ -62,8 +62,8 @@ defineExpose({
       <div v-for="cell, index in cells" :key="index" @click="handleClick(index)" :class="[
         'rounded-full aspect-square flex items-center justify-center border-gray-600',
         { 'bg-gray-800 border-4 shadow-inner': cell === 0 },
-        { 'bg-gradient-to-br from-blue-500 to-blue-700 border-2 animate-drop': cell === 1 },
-        { 'bg-gradient-to-br from-red-500 to-red-700 border-2 animate-drop': cell === 2 }
+        { 'bg-linear-to-br from-blue-500 to-blue-700 border-2 animate-drop': cell === 1 },
+        { 'bg-linear-to-br from-red-500 to-red-700 border-2 animate-drop': cell === 2 }
       ]">
       </div>
     </div>

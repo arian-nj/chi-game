@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file account/v1/account.proto.
  */
 export const file_account_v1_account: GenFile = /*@__PURE__*/
-  fileDesc("ChhhY2NvdW50L3YxL2FjY291bnQucHJvdG8SCmFjY291bnQudjEiIwoHQWNjb3VudBIKCgJpZBgBIAEoAxIMCgRuYW1lGAIgASgJIg4KDEdldE1lUmVxdWVzdCI1Cg1HZXRNZVJlc3BvbnNlEiQKB2FjY291bnQYASABKAsyEy5hY2NvdW50LnYxLkFjY291bnQyTgoOQWNjb3VudFNlcnZpY2USPAoFR2V0TWUSGC5hY2NvdW50LnYxLkdldE1lUmVxdWVzdBoZLmFjY291bnQudjEuR2V0TWVSZXNwb25zZUKlAQoOY29tLmFjY291bnQudjFCDEFjY291bnRQcm90b1ABWjxnaXRodWIuY29tL2FyaWFuLW5qL2NoaWdhbWUvYmFja2VuZC9nZW4vYWNjb3VudC92MTthY2NvdW50djGiAgNBWFiqAgpBY2NvdW50LlYxygIKQWNjb3VudFxWMeICFkFjY291bnRcVjFcR1BCTWV0YWRhdGHqAgtBY2NvdW50OjpWMWIGcHJvdG8z");
+  fileDesc("ChhhY2NvdW50L3YxL2FjY291bnQucHJvdG8SCmFjY291bnQudjEiPAoHQWNjb3VudBIKCgJpZBgBIAEoAxIQCgh1c2VybmFtZRgCIAEoCRITCgtkaXBsYXlfbmFtZRgDIAEoCSIOCgxHZXRNZVJlcXVlc3QiNQoNR2V0TWVSZXNwb25zZRIkCgdhY2NvdW50GAEgASgLMhMuYWNjb3VudC52MS5BY2NvdW50Mk4KDkFjY291bnRTZXJ2aWNlEjwKBUdldE1lEhguYWNjb3VudC52MS5HZXRNZVJlcXVlc3QaGS5hY2NvdW50LnYxLkdldE1lUmVzcG9uc2VCpQEKDmNvbS5hY2NvdW50LnYxQgxBY2NvdW50UHJvdG9QAVo8Z2l0aHViLmNvbS9hcmlhbi1uai9jaGlnYW1lL2JhY2tlbmQvZ2VuL2FjY291bnQvdjE7YWNjb3VudHYxogIDQVhYqgIKQWNjb3VudC5WMcoCCkFjY291bnRcVjHiAhZBY2NvdW50XFYxXEdQQk1ldGFkYXRh6gILQWNjb3VudDo6VjFiBnByb3RvMw");
 
 /**
  * @generated from message account.v1.Account
@@ -22,9 +22,14 @@ export type Account = Message<"account.v1.Account"> & {
   id: bigint;
 
   /**
-   * @generated from field: string name = 2;
+   * @generated from field: string username = 2;
    */
-  name: string;
+  username: string;
+
+  /**
+   * @generated from field: string diplay_name = 3;
+   */
+  diplayName: string;
 };
 
 /**

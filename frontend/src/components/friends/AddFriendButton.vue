@@ -8,9 +8,15 @@ const props = defineProps({
     },
 })
 
+const emit = defineEmits<{
+    isClicked: [],
+}>()
+
 function onClick() {
-    alert("clicked")
+    emit("isClicked")
 }
+
+
 
 // const threshold = ref<number>(60)
 // function updateThreshold() {
