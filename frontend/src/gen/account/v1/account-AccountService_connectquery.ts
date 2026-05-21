@@ -5,8 +5,15 @@
 import { AccountService } from "./account_pb";
 
 /**
- * rpc GetUser(GetUserRequest) returns (GetUserResponse);
- *
  * @generated from rpc account.v1.AccountService.GetMe
  */
 export const getMe = AccountService.method.getMe;
+
+/**
+ * get person by id
+ *
+ * rpc GetUser(GetUserRequest) returns (GetUserResponse);
+ *
+ * @generated from rpc account.v1.AccountService.GetPerson
+ */
+export const getPerson = AccountService.method.getPerson;

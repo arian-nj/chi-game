@@ -22,7 +22,8 @@
 
 @theme {
   --color-custom-blue: #17212b;
-  --color-custom-lite-blue: #31465c;
+  /* --color-custom-lite-blue: #31465c; */
+  --color-custom-lite-blue: #1d2934;
 }
 
 

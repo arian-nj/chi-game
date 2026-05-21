@@ -26,7 +26,7 @@ func sendFinderSocketError(socketClient *socket.Socket, errType finderv1.FinderE
 	}
 }
 
-func (app *ApiApplication) finderWS(w http.ResponseWriter, r *http.Request) {
+func (app *APIApplication) finderWS(w http.ResponseWriter, r *http.Request) {
 	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
 		OriginPatterns: CORS_PATTERNS,
 	})
@@ -69,7 +69,7 @@ func (app *ApiApplication) finderWS(w http.ResponseWriter, r *http.Request) {
 	// Every thing is ok
 	socketClient.ListenInBackground(r)
 
-	NewTicket := matchmaking.NewTicket(PersonRow.Username, int(PersonRow.ID), gameType)
+	NewTicket := matchmaking.NewTicket(PersonRow.Username, PersonRow.DisplayName, int(PersonRow.ID), gameType)
 	app.MatchMaking.PushTicket(NewTicket)
 	defer app.MatchMaking.RemovePlayerTicket(int(PersonRow.ID)) // remove in case of error or canceling or found
 

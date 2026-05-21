@@ -43,7 +43,7 @@ function onClick() {
         mode="out-in"
     >
 
-        <button v-if="props.scrollTop < 60" @click="onClick" :class="[`
+        <button @click="onClick" :class="[`
             w-12 h-12 rounded-full
             text-6xl flex items-center justify-center`,
         ]">

@@ -1,3 +1,4 @@
+// Package api contains all api rpcs
 package api
 
 import (
@@ -9,9 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"connectrpc.com/connect"
 	"github.com/arian-nj/chigame/backend/database"
-	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
 	"github.com/arian-nj/chigame/backend/internals/config"
 	matchmaking "github.com/arian-nj/chigame/backend/match_making"
 	"github.com/arian-nj/chigame/backend/rooms"
@@ -19,34 +18,22 @@ import (
 	"golang.org/x/net/http2/h2c"
 )
 
-type ApiApplication struct {
+var ErrCantAuthenticateUser = errors.New("can't get user")
+
+type APIApplication struct {
 	Config      *config.Config
 	Queries     *database.Queries
 	AllRooms    *rooms.AllRooms
 	MatchMaking *matchmaking.MatchMaking
 }
 
-// GetMe implements [accountv1connect.AccountServiceHandler].
-func (app *ApiApplication) GetMe(ctx context.Context, req *connect.Request[accountv1.GetMeRequest]) (*connect.Response[accountv1.GetMeResponse], error) {
-	personRow := app.AuthenticateHeader(ctx, req.Header())
-	if personRow == nil {
-		return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("can't get user"))
-	}
-	return connect.NewResponse(&accountv1.GetMeResponse{
-		Account: &accountv1.Account{
-			Id:   int64(personRow.ID),
-			Name: personRow.Username,
-		},
-	}), nil
-}
-
-func NewApiApplication(config *config.Config,
+func NewAPIApplication(config *config.Config,
 	queries *database.Queries,
 	logger *log.Logger,
 	AllRoom *rooms.AllRooms,
 	matchMaking *matchmaking.MatchMaking,
-) *ApiApplication {
-	return &ApiApplication{
+) *APIApplication {
+	return &APIApplication{
 		Config:      config,
 		Queries:     queries,
 		AllRooms:    AllRoom,
@@ -54,7 +41,7 @@ func NewApiApplication(config *config.Config,
 	}
 }
 
-func (app *ApiApplication) RunApi(ctx context.Context, wg *sync.WaitGroup) {
+func (app *APIApplication) RunAPI(ctx context.Context, wg *sync.WaitGroup) {
 	wg.Add(1)
 	defer wg.Done()
 

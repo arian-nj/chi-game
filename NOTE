@@ -1,0 +1,4 @@
+-- drop all tables
+SELECT 'DROP TABLE IF EXISTS "' || tablename || '" CASCADE;' 
+FROM pg_tables 
+WHERE schemaname = 'public';

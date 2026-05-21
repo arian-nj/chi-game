@@ -5,8 +5,8 @@ WHERE pam.auth_type = $1 AND pam.auth_value = $2
 LIMIT 1;
 
 -- name: InsertPerson :one
-INSERT INTO persons (username, is_guest)
-VALUES ($1, $2) RETURNING *;
+INSERT INTO persons (username,display_name, is_guest)
+VALUES ($1,$2, $3) RETURNING *;
 
 -- name: InsertAuthMethod :one
 INSERT INTO person_auth_methods (user_id,auth_type,auth_value)
@@ -15,6 +15,10 @@ VALUES ($1, $2, $3) RETURNING *;
 -- name: GetPersonByID :one
 SELECT * FROM persons
 WHERE id = $1;
+
+-- name: SearchPersonByUsername :many
+SELECT id,username,display_name FROM persons
+WHERE username LIKE $1 || '%' ORDER BY username LIMIT 5;  
 
 -- name: GetUserMethod :one
 SELECT user_id FROM person_auth_methods 

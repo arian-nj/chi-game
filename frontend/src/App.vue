@@ -17,11 +17,14 @@ onMounted(() => {
 </script>
 
 <template>
+
   <div class="flex flex-col h-screen bg-gray-50 text-gray-200">
-    <div class="flex-1 overflow-y-auto pb-14">
-      <RouterView />
+    <div class="flex-1 overflow-y-auto">
+        <RouterView />
     </div>
-    <Toast />
-    <BottomNav />
+      <BottomNav />
   </div>
+
+  <Toast />
+
 </template>

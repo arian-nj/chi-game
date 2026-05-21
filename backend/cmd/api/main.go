@@ -21,7 +21,7 @@ const Version = "1.0.0"
 type Config struct {
 	port        int
 	ReleaseMode string
-	DatabseUrl  string
+	DatabseURL  string
 }
 
 type Application struct {
@@ -68,8 +68,7 @@ func main() {
 	defer pCancel()
 
 	app.logger.Printf("Serving...")
-	apiApp := api.NewApiApplication(app.config, app.Queries, app.logger, app.AllRooms, app.MatchMaking)
+	apiApp := api.NewAPIApplication(app.config, app.Queries, app.logger, app.AllRooms, app.MatchMaking)
 	go apiApp.MakeMatches()
-	apiApp.RunApi(parentCtx, app.Wg)
-
+	apiApp.RunAPI(parentCtx, app.Wg)
 }

@@ -3,7 +3,8 @@ import BackButton from '../BackButton.vue';
 import { createClient } from '@connectrpc/connect';
 import { FriendsService, type SearchForUsernameResponse } from '../../gen/friends/v1/friends_pb';
 import { authTransport } from '../../lib/transport';
-import { ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 
 const emit = defineEmits<{
@@ -12,14 +13,33 @@ const emit = defineEmits<{
 
 const backClick = ()=>{emit("backClicked")}
 
-const searchQuery = ref<string>('')
+const route = useRoute()
+const router = useRouter()
+
+function clearSearchQuery() {
+    const {search , ...restQuery} = route.query
+    router.replace({query : restQuery});
+ 
+}
+const searchQuery = computed<string>({
+    get : ():string => (route.query.search as string) || '',
+    set : (value:string) => {
+        if (value == '') {
+            clearSearchQuery()
+           return
+        }
+        router.replace({query : {...route.query , search : value}})
+    },
+})
+
 const searchResults = ref<SearchForUsernameResponse | null>(null)
 const isSearching = ref(false)
 const searchError = ref(null)
 
 let activeAbortController: AbortController | null = null
 
-async function performSearch(lookFor:string) {
+async function performSearch() {
+    const lookFor = searchQuery.value
     if (!lookFor.trim()) {
         searchResults.value = null
         return
@@ -48,12 +68,24 @@ async function performSearch(lookFor:string) {
     }
 }
 
+// search on mount when comming back
+onMounted(()=>{
+    if(searchQuery.value !="") {
+        performSearch()
+    }
+})
+
+// search on input changed
 let timeoutId: ReturnType<typeof setTimeout> | null = null
 
-watch(searchQuery, (newQuery) => {
+watch(searchQuery, () => {
   if (timeoutId) clearTimeout(timeoutId)
-  timeoutId = setTimeout(() => performSearch(newQuery), 300)
+  timeoutId = setTimeout(() => performSearch(), 300)
 })
+
+const showProfile = (id:bigint) => {
+    router.push(`/profile/${id}`)
+}
 
 </script>
 
@@ -120,8 +152,8 @@ watch(searchQuery, (newQuery) => {
                         
                         <!-- User Info -->
                         <div class="flex-1 min-w-0">
-                            <h3 class="text-gray-100 font-semibold text-base truncate">
-                                {{ person.diplayName || `@${person.username}` }}
+                            <h3 class="text-gray-100 font-semibold truncate text-xl">
+                                {{ person.displayName || `@${person.username}` }}
                             </h3>
                             <p class="text-gray-400 text-sm truncate">
                                 @{{ person.username }}
@@ -129,8 +161,8 @@ watch(searchQuery, (newQuery) => {
                         </div>
                         
                         <!-- Action Button -->
-                        <button class="px-4 py-1.5 bg-blue-500 hover:bg-blue-600 rounded-full text-white text-sm font-medium transition-colors duration-200">
-                            Message
+                        <button @click="showProfile(person.id)" class="px-4 py-1.5 bg-blue-500 hover:bg-blue-600 rounded-full text-white font-semibold transition-colors duration-200">
+                            مشاهده
                         </button>
                     </div>
                 </div>

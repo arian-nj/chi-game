@@ -7,6 +7,7 @@ import (
 	connectcors "connectrpc.com/cors"
 	"github.com/arian-nj/chigame/backend/gen/account/v1/accountv1connect"
 	"github.com/arian-nj/chigame/backend/gen/auth/v1/authv1connect"
+	"github.com/arian-nj/chigame/backend/gen/friends/v1/friendsv1connect"
 	"github.com/arian-nj/chigame/backend/gen/healthcheck/v1/healthcheckv1connect"
 	"github.com/arian-nj/chigame/backend/gen/room/v1/roomv1connect"
 	"github.com/rs/cors"
@@ -20,7 +21,7 @@ var CORS_PATTERNS = []string{
 	"https://chigame.ir", "chigame.ir",
 }
 
-func (app *ApiApplication) createRouter() http.Handler {
+func (app *APIApplication) createRouter() http.Handler {
 	mux := http.NewServeMux()
 
 	// if app.Config.ReleaseMode == config.Develop {
@@ -48,6 +49,9 @@ func (app *ApiApplication) createRouter() http.Handler {
 
 	authPath, authHandler := authv1connect.NewAuthServiceHandler(app)
 	mux.Handle(authPath, authHandler)
+
+	friendsPath, friendsHandler := friendsv1connect.NewFriendsServiceHandler(app)
+	mux.Handle(friendsPath, friendsHandler)
 
 	mux.Handle("/api/room/", app.AuthenticateQuery(http.HandlerFunc(app.roomWebsocket)))
 	mux.Handle("/api/match_making/ticket/", app.AuthenticateQuery(http.HandlerFunc(app.finderWS)))

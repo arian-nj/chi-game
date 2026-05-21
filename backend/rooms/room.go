@@ -67,16 +67,17 @@ func NewRoom(Queries *database.Queries, roomId int, allRoom *AllRooms) *Room {
 }
 
 type RoomMember struct {
-	ID int
-	// TgID   int
-	Name   string
-	Socket *socket.Socket
+	ID          int
+	Username    string
+	DisplayName string
+	Socket      *socket.Socket
 }
 
-func NewRoomPlayer(ID int, name string) *RoomMember {
+func NewRoomPlayer(id int, username string, diplayname string) *RoomMember {
 	return &RoomMember{
-		ID:   ID,
-		Name: keybul.EscapeReserved(name),
+		ID:          id,
+		Username:    keybul.EscapeReserved(username),
+		DisplayName: diplayname,
 	}
 }
 
@@ -97,7 +98,7 @@ func (room *Room) StartGame() {
 		)
 
 		for _, player := range room.Players {
-			room.GameState.AddPlayer(player.ID, player.Name, player.Socket)
+			room.GameState.AddPlayer(player.ID, player.Username, player.Socket)
 		}
 
 		room.GameState.OnEnd(room.EndGame)

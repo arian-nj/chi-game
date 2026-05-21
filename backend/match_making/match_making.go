@@ -38,8 +38,9 @@ func NewMatchMaking(allRooms *rooms.AllRooms, queries *database.Queries) *MatchM
 // )
 
 type Ticket struct {
-	Name   string
-	UserID int
+	Username    string
+	DisplayName string
+	UserID      int
 	// TgID   int
 
 	// Platform PlatformType
@@ -50,13 +51,14 @@ type Ticket struct {
 	Timestamp time.Time
 }
 
-func NewTicket(name string, userID int, gameType games.GameType) *Ticket {
+func NewTicket(username string, displayName string, userID int, gameType games.GameType) *Ticket {
 	return &Ticket{
-		UserID: userID,
-		// TgID:           tgID,
-		Name:           name,
+		UserID:         userID,
+		Username:       username,
+		DisplayName:    displayName,
 		GameType:       gameType,
 		MatchFoundChan: make(chan *rooms.Room, 1),
+		Timestamp:      time.Now(),
 	}
 }
 

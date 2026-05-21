@@ -8,3 +8,23 @@ import { FriendsService } from "./friends_pb";
  * @generated from rpc friends.v1.FriendsService.SearchForUsername
  */
 export const searchForUsername = FriendsService.method.searchForUsername;
+
+/**
+ * @generated from rpc friends.v1.FriendsService.GetFriendshipStatus
+ */
+export const getFriendshipStatus = FriendsService.method.getFriendshipStatus;
+
+/**
+ * @generated from rpc friends.v1.FriendsService.SendFriendReq
+ */
+export const sendFriendReq = FriendsService.method.sendFriendReq;
+
+/**
+ * @generated from rpc friends.v1.FriendsService.CancelFriendReq
+ */
+export const cancelFriendReq = FriendsService.method.cancelFriendReq;
+
+/**
+ * @generated from rpc friends.v1.FriendsService.AcceptFriendReq
+ */
+export const acceptFriendReq = FriendsService.method.acceptFriendReq;

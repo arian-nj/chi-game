@@ -14,7 +14,7 @@ import type { RoomSocket } from "../../../lib/RoomWs";
 import { RoomMessageSchema } from "../../../gen/room/v1/room_pb";
 import PlayersBoard from "../PlayersBoard.vue";
 
-const { isPending: meIsPending, error: meErr, data: meData } = useQuery({
+const { data: meData } = useQuery({
   queryKey: ['me'],
   queryFn: async () => {
     const client = createClient(AccountService, authTransport)

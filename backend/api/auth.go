@@ -20,7 +20,7 @@ const (
 	AuthTypeGuestDevice = "guest_device"
 )
 
-func (app *ApiApplication) GetOrCreateGuestUser(deviceID string) (*database.Person, error) {
+func (app *APIApplication) GetOrCreateGuestUser(deviceID string) (*database.Person, error) {
 	person, err := app.Queries.GetPersonByAuthMethod(context.Background(), database.GetPersonByAuthMethodParams{
 		AuthType:  AuthTypeGuestDevice,
 		AuthValue: deviceID,
@@ -32,9 +32,11 @@ func (app *ApiApplication) GetOrCreateGuestUser(deviceID string) (*database.Pers
 		return nil, fmt.Errorf("query guest user: %w", err)
 	}
 
+	randString := random.GenerateRandomUsername(8)
 	newPerson, err := app.Queries.InsertPerson(context.Background(), database.InsertPersonParams{
-		IsGuest:  true,
-		Username: random.GenerateRandomUsername(8),
+		IsGuest:     true,
+		Username:    randString,
+		DisplayName: randString,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("create person: %w", err)
@@ -90,7 +92,7 @@ func createGuestToken(userId int, deviceID string) *jwt.Token {
 	return jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 }
 
-func (app *ApiApplication) ValidateToken(tokenString string) (int, error) {
+func (app *APIApplication) ValidateToken(tokenString string) (int, error) {
 
 	token, err := jwt.ParseWithClaims(tokenString, &CustomClaim{}, func(token *jwt.Token) (any, error) {
 		return app.Config.Jwt.SecretKey, nil

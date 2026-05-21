@@ -12,9 +12,9 @@ CREATE TABLE room_messages (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_messages_room_id_created_at ON messages(room_id, created_at DESC);
-CREATE INDEX idx_messages_user_id ON messages(user_id);
-CREATE INDEX idx_messages_parent_id ON messages(parent_message_id);
+CREATE INDEX idx_messages_room_id_created_at ON room_messages(room_id, created_at DESC);
+CREATE INDEX idx_messages_user_id ON room_messages(person_id);
+CREATE INDEX idx_messages_parent_id ON room_messages(reply_to);
 -- +goose StatementEnd
 
 -- +goose Down

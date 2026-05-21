@@ -15,7 +15,7 @@ import (
 	"github.com/arian-nj/chigame/backend/pkg/validator"
 )
 
-func (app *ApiApplication) AuthenticateHeader(ctx context.Context, header http.Header) *database.Person {
+func (app *APIApplication) AuthenticateHeader(ctx context.Context, header http.Header) *database.Person {
 	header.Add("Vary", "Authorization")
 
 	authorizationHeader := header.Get("Authorization")
@@ -43,7 +43,7 @@ func (app *ApiApplication) AuthenticateHeader(ctx context.Context, header http.H
 	return &person
 }
 
-func (app *ApiApplication) AuthenticateQuery(next http.Handler) http.Handler {
+func (app *APIApplication) AuthenticateQuery(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := r.URL.Query().Get("auth_token")
 		if token == "" {
@@ -97,7 +97,7 @@ func ContextGetAuthenticatedUser(queries *database.Queries, r *http.Request) (*d
 	return &user, nil
 }
 
-func (app *ApiApplication) ReportServerError(r *http.Request, err error) {
+func (app *APIApplication) ReportServerError(r *http.Request, err error) {
 	var (
 		message = err.Error()
 		// method  = r.Method
@@ -112,7 +112,7 @@ func (app *ApiApplication) ReportServerError(r *http.Request, err error) {
 	log.Println(trace)
 }
 
-func (app *ApiApplication) errorMessage(w http.ResponseWriter, r *http.Request, status int, message string, headers http.Header) {
+func (app *APIApplication) errorMessage(w http.ResponseWriter, r *http.Request, status int, message string, headers http.Header) {
 	message = strings.ToUpper(message[:1]) + message[1:]
 
 	err := response.JSONWithHeaders(w, status, map[string]string{"Error": message}, headers)
@@ -122,39 +122,39 @@ func (app *ApiApplication) errorMessage(w http.ResponseWriter, r *http.Request, 
 	}
 }
 
-func (app *ApiApplication) InvalidAuthenticationToken(w http.ResponseWriter, r *http.Request) {
+func (app *APIApplication) InvalidAuthenticationToken(w http.ResponseWriter, r *http.Request) {
 	headers := make(http.Header)
 	headers.Set("WWW-Authenticate", "Bearer")
 
 	app.errorMessage(w, r, http.StatusUnauthorized, "Invalid authentication token", headers)
 }
 
-func (app *ApiApplication) invalidAuthenticationCreds(w http.ResponseWriter, r *http.Request) {
+func (app *APIApplication) invalidAuthenticationCreds(w http.ResponseWriter, r *http.Request) {
 	app.errorMessage(w, r, http.StatusUnauthorized, "Invalid authentication credentials", nil)
 }
 
-func (app *ApiApplication) ServerError(w http.ResponseWriter, r *http.Request, err error) {
+func (app *APIApplication) ServerError(w http.ResponseWriter, r *http.Request, err error) {
 	app.ReportServerError(r, err)
 
 	message := "The server encountered a problem and could not process your request"
 	app.errorMessage(w, r, http.StatusInternalServerError, message, nil)
 }
 
-func (app *ApiApplication) NotFound(w http.ResponseWriter, r *http.Request) {
+func (app *APIApplication) NotFound(w http.ResponseWriter, r *http.Request) {
 	message := "The requested resource could not be found"
 	app.errorMessage(w, r, http.StatusNotFound, message, nil)
 }
 
-func (app *ApiApplication) MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
+func (app *APIApplication) MethodNotAllowed(w http.ResponseWriter, r *http.Request) {
 	message := fmt.Sprintf("The %s method is not supported for this resource", r.Method)
 	app.errorMessage(w, r, http.StatusMethodNotAllowed, message, nil)
 }
 
-func (app *ApiApplication) BadRequest(w http.ResponseWriter, r *http.Request, err error) {
+func (app *APIApplication) BadRequest(w http.ResponseWriter, r *http.Request, err error) {
 	app.errorMessage(w, r, http.StatusBadRequest, err.Error(), nil)
 }
 
-func (app *ApiApplication) FailedValidation(w http.ResponseWriter, r *http.Request, v validator.Validator) {
+func (app *APIApplication) FailedValidation(w http.ResponseWriter, r *http.Request, v validator.Validator) {
 	err := response.JSON(w, http.StatusUnprocessableEntity, v)
 	if err != nil {
 		app.ServerError(w, r, err)

@@ -13,7 +13,7 @@ import { AccountService } from '../../gen/account/v1/account_pb';
 import { createClient } from '@connectrpc/connect'
 import { useQuery } from '@tanstack/vue-query';
 
-const { isPending: meIsPending, error: meErr, data: meData } = useQuery({
+const { data: meData } = useQuery({
   queryKey: ['me'],
   queryFn: async () => {
     const client = createClient(AccountService, authTransport)
@@ -22,7 +22,7 @@ const { isPending: meIsPending, error: meErr, data: meData } = useQuery({
   }
 })
 
-const { isPending: chatHistoryIsPending, error: chatHistoryErr, data: chatHistoryData } = useQuery({
+const { data: chatHistoryData } = useQuery({
   queryKey: ['chat-history'],
   queryFn: async () => {
     const client = createClient(RoomService, authTransport)

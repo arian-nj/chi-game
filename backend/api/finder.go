@@ -13,7 +13,7 @@ import (
 	"github.com/arian-nj/chigame/backend/rooms"
 )
 
-func (app *ApiApplication) MakeMatches() {
+func (app *APIApplication) MakeMatches() {
 	defer app.MatchMaking.Mutex.Unlock()
 	var doFlag = false
 	for {
@@ -35,7 +35,7 @@ func (app *ApiApplication) MakeMatches() {
 	}
 }
 
-func (app *ApiApplication) createRandomGame(gameType games.GameType, ticketOne *matchmaking.Ticket, ticketTwo *matchmaking.Ticket) {
+func (app *APIApplication) createRandomGame(gameType games.GameType, ticketOne *matchmaking.Ticket, ticketTwo *matchmaking.Ticket) {
 	newRoomRow, err := app.Queries.CreateRoom(context.Background(), string(rooms.RandomRoom))
 	if err != nil {
 		slog.Error("can't create new random game", "error", err)
@@ -61,8 +61,8 @@ func (app *ApiApplication) createRandomGame(gameType games.GameType, ticketOne *
 	newGameRoom.GameState = newGame
 	newGameRoom.RunBgMonitor()
 
-	playerOne := rooms.NewRoomPlayer(ticketOne.UserID, ticketOne.Name)
-	playerTwo := rooms.NewRoomPlayer(ticketTwo.UserID, ticketTwo.Name)
+	playerOne := rooms.NewRoomPlayer(ticketOne.UserID, ticketOne.Username, ticketOne.DisplayName)
+	playerTwo := rooms.NewRoomPlayer(ticketTwo.UserID, ticketTwo.Username, ticketOne.DisplayName)
 
 	newGameRoom.AddPlayerToRoom(playerOne)
 	newGameRoom.AddPlayerToRoom(playerTwo)

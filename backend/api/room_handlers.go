@@ -33,7 +33,7 @@ func sendRoomSocketError(socketClient *socket.Socket, errType roomv1.RoomErrorTy
 	}
 }
 
-func (app *ApiApplication) roomWebsocket(w http.ResponseWriter, r *http.Request) {
+func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request) {
 	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
 		OriginPatterns: CORS_PATTERNS,
 	})
@@ -104,7 +104,7 @@ func (app *ApiApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (app *ApiApplication) GetChatHistory(
+func (app *APIApplication) GetChatHistory(
 	ctx context.Context,
 	req *connect.Request[roomv1.GetChatHistoryRequest],
 ) (*connect.Response[roomv1.GetChatHistoryResponse], error) {
@@ -144,7 +144,7 @@ func (app *ApiApplication) GetChatHistory(
 	return connect.NewResponse(response), nil
 }
 
-func (app *ApiApplication) GetRoomOpponent(
+func (app *APIApplication) GetRoomOpponent(
 	ctx context.Context,
 	req *connect.Request[roomv1.GetRoomOpponentRequest],
 ) (*connect.Response[roomv1.GetRoomOpponentResponse], error) {
@@ -169,13 +169,14 @@ func (app *ApiApplication) GetRoomOpponent(
 
 	return connect.NewResponse(&roomv1.GetRoomOpponentResponse{
 		Opponent: &accountv1.Account{
-			Id:   int64(opponents.ID),
-			Name: opponents.Name,
+			Id:          int64(opponents.ID),
+			DisplayName: opponents.Username,
+			Username:    opponents.Username,
 		},
 	}), nil
 }
 
-func (app *ApiApplication) HasRoom(
+func (app *APIApplication) HasRoom(
 	ctx context.Context,
 	req *connect.Request[roomv1.HasRoomRequest],
 ) (*connect.Response[roomv1.HasRoomResponse], error) {
@@ -191,7 +192,7 @@ func (app *ApiApplication) HasRoom(
 	}), nil
 }
 
-func (app *ApiApplication) CloseRoom(
+func (app *APIApplication) CloseRoom(
 	ctx context.Context,
 	req *connect.Request[roomv1.CloseRoomRequest],
 ) (*connect.Response[roomv1.CloseRoomResponse], error) {

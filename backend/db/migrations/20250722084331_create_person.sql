@@ -2,7 +2,8 @@
 -- +goose StatementBegin
 CREATE TABLE persons (
     id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE,
+    display_name VARCHAR(255) NOT NULL,
+    username VARCHAR(64) NOT NULL UNIQUE,
     coins INTEGER NOT NULL DEFAULT 100,
     is_guest BOOLEAN NOT NULL DEFAULT false,
     merged_at TIMESTAMP,

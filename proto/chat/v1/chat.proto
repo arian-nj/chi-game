@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package chat.v1;
+
+import "google/protobuf/timestamp.proto";
+
+service ChatService {
+  // rpc GetAllChats(GetAllChatsRequest) (GetAllChatsResponse){};
+}
+
+message Chat{
+  int64 id = 1;
+  string chat_type = 2;
+  string name = 3;
+  google.protobuf.Timestamp updated_at = 4;
+}
+
+message GetAllChatsRequest {
+}
+
+message GetAllChatsResponse {
+  repeated Chat chats = 1;
+}

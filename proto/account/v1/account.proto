@@ -4,12 +4,24 @@ package account.v1;
 
 message Account {
   int64 id = 1;
-  string name = 2;
+  string username = 2;
+  string display_name = 3;
 }
 
 service AccountService {
   rpc GetMe(GetMeRequest) returns (GetMeResponse);
+
+  // get person by id
+  rpc GetPerson(GetPersonRequest) returns (GetPersonResponse);
   // rpc GetUser(GetUserRequest) returns (GetUserResponse);
+}
+
+message GetPersonRequest {
+  int64 id = 1;
+}
+
+message GetPersonResponse {
+  Account account = 1;
 }
 
 message GetMeRequest {}
@@ -17,6 +29,10 @@ message GetMeRequest {}
 message GetMeResponse {
   Account account = 1;
 }
+
+
+
+
 
 // message GetUserRequest {
 //   int64 id = 1;

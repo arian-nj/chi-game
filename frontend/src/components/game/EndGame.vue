@@ -95,13 +95,13 @@ async function handleExistRoom() {
     <div v-if="props.winner" class="flex flex-col items-center">
       <h1
         class="text-5xl font-black bg-linear-to-r from-amber-400 to-yellow-300 bg-clip-text text-transparent drop-shadow-lg">
-        🏆 {{ props.winner.name }}
+        🏆 {{ props.winner.diplayName }}
       </h1>
     </div>
 
     <div v-if="props.loser" class="flex flex-col items-center opacity-60">
       <h1 class="text-4xl font-medium text-slate-400 line-through">
-        💀 {{ props.loser.name }}
+        💀 {{ props.loser.diplayName }}
       </h1>
     </div>
 

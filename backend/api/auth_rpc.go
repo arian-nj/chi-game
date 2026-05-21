@@ -9,7 +9,7 @@ import (
 	authv1 "github.com/arian-nj/chigame/backend/gen/auth/v1"
 )
 
-func (app *ApiApplication) ValidateGuest(ctx context.Context,
+func (app *APIApplication) ValidateGuest(ctx context.Context,
 	req *connect.Request[authv1.ValidateGuestRequest]) (*connect.Response[authv1.ValidateGuestResponse], error) {
 
 	deviceID := req.Msg.DeviceId

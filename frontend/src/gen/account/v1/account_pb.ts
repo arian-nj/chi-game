@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file account/v1/account.proto.
  */
 export const file_account_v1_account: GenFile = /*@__PURE__*/
-  fileDesc("ChhhY2NvdW50L3YxL2FjY291bnQucHJvdG8SCmFjY291bnQudjEiPAoHQWNjb3VudBIKCgJpZBgBIAEoAxIQCgh1c2VybmFtZRgCIAEoCRITCgtkaXBsYXlfbmFtZRgDIAEoCSIOCgxHZXRNZVJlcXVlc3QiNQoNR2V0TWVSZXNwb25zZRIkCgdhY2NvdW50GAEgASgLMhMuYWNjb3VudC52MS5BY2NvdW50Mk4KDkFjY291bnRTZXJ2aWNlEjwKBUdldE1lEhguYWNjb3VudC52MS5HZXRNZVJlcXVlc3QaGS5hY2NvdW50LnYxLkdldE1lUmVzcG9uc2VCpQEKDmNvbS5hY2NvdW50LnYxQgxBY2NvdW50UHJvdG9QAVo8Z2l0aHViLmNvbS9hcmlhbi1uai9jaGlnYW1lL2JhY2tlbmQvZ2VuL2FjY291bnQvdjE7YWNjb3VudHYxogIDQVhYqgIKQWNjb3VudC5WMcoCCkFjY291bnRcVjHiAhZBY2NvdW50XFYxXEdQQk1ldGFkYXRh6gILQWNjb3VudDo6VjFiBnByb3RvMw");
+  fileDesc("ChhhY2NvdW50L3YxL2FjY291bnQucHJvdG8SCmFjY291bnQudjEiPQoHQWNjb3VudBIKCgJpZBgBIAEoAxIQCgh1c2VybmFtZRgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkiHgoQR2V0UGVyc29uUmVxdWVzdBIKCgJpZBgBIAEoAyI5ChFHZXRQZXJzb25SZXNwb25zZRIkCgdhY2NvdW50GAEgASgLMhMuYWNjb3VudC52MS5BY2NvdW50Ig4KDEdldE1lUmVxdWVzdCI1Cg1HZXRNZVJlc3BvbnNlEiQKB2FjY291bnQYASABKAsyEy5hY2NvdW50LnYxLkFjY291bnQymAEKDkFjY291bnRTZXJ2aWNlEjwKBUdldE1lEhguYWNjb3VudC52MS5HZXRNZVJlcXVlc3QaGS5hY2NvdW50LnYxLkdldE1lUmVzcG9uc2USSAoJR2V0UGVyc29uEhwuYWNjb3VudC52MS5HZXRQZXJzb25SZXF1ZXN0Gh0uYWNjb3VudC52MS5HZXRQZXJzb25SZXNwb25zZUKlAQoOY29tLmFjY291bnQudjFCDEFjY291bnRQcm90b1ABWjxnaXRodWIuY29tL2FyaWFuLW5qL2NoaWdhbWUvYmFja2VuZC9nZW4vYWNjb3VudC92MTthY2NvdW50djGiAgNBWFiqAgpBY2NvdW50LlYxygIKQWNjb3VudFxWMeICFkFjY291bnRcVjFcR1BCTWV0YWRhdGHqAgtBY2NvdW50OjpWMWIGcHJvdG8z");
 
 /**
  * @generated from message account.v1.Account
@@ -27,9 +27,9 @@ export type Account = Message<"account.v1.Account"> & {
   username: string;
 
   /**
-   * @generated from field: string diplay_name = 3;
+   * @generated from field: string display_name = 3;
    */
-  diplayName: string;
+  displayName: string;
 };
 
 /**
@@ -38,6 +38,40 @@ export type Account = Message<"account.v1.Account"> & {
  */
 export const AccountSchema: GenMessage<Account> = /*@__PURE__*/
   messageDesc(file_account_v1_account, 0);
+
+/**
+ * @generated from message account.v1.GetPersonRequest
+ */
+export type GetPersonRequest = Message<"account.v1.GetPersonRequest"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+};
+
+/**
+ * Describes the message account.v1.GetPersonRequest.
+ * Use `create(GetPersonRequestSchema)` to create a new message.
+ */
+export const GetPersonRequestSchema: GenMessage<GetPersonRequest> = /*@__PURE__*/
+  messageDesc(file_account_v1_account, 1);
+
+/**
+ * @generated from message account.v1.GetPersonResponse
+ */
+export type GetPersonResponse = Message<"account.v1.GetPersonResponse"> & {
+  /**
+   * @generated from field: account.v1.Account account = 1;
+   */
+  account?: Account;
+};
+
+/**
+ * Describes the message account.v1.GetPersonResponse.
+ * Use `create(GetPersonResponseSchema)` to create a new message.
+ */
+export const GetPersonResponseSchema: GenMessage<GetPersonResponse> = /*@__PURE__*/
+  messageDesc(file_account_v1_account, 2);
 
 /**
  * @generated from message account.v1.GetMeRequest
@@ -50,7 +84,7 @@ export type GetMeRequest = Message<"account.v1.GetMeRequest"> & {
  * Use `create(GetMeRequestSchema)` to create a new message.
  */
 export const GetMeRequestSchema: GenMessage<GetMeRequest> = /*@__PURE__*/
-  messageDesc(file_account_v1_account, 1);
+  messageDesc(file_account_v1_account, 3);
 
 /**
  * @generated from message account.v1.GetMeResponse
@@ -67,21 +101,31 @@ export type GetMeResponse = Message<"account.v1.GetMeResponse"> & {
  * Use `create(GetMeResponseSchema)` to create a new message.
  */
 export const GetMeResponseSchema: GenMessage<GetMeResponse> = /*@__PURE__*/
-  messageDesc(file_account_v1_account, 2);
+  messageDesc(file_account_v1_account, 4);
 
 /**
  * @generated from service account.v1.AccountService
  */
 export const AccountService: GenService<{
   /**
-   * rpc GetUser(GetUserRequest) returns (GetUserResponse);
-   *
    * @generated from rpc account.v1.AccountService.GetMe
    */
   getMe: {
     methodKind: "unary";
     input: typeof GetMeRequestSchema;
     output: typeof GetMeResponseSchema;
+  },
+  /**
+   * get person by id
+   *
+   * rpc GetUser(GetUserRequest) returns (GetUserResponse);
+   *
+   * @generated from rpc account.v1.AccountService.GetPerson
+   */
+  getPerson: {
+    methodKind: "unary";
+    input: typeof GetPersonRequestSchema;
+    output: typeof GetPersonResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_account_v1_account, 0);

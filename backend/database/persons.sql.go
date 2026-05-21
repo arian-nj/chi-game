@@ -66,7 +66,7 @@ func (q *Queries) CountUsersTgCreatedBetween(ctx context.Context, arg CountUsers
 const getAllTgUsers = `-- name: GetAllTgUsers :many
 
 
-SELECT id, username, coins, is_guest, merged_at, updated_at, created_at FROM persons
+SELECT id, display_name, username, coins, is_guest, merged_at, updated_at, created_at FROM persons
 `
 
 // -- name: GetTgUserByTgID :one
@@ -83,6 +83,7 @@ func (q *Queries) GetAllTgUsers(ctx context.Context) ([]Person, error) {
 		var i Person
 		if err := rows.Scan(
 			&i.ID,
+			&i.DisplayName,
 			&i.Username,
 			&i.Coins,
 			&i.IsGuest,
@@ -101,7 +102,7 @@ func (q *Queries) GetAllTgUsers(ctx context.Context) ([]Person, error) {
 }
 
 const getPersonByAuthMethod = `-- name: GetPersonByAuthMethod :one
-SELECT p.id, p.username, p.coins, p.is_guest, p.merged_at, p.updated_at, p.created_at FROM persons p
+SELECT p.id, p.display_name, p.username, p.coins, p.is_guest, p.merged_at, p.updated_at, p.created_at FROM persons p
 JOIN person_auth_methods pam ON p.id = pam.user_id
 WHERE pam.auth_type = $1 AND pam.auth_value = $2
 LIMIT 1
@@ -117,6 +118,7 @@ func (q *Queries) GetPersonByAuthMethod(ctx context.Context, arg GetPersonByAuth
 	var i Person
 	err := row.Scan(
 		&i.ID,
+		&i.DisplayName,
 		&i.Username,
 		&i.Coins,
 		&i.IsGuest,
@@ -128,7 +130,7 @@ func (q *Queries) GetPersonByAuthMethod(ctx context.Context, arg GetPersonByAuth
 }
 
 const getPersonByID = `-- name: GetPersonByID :one
-SELECT id, username, coins, is_guest, merged_at, updated_at, created_at FROM persons
+SELECT id, display_name, username, coins, is_guest, merged_at, updated_at, created_at FROM persons
 WHERE id = $1
 `
 
@@ -137,6 +139,7 @@ func (q *Queries) GetPersonByID(ctx context.Context, id int) (Person, error) {
 	var i Person
 	err := row.Scan(
 		&i.ID,
+		&i.DisplayName,
 		&i.Username,
 		&i.Coins,
 		&i.IsGuest,
@@ -220,20 +223,22 @@ func (q *Queries) InsertAuthMethod(ctx context.Context, arg InsertAuthMethodPara
 }
 
 const insertPerson = `-- name: InsertPerson :one
-INSERT INTO persons (username, is_guest)
-VALUES ($1, $2) RETURNING id, username, coins, is_guest, merged_at, updated_at, created_at
+INSERT INTO persons (username,display_name, is_guest)
+VALUES ($1,$2, $3) RETURNING id, display_name, username, coins, is_guest, merged_at, updated_at, created_at
 `
 
 type InsertPersonParams struct {
-	Username string
-	IsGuest  bool
+	Username    string
+	DisplayName string
+	IsGuest     bool
 }
 
 func (q *Queries) InsertPerson(ctx context.Context, arg InsertPersonParams) (Person, error) {
-	row := q.db.QueryRow(ctx, insertPerson, arg.Username, arg.IsGuest)
+	row := q.db.QueryRow(ctx, insertPerson, arg.Username, arg.DisplayName, arg.IsGuest)
 	var i Person
 	err := row.Scan(
 		&i.ID,
+		&i.DisplayName,
 		&i.Username,
 		&i.Coins,
 		&i.IsGuest,
@@ -242,6 +247,37 @@ func (q *Queries) InsertPerson(ctx context.Context, arg InsertPersonParams) (Per
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const searchPersonByUsername = `-- name: SearchPersonByUsername :many
+SELECT id,username,display_name FROM persons
+WHERE username LIKE $1 || '%' ORDER BY username LIMIT 5
+`
+
+type SearchPersonByUsernameRow struct {
+	ID          int
+	Username    string
+	DisplayName string
+}
+
+func (q *Queries) SearchPersonByUsername(ctx context.Context, dollar_1 pgtype.Text) ([]SearchPersonByUsernameRow, error) {
+	rows, err := q.db.Query(ctx, searchPersonByUsername, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []SearchPersonByUsernameRow
+	for rows.Next() {
+		var i SearchPersonByUsernameRow
+		if err := rows.Scan(&i.ID, &i.Username, &i.DisplayName); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const updateMixedTgUserStatuses = `-- name: UpdateMixedTgUserStatuses :exec

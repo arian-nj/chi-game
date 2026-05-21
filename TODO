@@ -26,21 +26,26 @@
 # new era
 [X] tabs
 [X] remove rooms timer
+
 [X] friends top menu ui
-[ ] friends add friend functionality
-[ ] add display name
-[ ] list friends
-[ ] search friends
-[ ] chats page
+[X] add display name
+[X] friends add friend ui
+[X] search usernames backend
+[X] others profile page 
+[X] get current users relation with profile
+[X] request friendship 
+[X] delete request friendship
+[X] accept friendship request
 
-[ ] person can have multiple rooms
-[ ] list active rooms
-[ ] rooms with multiple users
-[ ] chat in rooms
+[ ] remove friend
+[ ] friend request list
+
+[ ] list chats (show friends and chats in rooms page)
+[ ] create group
+[ ] chat
+
+[ ] add game session seperate from rooms
 [ ] games list in db
-
-[ ] play with friends
-    [ ] room invite link
 
 [ ] add a per move time
 [ ] ai player
@@ -68,5 +73,6 @@
 [ ] Sea Battle
 
 # not needed now
+[ ] search friends and chats messages
 [ ] admin user
 [ ] screen looks white on new user when backend is off

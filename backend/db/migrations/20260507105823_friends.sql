@@ -15,5 +15,14 @@ WHERE status = 'pending';
 CREATE INDEX idx_friend_requests_sender ON friend_requests(sender_id, status);
 CREATE INDEX idx_friend_requests_receiver ON friend_requests(receiver_id, status);
 
+CREATE TABLE friends (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES persons(id),
+    friend_id BIGINT NOT NULL REFERENCES persons(id),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, friend_id),
+    CHECK (user_id != friend_id)
+);
+
 -- +goose Down
 SELECT 'down SQL query';

@@ -35,11 +35,16 @@ const (
 const (
 	// AccountServiceGetMeProcedure is the fully-qualified name of the AccountService's GetMe RPC.
 	AccountServiceGetMeProcedure = "/account.v1.AccountService/GetMe"
+	// AccountServiceGetPersonProcedure is the fully-qualified name of the AccountService's GetPerson
+	// RPC.
+	AccountServiceGetPersonProcedure = "/account.v1.AccountService/GetPerson"
 )
 
 // AccountServiceClient is a client for the account.v1.AccountService service.
 type AccountServiceClient interface {
 	GetMe(context.Context, *connect.Request[v1.GetMeRequest]) (*connect.Response[v1.GetMeResponse], error)
+	// get person by id
+	GetPerson(context.Context, *connect.Request[v1.GetPersonRequest]) (*connect.Response[v1.GetPersonResponse], error)
 }
 
 // NewAccountServiceClient constructs a client for the account.v1.AccountService service. By
@@ -59,12 +64,19 @@ func NewAccountServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(accountServiceMethods.ByName("GetMe")),
 			connect.WithClientOptions(opts...),
 		),
+		getPerson: connect.NewClient[v1.GetPersonRequest, v1.GetPersonResponse](
+			httpClient,
+			baseURL+AccountServiceGetPersonProcedure,
+			connect.WithSchema(accountServiceMethods.ByName("GetPerson")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // accountServiceClient implements AccountServiceClient.
 type accountServiceClient struct {
-	getMe *connect.Client[v1.GetMeRequest, v1.GetMeResponse]
+	getMe     *connect.Client[v1.GetMeRequest, v1.GetMeResponse]
+	getPerson *connect.Client[v1.GetPersonRequest, v1.GetPersonResponse]
 }
 
 // GetMe calls account.v1.AccountService.GetMe.
@@ -72,9 +84,16 @@ func (c *accountServiceClient) GetMe(ctx context.Context, req *connect.Request[v
 	return c.getMe.CallUnary(ctx, req)
 }
 
+// GetPerson calls account.v1.AccountService.GetPerson.
+func (c *accountServiceClient) GetPerson(ctx context.Context, req *connect.Request[v1.GetPersonRequest]) (*connect.Response[v1.GetPersonResponse], error) {
+	return c.getPerson.CallUnary(ctx, req)
+}
+
 // AccountServiceHandler is an implementation of the account.v1.AccountService service.
 type AccountServiceHandler interface {
 	GetMe(context.Context, *connect.Request[v1.GetMeRequest]) (*connect.Response[v1.GetMeResponse], error)
+	// get person by id
+	GetPerson(context.Context, *connect.Request[v1.GetPersonRequest]) (*connect.Response[v1.GetPersonResponse], error)
 }
 
 // NewAccountServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -90,10 +109,18 @@ func NewAccountServiceHandler(svc AccountServiceHandler, opts ...connect.Handler
 		connect.WithSchema(accountServiceMethods.ByName("GetMe")),
 		connect.WithHandlerOptions(opts...),
 	)
+	accountServiceGetPersonHandler := connect.NewUnaryHandler(
+		AccountServiceGetPersonProcedure,
+		svc.GetPerson,
+		connect.WithSchema(accountServiceMethods.ByName("GetPerson")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/account.v1.AccountService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case AccountServiceGetMeProcedure:
 			accountServiceGetMeHandler.ServeHTTP(w, r)
+		case AccountServiceGetPersonProcedure:
+			accountServiceGetPersonHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -105,4 +132,8 @@ type UnimplementedAccountServiceHandler struct{}
 
 func (UnimplementedAccountServiceHandler) GetMe(context.Context, *connect.Request[v1.GetMeRequest]) (*connect.Response[v1.GetMeResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("account.v1.AccountService.GetMe is not implemented"))
+}
+
+func (UnimplementedAccountServiceHandler) GetPerson(context.Context, *connect.Request[v1.GetPersonRequest]) (*connect.Response[v1.GetPersonResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("account.v1.AccountService.GetPerson is not implemented"))
 }

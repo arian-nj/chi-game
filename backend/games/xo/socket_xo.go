@@ -184,12 +184,12 @@ func (sl *SocketListener) SendEndGameSocket(endGameCommand *EndGameCommand) {
 					EndGame: &xo_gamev1.EndGame{
 						Reason: reason,
 						Winner: &accountv1.Account{
-							Id:   int64(endGameCommand.Winner.ID),
-							Name: endGameCommand.Winner.Name,
+							Id:       int64(endGameCommand.Winner.ID),
+							Username: endGameCommand.Winner.Name,
 						},
 						Loser: &accountv1.Account{
-							Id:   int64(endGameCommand.Loser.ID),
-							Name: endGameCommand.Loser.Name,
+							Id:       int64(endGameCommand.Loser.ID),
+							Username: endGameCommand.Loser.Name,
 						},
 					},
 				},

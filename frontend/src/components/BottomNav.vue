@@ -6,7 +6,7 @@ import { useRoute } from 'vue-router';
 const route = useRoute();
 
 const navItems = [
-  { path: '/profile', label: '👤', icon: 'user-o' },
+  { path: '/me', label: '👤', icon: 'me-o' },
   { path: '/', label: '🏠', icon: 'main-o' },
   { path: '/friends', label: '🫂', icon: 'friends-o' },
 ];

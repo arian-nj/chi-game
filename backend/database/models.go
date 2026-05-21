@@ -5,8 +5,91 @@
 package database
 
 import (
+	"database/sql/driver"
+	"fmt"
+
 	"github.com/jackc/pgx/v5/pgtype"
 )
+
+type ChatType string
+
+const (
+	ChatTypeDirect ChatType = "direct"
+	ChatTypeGroup  ChatType = "group"
+)
+
+func (e *ChatType) Scan(src interface{}) error {
+	switch s := src.(type) {
+	case []byte:
+		*e = ChatType(s)
+	case string:
+		*e = ChatType(s)
+	default:
+		return fmt.Errorf("unsupported scan type for ChatType: %T", src)
+	}
+	return nil
+}
+
+type NullChatType struct {
+	ChatType ChatType
+	Valid    bool // Valid is true if ChatType is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (ns *NullChatType) Scan(value interface{}) error {
+	if value == nil {
+		ns.ChatType, ns.Valid = "", false
+		return nil
+	}
+	ns.Valid = true
+	return ns.ChatType.Scan(value)
+}
+
+// Value implements the driver Valuer interface.
+func (ns NullChatType) Value() (driver.Value, error) {
+	if !ns.Valid {
+		return nil, nil
+	}
+	return string(ns.ChatType), nil
+}
+
+type Chat struct {
+	ID        int
+	Type      ChatType
+	Name      pgtype.Text
+	CreatedBy int
+	CreatedAt pgtype.Timestamptz
+	UpdatedAt pgtype.Timestamptz
+	DeletedAt pgtype.Timestamptz
+}
+
+type ChatMessage struct {
+	ID               int
+	ChatID           int
+	SenderUserID     int
+	Content          string
+	ReplyToMessageID pgtype.Int8
+	SentAt           pgtype.Timestamptz
+	EditedAt         pgtype.Timestamptz
+	DeletedAt        pgtype.Timestamptz
+}
+
+type ChatParticipant struct {
+	ID                int
+	ChatID            int
+	UserID            int
+	Role              string
+	JoinedAt          pgtype.Timestamptz
+	LeftAt            pgtype.Timestamptz
+	LastReadMessageID pgtype.Int8
+}
+
+type Friend struct {
+	ID        int
+	UserID    int
+	FriendID  int
+	CreatedAt pgtype.Timestamptz
+}
 
 type FriendRequest struct {
 	ID         int
@@ -27,14 +110,24 @@ type Game struct {
 	CreatedAt   pgtype.Timestamptz
 }
 
-type Person struct {
+type MessageAttachment struct {
 	ID        int
-	Username  string
-	Coins     int32
-	IsGuest   bool
-	MergedAt  pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
-	CreatedAt pgtype.Timestamp
+	MessageID int
+	FileUrl   string
+	FileType  pgtype.Text
+	FileName  pgtype.Text
+	FileSize  pgtype.Int8
+}
+
+type Person struct {
+	ID          int
+	DisplayName string
+	Username    string
+	Coins       int32
+	IsGuest     bool
+	MergedAt    pgtype.Timestamp
+	UpdatedAt   pgtype.Timestamp
+	CreatedAt   pgtype.Timestamp
 }
 
 type PersonAuthMethod struct {
