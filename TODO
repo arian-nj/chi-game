@@ -48,10 +48,10 @@
 [X] friend request as a chat base
 [X] basic chat listing
 [X] chat messages
+[X] better chat ui
 
-[ ] accept/reject friend request ui in chat
-
-[ ] seperate tabs for friends and request
+[ ] accept/reject friend request button in chat
+[ ] seperate tabs for friends and requesteds
 
 [ ] remove friend
 

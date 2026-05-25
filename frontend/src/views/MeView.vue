@@ -38,7 +38,7 @@ const { isPending, error, data } = useQuery({
         </div>
         <div 
           v-else-if="data?.account"
-          class="bg-white/10 p-8 rounded-2xl shadow-lg flex flex-col items-center gap-3 w-[360px] max-w-full"
+          class="bg-white/10 p-8 rounded-2xl shadow-lg flex flex-col items-center gap-3 w-90 max-w-full"
         >
             <img 
               :src="profilePic" 
