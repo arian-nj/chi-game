@@ -20,7 +20,7 @@ LIMIT 20;
 SELECT * FROM chat_messages
 WHERE chat_room_id_ref = $1 AND deleted_at IS NULL
 ORDER BY sent_at DESC
-LIMIT 20;
+LIMIT 100;
 
 -- name: GetAllChatsOfUser :many
 SELECT 

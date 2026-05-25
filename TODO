@@ -48,14 +48,14 @@
 [X] friend request as a chat base
 [X] basic chat listing
 [X] chat messages
-[ ] accept/reject friend request ui
+
+[ ] accept/reject friend request ui in chat
 
 [ ] seperate tabs for friends and request
 
 [ ] remove friend
 
 
-[ ] create group
 
 [ ] add game session seperate from rooms
 [ ] games list in db
@@ -67,8 +67,12 @@
 
 [ ] right last updated (for removing inactive accounts)
 
+[ ] create group
+[ ] load older messages
+
 # Profile
 [ ] profile page
+[ ] change display name
 [ ] change username (only authenticated users)
 
 [ ] invite bonus

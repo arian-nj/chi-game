@@ -35,11 +35,6 @@ const showBottomNav = computed(() => {
           class="flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 active:scale-95 focus:outline-none"
           :class="isActive ? 'bg-gray-200/10' : 'hover:bg-gray-200/50'"
         >
-          <van-icon
-            :name="item.icon"
-            class="text-2xl transition-transform duration-200"
-            :class="isActive ? 'scale-105' : ''"
-          />
           <span 
             class="text-3xl mt-0.5 transition-transform duration-200"
             :class="isActive ? 'scale-110' : ''"

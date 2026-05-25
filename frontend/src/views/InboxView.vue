@@ -53,9 +53,10 @@ function hideFriendsPage() {
 
 const queryClient = useQueryClient()
 // query every 2 seconds
-setInterval(() => {
+const pollInterval = setInterval(() => {
 	queryClient.invalidateQueries({ queryKey: ['chats'] })
-}, 2_000)
+}, 4_000)
+onUnmounted(() => clearInterval(pollInterval))
 
 const { data: chatsData } = useQuery({
 	queryKey: ['chats'],

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { createClient } from '@connectrpc/connect';
 import ChatInput from '../components/chat/ChatInput.vue';
-import { ChatService, type Message as ChatMessage } from '../gen/chat/v1/chat_pb';
+import { ChatService } from '../gen/chat/v1/chat_pb';
 import { authTransport } from '../lib/transport';
-import { ref, watch } from 'vue';
+import { computed, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useToast } from '../components/Toast.vue';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
@@ -16,9 +16,7 @@ import ChatBubble from '../components/chat/ChatBubble.vue';
 const { toast } = useToast()
 
 const route = useRoute()
-const chatId = ref<number>(
-    Number(route.params.id)
-)
+const chatId = computed(() => Number(route.params.id))
 const { data:meData } = useQuery({
   queryKey: ['me'],
   staleTime: 0,
@@ -30,7 +28,7 @@ const { data:meData } = useQuery({
   }
 })
 
-const messagesQueryKey = [`chat-${chatId.value}-messages`]
+const messagesQueryKey = computed(() => [`chat-${chatId.value}-messages`])
 
 const queryClient = useQueryClient()
 async function sendMessage(msgText: string) {
@@ -49,33 +47,27 @@ async function sendMessage(msgText: string) {
         toast.error("خطا در ارسال پیام")
         console.error(error)
     }
-    queryClient.invalidateQueries({ queryKey: messagesQueryKey })
+    queryClient.invalidateQueries({ queryKey: messagesQueryKey.value })
 
 }
-
-const allChatMessages = ref(Array<ChatMessage>())
-
 
 const { data: allChatMessagesData } = useQuery({
     queryKey: messagesQueryKey,
     queryFn: async () => {
         const chatClient = createClient(ChatService, authTransport)
         const data = await chatClient.getMessages({ chatId: BigInt(chatId.value) })
-        console.log(data)
         return data
     }
 })
-setInterval(() => {
-	queryClient.invalidateQueries({ queryKey: messagesQueryKey })
-}, 3_000)
 
-watch(allChatMessagesData, () => {
-    allChatMessages.value = []
-    const reversedMessages = [...(allChatMessagesData.value?.messages || [])].reverse()
-    reversedMessages.forEach(msg => {
-        allChatMessages.value.push(msg)
-    })
-})
+const allChatMessages = computed(() =>
+    [...(allChatMessagesData.value?.messages ?? [])].reverse()
+)
+
+const pollInterval = setInterval(() => {
+    queryClient.invalidateQueries({ queryKey: messagesQueryKey.value })
+}, 3_000)
+onUnmounted(() => clearInterval(pollInterval))
 
 </script>
 
@@ -84,10 +76,14 @@ watch(allChatMessagesData, () => {
 
 <div class="z-50 absolute bottom-0 bg-neutral-600 h-screen w-screen flex flex-col overflow-y-hidden">
     <!-- messages -->
-    <div class="flex flex-col w-full h-full justify-end font-[Rubik] overflow-y-auto lg:max-w-1/2 m-auto">
-        <div class="flex flex-col w-full h-full">
-            <ChatBubble v-for="msg in allChatMessages" :text="msg.content" :is-me="meData!.account?.id == msg.senderPersonId" />
+    <div class="flex flex-col w-full h-full justify-end font-[Rubik] text-lg overflow-y-auto lg:max-w-1/2 m-auto">
+        <div class="flex flex-col w-full h-full px-1.5">
+            <ChatBubble class="py-1" 
+                v-for="msg in allChatMessages" 
+                :text="msg.content" 
+                :is-me="meData!.account?.id == msg.senderPersonId" />
         </div>
+
     </div>
     <!-- input -->
     <div class="relative">
