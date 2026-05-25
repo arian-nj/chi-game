@@ -6,18 +6,18 @@ import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegen
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { Message } from "@bufbuild/protobuf";
+import type { Message as Message$1 } from "@bufbuild/protobuf";
 
 /**
  * Describes the file chat/v1/chat.proto.
  */
 export const file_chat_v1_chat: GenFile = /*@__PURE__*/
-  fileDesc("ChJjaGF0L3YxL2NoYXQucHJvdG8SB2NoYXQudjEiYwoEQ2hhdBIKCgJpZBgBIAEoAxIRCgljaGF0X3R5cGUYAiABKAkSDAoEbmFtZRgDIAEoCRIuCgp1cGRhdGVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCIUChJHZXRBbGxDaGF0c1JlcXVlc3QiMwoTR2V0QWxsQ2hhdHNSZXNwb25zZRIcCgVjaGF0cxgBIAMoCzINLmNoYXQudjEuQ2hhdDINCgtDaGF0U2VydmljZUKNAQoLY29tLmNoYXQudjFCCUNoYXRQcm90b1ABWjZnaXRodWIuY29tL2FyaWFuLW5qL2NoaWdhbWUvYmFja2VuZC9nZW4vY2hhdC92MTtjaGF0djGiAgNDWFiqAgdDaGF0LlYxygIHQ2hhdFxWMeICE0NoYXRcVjFcR1BCTWV0YWRhdGHqAghDaGF0OjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp]);
+  fileDesc("ChJjaGF0L3YxL2NoYXQucHJvdG8SB2NoYXQudjEiYwoEQ2hhdBIKCgJpZBgBIAEoAxIRCgljaGF0X3R5cGUYAiABKAkSDAoEbmFtZRgDIAEoCRIuCgp1cGRhdGVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCLDAQoHTWVzc2FnZRIKCgJpZBgBIAEoAxIPCgdjaGF0X2lkGAIgASgDEg8KB2NvbnRlbnQYAyABKAkSKwoHc2VudF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLQoJZWRpdGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgpkZWxldGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCIUChJHZXRBbGxDaGF0c1JlcXVlc3QiMwoTR2V0QWxsQ2hhdHNSZXNwb25zZRIcCgVjaGF0cxgBIAMoCzINLmNoYXQudjEuQ2hhdCIlChJHZXRNZXNzYWdlc1JlcXVlc3QSDwoHY2hhdF9pZBgBIAEoAyI5ChNHZXRNZXNzYWdlc1Jlc3BvbnNlEiIKCG1lc3NhZ2VzGAEgAygLMhAuY2hhdC52MS5NZXNzYWdlIjYKElNlbmRNZXNzYWdlUmVxdWVzdBIPCgdjaGF0X2lkGAEgASgDEg8KB2NvbnRlbnQYAiABKAkiOAoTU2VuZE1lc3NhZ2VSZXNwb25zZRIhCgdtZXNzYWdlGAEgASgLMhAuY2hhdC52MS5NZXNzYWdlMvEBCgtDaGF0U2VydmljZRJKCgtHZXRBbGxDaGF0cxIbLmNoYXQudjEuR2V0QWxsQ2hhdHNSZXF1ZXN0GhwuY2hhdC52MS5HZXRBbGxDaGF0c1Jlc3BvbnNlIgASSgoLR2V0TWVzc2FnZXMSGy5jaGF0LnYxLkdldE1lc3NhZ2VzUmVxdWVzdBocLmNoYXQudjEuR2V0TWVzc2FnZXNSZXNwb25zZSIAEkoKC1NlbmRNZXNzYWdlEhsuY2hhdC52MS5TZW5kTWVzc2FnZVJlcXVlc3QaHC5jaGF0LnYxLlNlbmRNZXNzYWdlUmVzcG9uc2UiAEKNAQoLY29tLmNoYXQudjFCCUNoYXRQcm90b1ABWjZnaXRodWIuY29tL2FyaWFuLW5qL2NoaWdhbWUvYmFja2VuZC9nZW4vY2hhdC92MTtjaGF0djGiAgNDWFiqAgdDaGF0LlYxygIHQ2hhdFxWMeICE0NoYXRcVjFcR1BCTWV0YWRhdGHqAghDaGF0OjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message chat.v1.Chat
  */
-export type Chat = Message<"chat.v1.Chat"> & {
+export type Chat = Message$1<"chat.v1.Chat"> & {
   /**
    * @generated from field: int64 id = 1;
    */
@@ -47,9 +47,51 @@ export const ChatSchema: GenMessage<Chat> = /*@__PURE__*/
   messageDesc(file_chat_v1_chat, 0);
 
 /**
+ * @generated from message chat.v1.Message
+ */
+export type Message = Message$1<"chat.v1.Message"> & {
+  /**
+   * @generated from field: int64 id = 1;
+   */
+  id: bigint;
+
+  /**
+   * @generated from field: int64 chat_id = 2;
+   */
+  chatId: bigint;
+
+  /**
+   * @generated from field: string content = 3;
+   */
+  content: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp sent_at = 4;
+   */
+  sentAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp edited_at = 5;
+   */
+  editedAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp deleted_at = 6;
+   */
+  deletedAt?: Timestamp;
+};
+
+/**
+ * Describes the message chat.v1.Message.
+ * Use `create(MessageSchema)` to create a new message.
+ */
+export const MessageSchema: GenMessage<Message> = /*@__PURE__*/
+  messageDesc(file_chat_v1_chat, 1);
+
+/**
  * @generated from message chat.v1.GetAllChatsRequest
  */
-export type GetAllChatsRequest = Message<"chat.v1.GetAllChatsRequest"> & {
+export type GetAllChatsRequest = Message$1<"chat.v1.GetAllChatsRequest"> & {
 };
 
 /**
@@ -57,12 +99,12 @@ export type GetAllChatsRequest = Message<"chat.v1.GetAllChatsRequest"> & {
  * Use `create(GetAllChatsRequestSchema)` to create a new message.
  */
 export const GetAllChatsRequestSchema: GenMessage<GetAllChatsRequest> = /*@__PURE__*/
-  messageDesc(file_chat_v1_chat, 1);
+  messageDesc(file_chat_v1_chat, 2);
 
 /**
  * @generated from message chat.v1.GetAllChatsResponse
  */
-export type GetAllChatsResponse = Message<"chat.v1.GetAllChatsResponse"> & {
+export type GetAllChatsResponse = Message$1<"chat.v1.GetAllChatsResponse"> & {
   /**
    * @generated from field: repeated chat.v1.Chat chats = 1;
    */
@@ -74,14 +116,114 @@ export type GetAllChatsResponse = Message<"chat.v1.GetAllChatsResponse"> & {
  * Use `create(GetAllChatsResponseSchema)` to create a new message.
  */
 export const GetAllChatsResponseSchema: GenMessage<GetAllChatsResponse> = /*@__PURE__*/
-  messageDesc(file_chat_v1_chat, 2);
+  messageDesc(file_chat_v1_chat, 3);
 
 /**
- * rpc GetAllChats(GetAllChatsRequest) (GetAllChatsResponse){};
+ * @generated from message chat.v1.GetMessagesRequest
+ */
+export type GetMessagesRequest = Message$1<"chat.v1.GetMessagesRequest"> & {
+  /**
+   * @generated from field: int64 chat_id = 1;
+   */
+  chatId: bigint;
+};
+
+/**
+ * Describes the message chat.v1.GetMessagesRequest.
+ * Use `create(GetMessagesRequestSchema)` to create a new message.
+ */
+export const GetMessagesRequestSchema: GenMessage<GetMessagesRequest> = /*@__PURE__*/
+  messageDesc(file_chat_v1_chat, 4);
+
+/**
+ * @generated from message chat.v1.GetMessagesResponse
+ */
+export type GetMessagesResponse = Message$1<"chat.v1.GetMessagesResponse"> & {
+  /**
+   * @generated from field: repeated chat.v1.Message messages = 1;
+   */
+  messages: Message[];
+};
+
+/**
+ * Describes the message chat.v1.GetMessagesResponse.
+ * Use `create(GetMessagesResponseSchema)` to create a new message.
+ */
+export const GetMessagesResponseSchema: GenMessage<GetMessagesResponse> = /*@__PURE__*/
+  messageDesc(file_chat_v1_chat, 5);
+
+/**
+ * @generated from message chat.v1.SendMessageRequest
+ */
+export type SendMessageRequest = Message$1<"chat.v1.SendMessageRequest"> & {
+  /**
+   * @generated from field: int64 chat_id = 1;
+   */
+  chatId: bigint;
+
+  /**
+   * @generated from field: string content = 2;
+   */
+  content: string;
+};
+
+/**
+ * Describes the message chat.v1.SendMessageRequest.
+ * Use `create(SendMessageRequestSchema)` to create a new message.
+ */
+export const SendMessageRequestSchema: GenMessage<SendMessageRequest> = /*@__PURE__*/
+  messageDesc(file_chat_v1_chat, 6);
+
+/**
+ * @generated from message chat.v1.SendMessageResponse
+ */
+export type SendMessageResponse = Message$1<"chat.v1.SendMessageResponse"> & {
+  /**
+   * @generated from field: chat.v1.Message message = 1;
+   */
+  message?: Message;
+};
+
+/**
+ * Describes the message chat.v1.SendMessageResponse.
+ * Use `create(SendMessageResponseSchema)` to create a new message.
+ */
+export const SendMessageResponseSchema: GenMessage<SendMessageResponse> = /*@__PURE__*/
+  messageDesc(file_chat_v1_chat, 7);
+
+/**
+ * GetAllChats        → inbox
+ * GetMessages        → thread (cursor/limit)
+ * SendMessage        → send + return created message
+ * MarkRead           → optional but nice early (you have SetLastReadId SQL)
  *
  * @generated from service chat.v1.ChatService
  */
 export const ChatService: GenService<{
+  /**
+   * @generated from rpc chat.v1.ChatService.GetAllChats
+   */
+  getAllChats: {
+    methodKind: "unary";
+    input: typeof GetAllChatsRequestSchema;
+    output: typeof GetAllChatsResponseSchema;
+  },
+  /**
+   * @generated from rpc chat.v1.ChatService.GetMessages
+   */
+  getMessages: {
+    methodKind: "unary";
+    input: typeof GetMessagesRequestSchema;
+    output: typeof GetMessagesResponseSchema;
+  },
+  /**
+   * @generated from rpc chat.v1.ChatService.SendMessage
+   */
+  sendMessage: {
+    methodKind: "unary";
+    input: typeof SendMessageRequestSchema;
+    output: typeof SendMessageResponseSchema;
+  },
 }> = /*@__PURE__*/
   serviceDesc(file_chat_v1_chat, 0);
 

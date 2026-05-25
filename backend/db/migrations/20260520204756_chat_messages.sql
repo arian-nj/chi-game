@@ -6,8 +6,8 @@ CREATE TABLE chat_messages (
     content TEXT NOT NULL,
     reply_to_message_id BIGINT NULL REFERENCES chat_messages(id) ON DELETE SET NULL,
     sent_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-    edited_at TIMESTAMPTZ NULL,
     deleted_at TIMESTAMPTZ NULL                -- soft delete (message removed for everyone)
+    
 );
 
 CREATE INDEX idx_chat_messages_chat_id_sent_at ON chat_messages(chat_id, sent_at);

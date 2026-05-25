@@ -41,8 +41,9 @@
 [ ] friend request list
 
 [ ] list chats (show friends and chats in rooms page)
-[ ] create group
 [ ] chat
+
+[ ] create group
 
 [ ] add game session seperate from rooms
 [ ] games list in db

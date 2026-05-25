@@ -30,4 +30,7 @@ case $COMMAND in
 		cd ..
 		echo "The End"
 		;;
+	sqlc)
+		generate_sqlc
+		;;
 esac

@@ -8,7 +8,7 @@ const route = useRoute();
 const navItems = [
   { path: '/me', label: '👤', icon: 'me-o' },
   { path: '/', label: '🏠', icon: 'main-o' },
-  { path: '/friends', label: '🫂', icon: 'friends-o' },
+  { path: '/inbox', label: '🫂', icon: 'inbox-o' },
 ];
 const showBottomNav = computed(() => {
   return route.meta.showBottomNav !== false; // Default to true if not specified

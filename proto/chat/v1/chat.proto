@@ -4,10 +4,6 @@ package chat.v1;
 
 import "google/protobuf/timestamp.proto";
 
-service ChatService {
-  // rpc GetAllChats(GetAllChatsRequest) (GetAllChatsResponse){};
-}
-
 message Chat{
   int64 id = 1;
   string chat_type = 2;
@@ -15,9 +11,46 @@ message Chat{
   google.protobuf.Timestamp updated_at = 4;
 }
 
+message Message {
+  int64 id = 1;
+  int64 chat_id = 2;
+  string content = 3;
+  google.protobuf.Timestamp sent_at = 4;
+  google.protobuf.Timestamp edited_at = 5;
+  google.protobuf.Timestamp deleted_at = 6;
+}
+
+
+// GetAllChats        → inbox
+// GetMessages        → thread (cursor/limit)
+// SendMessage        → send + return created message
+// MarkRead           → optional but nice early (you have SetLastReadId SQL)
+service ChatService {
+  rpc GetAllChats(GetAllChatsRequest) returns (GetAllChatsResponse) {}
+  rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse) {}
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse) {}
+}
+
 message GetAllChatsRequest {
 }
 
 message GetAllChatsResponse {
   repeated Chat chats = 1;
+}
+
+message GetMessagesRequest {
+  int64 chat_id = 1;
+}
+
+message GetMessagesResponse {
+  repeated Message messages = 1;
+}
+
+message SendMessageRequest {
+  int64 chat_id = 1;
+  string content = 2;
+}
+
+message SendMessageResponse {
+  Message message = 1;
 }

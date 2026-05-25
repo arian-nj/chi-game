@@ -1,7 +1,9 @@
 # Chi Game
+a social game platform that let's prople talk to each other and and play games
+xo connect 4 backgommon uno and etc...
+
 
 ## Prepare
-
 ### protobuf + rpc
 note: not a good idea to install globaly but ...
 ```bash

@@ -16,7 +16,7 @@ const remainingTime = computed(() => {
   return totalTime.value - spentTime.value
 })
 
-let name = props.account.diplayName;
+let name = props.account.displayName;
 if (name.length > 10) {
   name = name.slice(0, 10) + "...";
 }

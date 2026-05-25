@@ -16,7 +16,8 @@ import { IsReleaseMode } from "./ReleaseMode";
 //
 export const GetApiUrl = () => {
   if (IsReleaseMode) {
-    return "https://api.chigame.site"
+    // return "https://api.chigame.site"
+    return "http://localhost:8383";
   }
   return "http://localhost:8383";
 }

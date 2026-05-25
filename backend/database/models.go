@@ -70,7 +70,6 @@ type ChatMessage struct {
 	Content          string
 	ReplyToMessageID pgtype.Int8
 	SentAt           pgtype.Timestamptz
-	EditedAt         pgtype.Timestamptz
 	DeletedAt        pgtype.Timestamptz
 }
 

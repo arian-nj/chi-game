@@ -5,11 +5,12 @@ import { AccountService } from '../gen/account/v1/account_pb';
 import { authTransport } from '../lib/transport';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { FriendshipStatus, FriendsService } from '../gen/friends/v1/friends_pb';
 import { useToast } from '../components/Toast.vue';
 
 const routes = useRoute()
+const router = useRouter()
 const pid = Number(routes.params.id)
 
 const personId = ref(pid)
@@ -54,7 +55,7 @@ const sendFriendRequest = async () => {
 }
 
 const sendMessage = () => {
-    alert('Opening message dialog...');
+    router.push(`/chat/${personId.value}`)
 }
 
 const cancelFriendRequest = async () => {

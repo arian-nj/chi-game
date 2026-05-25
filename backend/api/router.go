@@ -7,6 +7,7 @@ import (
 	connectcors "connectrpc.com/cors"
 	"github.com/arian-nj/chigame/backend/gen/account/v1/accountv1connect"
 	"github.com/arian-nj/chigame/backend/gen/auth/v1/authv1connect"
+	"github.com/arian-nj/chigame/backend/gen/chat/v1/chatv1connect"
 	"github.com/arian-nj/chigame/backend/gen/friends/v1/friendsv1connect"
 	"github.com/arian-nj/chigame/backend/gen/healthcheck/v1/healthcheckv1connect"
 	"github.com/arian-nj/chigame/backend/gen/room/v1/roomv1connect"
@@ -52,6 +53,9 @@ func (app *APIApplication) createRouter() http.Handler {
 
 	friendsPath, friendsHandler := friendsv1connect.NewFriendsServiceHandler(app)
 	mux.Handle(friendsPath, friendsHandler)
+
+	chatPath, chatHandler := chatv1connect.NewChatServiceHandler(app)
+	mux.Handle(chatPath, chatHandler)
 
 	mux.Handle("/api/room/", app.AuthenticateQuery(http.HandlerFunc(app.roomWebsocket)))
 	mux.Handle("/api/match_making/ticket/", app.AuthenticateQuery(http.HandlerFunc(app.finderWS)))

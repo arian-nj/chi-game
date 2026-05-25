@@ -3,7 +3,7 @@ import BackButton from '../BackButton.vue';
 import { createClient } from '@connectrpc/connect';
 import { FriendsService, type SearchForUsernameResponse } from '../../gen/friends/v1/friends_pb';
 import { authTransport } from '../../lib/transport';
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 

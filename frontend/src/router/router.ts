@@ -60,9 +60,9 @@ const router = createRouter({
       meta: { showBottomNav: false} 
     },
     {
-      path: '/friends',
-      name: 'friends',
-      component: () => import('../views/FriendsView.vue')
+      path: '/inbox',
+      name: 'inbox',
+      component: () => import('../views/InboxView.vue')
     },
     {
       path: '/me',
@@ -73,6 +73,11 @@ const router = createRouter({
       path: '/profile/:id',
       name: 'profile',
       component: () => import('../views/ProfileView.vue')
+    },
+    {
+      path: '/chat/:id',
+      name: 'chat',
+      component: () => import('../views/ChatView.vue')
     },
     // {
     //   path: '/card',
