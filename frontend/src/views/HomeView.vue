@@ -3,15 +3,10 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { createClient } from "@connectrpc/connect";
 import gsap from 'gsap'
-
-// import wasmUrl from "@lottiefiles/dotlottie-web/dist/dotlottie-player.wasm?url";
 import wasmUrl from "@lottiefiles/dotlottie-web/dotlottie-player.wasm?url";
-
-// import { switchInlineQuery } from '@telegram-apps/sdk';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { RoomService } from '../gen/room/v1/room_pb';
 import MeComponent from '../components/MeComponent.vue';
-import GameSelectorBtn from '../components/home/GameSelectorBtn.vue';
 import { authTransport } from '../lib/transport';
 import OnlineComponent from '../components/OnlineComponent.vue';
 import { useToast } from '../components/Toast.vue';
@@ -24,37 +19,38 @@ onMounted(() => {
 
 const router = useRouter()
 
-const games = ["xo3x3", "conn4"];
-// const games = ["xo3x3", "conn4","snake","apple","tart","mart","gart","sdar"];
-
-const selectedGame = ref(games[1])
+const games = [
+  { key: "xo3x3", name: "XO 3x3", emoji: "❌⭕" },
+  { key: "conn4", name: "Connect 4", emoji: "🟡🔴" }
+]
+const selectedGame = ref(games[1].key)
 
 const playBtnRef = ref<HTMLButtonElement | null>(null)
-
 watch(playBtnRef,() => {
   if (playBtnRef.value) {
     gsap.from(playBtnRef.value, {
       yPercent: 100,
       opacity: 0,
-      duration: 1,
+      duration: 0.8,
+      ease: 'power2.out'
     })
   }
 })
 
 const exitBtnRef = ref<HTMLButtonElement | null>(null)
 watch(exitBtnRef,()=>{
-    if (exitBtnRef.value) {
+  if (exitBtnRef.value) {
     gsap.from(exitBtnRef.value, {
       yPercent: 100,
       opacity: 0,
-      duration: 1,
+      duration: 0.8,
+      ease: 'power2.out'
     })
   }
 })
 
 function onPlayFriendsClick() {
 }
-
 
 let coolDownTime = 1_000
 const maxCoolDownTime = 32_000
@@ -78,7 +74,6 @@ const { data: hasRoomData } = useQuery({
     return false
   }
 })
-
 
 const hasRoom = computed(() => {
   if (hasRoomData.value && hasRoomData.value.hasRoom) {
@@ -107,65 +102,133 @@ async function handleExistRoom() {
     queryClient.invalidateQueries({queryKey:["hasRoom"]})
   }
 }
-
 </script>
 
 <template>
-<main class="h-screen">
-  <div
-      class="relative h-full w-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white overflow-hidden">
-      
-    <div class="flex justify-center pt-12">
-      <div class="bg-gray-900/60 p-6 rounded-2xl shadow-xl backdrop-blur-md border border-gray-700">
-        <div class="flex items-center gap-3">
+<main class="h-screen font-[Rubik] bg-linear-to-br from-[#01041B] via-[#0B122D] to-[#110D24]">
+  <div class="relative h-full w-screen text-white overflow-hidden">
+
+    <!-- Burst of color and subtle glowing particles behind main content -->
+    <div class="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
+      <div class="absolute top-[8%] left-[10%] w-80 h-80 bg-linear-to-br from-emerald-400 via-blue-700/20 to-pink-400/50 opacity-5 rounded-full blur-3xl animate-[pulse_5s_infinite]" />
+      <div class="absolute top-[60%] left-[45%] w-56 h-56 bg-linear-to-br from-pink-600 to-violet-600 opacity-10 rounded-full blur-3xl animate-[pulse_10s_infinite]" />
+      <div class="absolute bottom-[-10%] right-[10%] w-96 h-80 bg-linear-to-br from-[#ea00ff] to-cyan-500 opacity-10  rounded-full blur-3xl animate-[pulse_10s_infinite_2s]" />
+    </div>
+
+    <div class="flex justify-center pt-16 z-10 relative">
+      <div class="bg-linear-to-b from-gray-950 via-gray-900/80 to-gray-800/80 p-8 rounded-3xl shadow-2xl backdrop-blur-xl border border-gray-700 transition-all duration-500 hover:scale-[1.02]">
+        <div class="flex items-center gap-5 drop-shadow-lg">
           <OnlineComponent />
+          <span class="mx-2 w-0.5 h-12 bg-blue-700/30 rounded-xl"></span>
           <MeComponent />
         </div>
       </div>
     </div>
-    <!-- <div class="flex justify-center gap-2 pt-16 flex-wrap">
-        <GameSelectorBtn v-for="game in games" :key="game" :game-name="game" :selected="game == selectedGame"
-          @choosed="selectedGame = game" />
-    </div> -->
 
-    <!-- <div class="absolute bottom-0 left-0 w-full flex flex-col gap-1 items-center justify-center">
-      <button class="bg-linear-to-r to-cyan-500 from-pink-300
-                  rounded-2xl px-10 py-4
-                 text-2xl font-extrabold text-white tracking-wide
-                 shadow-lg hover:shadow-cyan-400/30
-                 hover:scale-105 active:scale-95
-                 transition-all duration-300 ease-in-out" @click="onPlayFriendsClick()">
-          🎮 بازی با دوستان
+    <!-- Game Selection Buttons -->
+    <div class="flex gap-4 justify-center pt-14 flex-wrap z-10 relative">
+      <div
+        v-for="game in games"
+        :key="game.key"
+        @click="selectedGame = game.key"
+        :class="[
+          'px-8 py-4 cursor-pointer rounded-2xl font-bold text-lg shadow-lg ring-1 ring-blue-800/20 border-none transition-all duration-300 select-none flex items-center gap-2',
+          'sm:w-40 sm:max-w-40 lg:w-60 lg:max-w-60',
+          'flex flex-col items-center justify-center',
+          selectedGame === game.key
+            ? 'bg-linear-to-tr text-white scale-105 shadow-2xl ring-4 ring-gray-50/80'
+            : 'bg-gray-800/80 text-blue-100 hover:bg-gray-700/70 hover:scale-105'
+        ]"
+      >
+        <div class="flex flex-col items-center gap-2 text-center">
+          <span class="text-3xl w-full text-center">{{ game.emoji }}</span>
+          <span class="text-lg w-full text-center">{{ game.name }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="absolute bottom-14 left-0 w-full flex flex-col items-center justify-center gap-4 px-4 pb-12 z-20">
+      <button
+        class="w-full md:w-2/3 bg-linear-to-tr from-violet-500 via-sky-400 to-emerald-400 hover:from-indigo-400 hover:to-fuchsia-400
+          rounded-3xl px-8 py-5
+          text-2xl font-extrabold text-white tracking-wide
+          shadow-xl hover:shadow-fuchsia-400/20 transition-all duration-300 ease-in-out
+          border-none flex items-center justify-center gap-3 group"
+        @click="onPlayFriendsClick"
+      >
+        <span class="text-3xl group-hover:animate-bounce">🎮</span> بازی با دوستان
       </button>
-        
-      <button v-if="hasRoom" ref="exitBtnRef" type="button" :disabled="selectedGame == ''" @click="handleExistRoom" :class="[
-          `w-1/3 py-6 text-3xl font-bold
-              focus:outline-none ring-2 ring-gray-900
-              transition-colors duration-400
-              rounded-3xl
-              `,
+
+      <transition name="fade-slide">
+        <button
+          v-if="hasRoom"
+          ref="exitBtnRef"
+          type="button"
+          :disabled="selectedGame == ''"
+          @click="handleExistRoom"
+          :class="[
+            `w-full md:w-2/3 py-5 text-2xl font-bold border-none rounded-3xl
+              focus:outline-none ring-2 ring-gray-900 shadow-xl
+              transition-all duration-400 flex items-center justify-center gap-2`,
+            selectedGame
+              ? 'bg-linear-to-r from-pink-400 to-red-500 text-white hover:opacity-95'
+              : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+          ]"
+        >
+          <span class="text-2xl animate-pulse">❌</span>
+          خروج از بازی قبلی
+        </button>
+      </transition>
+
+      <button
+        ref="playBtnRef"
+        type="button"
+        :disabled="selectedGame == ''"
+        @click="handlePlayClick"
+        :class="[
+          `w-full md:w-2/3 py-6 text-3xl font-bold rounded-3xl border-none
+            focus:outline-none focus:ring-4 focus:ring-pink-400/40
+            transition-all duration-400 shadow-2xl mt-2 flex items-center justify-center gap-3`,
           selectedGame
-            ? 'bg-linear-to-r to-red-400 from-pink-300 text-white hover:opacity-95 shadow-xl'
+            ? 'bg-linear-to-r from-emerald-400 via-cyan-500 to-green-500 text-white hover:opacity-95'
             : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-        ]">
-       ❌ خروج از بازی قبلی
+        ]"
+      >
+        <span v-if="hasRoom" class="material-icons animate-pulse text-white/90">play_circle</span>
+        <span v-else class="text-3xl animate-bounce">🚀</span>
+        {{ hasRoom ? "ادامه بازی" : "شروع بازی" }}
       </button>
-
-      <button ref="playBtnRef" type="button" :disabled="selectedGame == ''" @click="handlePlayClick" :class="[
-          `w-full py-6 text-3xl font-bold
-              focus:outline-none focus:ring-4 focus:ring-pink-400/40
-              transition-colors duration-400`,
-          selectedGame
-            ? 'bg-linear-to-r from-emerald-400 to-green-500 text-white hover:opacity-95 shadow-xl'
-            : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-        ]">
-          {{ hasRoom ?
-            "ادامه بازی"
-            : "🚀 شروع بازی" }}
-      </button>
-
-    </div> -->
-
+    </div>
   </div>
 </main>
 </template>
+
+<style scoped>
+@keyframes fade-slide-enter-active {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes fade-slide-leave-active {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+}
+.fade-slide-enter-active {
+  animation: fade-slide-enter-active .5s cubic-bezier(.4,2,.75,.82);
+}
+.fade-slide-leave-active {
+  animation: fade-slide-leave-active .4s cubic-bezier(.4,2,.75,.82);
+}
+</style>
