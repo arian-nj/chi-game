@@ -44,7 +44,7 @@ watch(chatHistoryData, () => {
 const allChatMessages = ref(Array<Message>())
 const showChat = ref(false)
 const chatInput = useTemplateRef('chat-input')
-const unreadCount = ref(0); // ✨ New state for unread messages
+const unreadCount = ref(0);
 
 watch(showChat, (isNowVisible) => {
   console.log("show " + isNowVisible)

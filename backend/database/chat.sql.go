@@ -49,26 +49,44 @@ func (q *Queries) DoesChatExist(ctx context.Context, arg DoesChatExistParams) (i
 }
 
 const getAllChatsOfUser = `-- name: GetAllChatsOfUser :many
-SELECT c.chat_room_id, c.created_at, c.updated_at, c.deleted_at
+SELECT 
+    c.chat_room_id,
+    c.created_at,
+    c.updated_at,
+    c.deleted_at,
+    other_p.person_id AS other_person_id
 FROM chat_rooms c
 JOIN chat_participants p ON p.chat_room_id_ref = c.chat_room_id
+JOIN chat_participants other_p ON other_p.chat_room_id_ref = c.chat_room_id
+    AND other_p.person_id != $1
+    AND other_p.left_at IS NULL
 WHERE p.person_id = $1 AND p.left_at IS NULL
+GROUP BY c.chat_room_id, c.created_at, c.updated_at, c.deleted_at, other_p.person_id
 `
 
-func (q *Queries) GetAllChatsOfUser(ctx context.Context, personID int) ([]ChatRoom, error) {
+type GetAllChatsOfUserRow struct {
+	ChatRoomID    int
+	CreatedAt     pgtype.Timestamptz
+	UpdatedAt     pgtype.Timestamptz
+	DeletedAt     pgtype.Timestamptz
+	OtherPersonID int
+}
+
+func (q *Queries) GetAllChatsOfUser(ctx context.Context, personID int) ([]GetAllChatsOfUserRow, error) {
 	rows, err := q.db.Query(ctx, getAllChatsOfUser, personID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ChatRoom
+	var items []GetAllChatsOfUserRow
 	for rows.Next() {
-		var i ChatRoom
+		var i GetAllChatsOfUserRow
 		if err := rows.Scan(
 			&i.ChatRoomID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DeletedAt,
+			&i.OtherPersonID,
 		); err != nil {
 			return nil, err
 		}

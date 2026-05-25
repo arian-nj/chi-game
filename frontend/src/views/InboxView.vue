@@ -52,10 +52,10 @@ function hideFriendsPage() {
 }
 
 const queryClient = useQueryClient()
-// query every 10 seconds
+// query every 2 seconds
 setInterval(() => {
 	queryClient.invalidateQueries({ queryKey: ['chats'] })
-}, 1_000)
+}, 2_000)
 
 const { data: chatsData } = useQuery({
 	queryKey: ['chats'],
@@ -66,6 +66,9 @@ const { data: chatsData } = useQuery({
 	}
 })
 
+function goToChat(chatRoomId: bigint) {
+	router.push(`/chat/${chatRoomId}`)
+}
 </script>
 
 <template>
@@ -77,9 +80,18 @@ const { data: chatsData } = useQuery({
 		</AddFriendButton>
 	</div>
 	
-	<div v-if="chatsData" class="bg-custom-lite-blue">
-		<div v-for="chat in chatsData.chats" :key="chat.id.toString()">
-			{{ chat.id }}
+	<div v-if="chatsData" class="bg-custom-lite-blue lg:max-w-1/2 mx-auto">
+		<div v-for="chat in chatsData.chats" :key="chat.chatRoomId.toString()" @click="goToChat(chat.chatRoomId)" 
+		class=" flex items-center py-2 pl-2 cursor-pointer">
+
+			<!-- Avatar Placeholder -->
+			<div class="w-12 h-12 rounded-full bg-linear-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white font-semibold text-xl">
+				{{ chat.otherPersonName.charAt(0).toUpperCase() }}
+			</div>
+			<div class="pl-4">
+				<p class="text-gray-100 text-xl font-bold">{{ chat.otherPersonName }}</p>
+				<p class="text-sm text-gray-300">last message here</p>
+			</div>
 		</div>
 	</div>
 	

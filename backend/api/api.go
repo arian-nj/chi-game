@@ -25,6 +25,7 @@ type APIApplication struct {
 	Queries     *database.Queries
 	AllRooms    *rooms.AllRooms
 	MatchMaking *matchmaking.MatchMaking
+	// InboxMap    *AllInbox
 }
 
 func NewAPIApplication(config *config.Config,
@@ -38,6 +39,7 @@ func NewAPIApplication(config *config.Config,
 		Queries:     queries,
 		AllRooms:    AllRoom,
 		MatchMaking: matchMaking,
+		// InboxMap:    NewAllInbox(),
 	}
 }
 

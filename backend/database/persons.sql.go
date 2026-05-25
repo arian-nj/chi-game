@@ -150,6 +150,43 @@ func (q *Queries) GetPersonByID(ctx context.Context, id int) (Person, error) {
 	return i, err
 }
 
+const getPersonsByIDs = `-- name: GetPersonsByIDs :many
+SELECT p.id, p.display_name, p.username, p.coins, p.is_guest, p.merged_at, p.updated_at, p.created_at
+FROM persons p
+JOIN unnest($1::bigint[]) WITH ORDINALITY AS t(id, ord)
+    ON p.id = t.id
+ORDER BY t.ord
+`
+
+func (q *Queries) GetPersonsByIDs(ctx context.Context, dollar_1 []int) ([]Person, error) {
+	rows, err := q.db.Query(ctx, getPersonsByIDs, dollar_1)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Person
+	for rows.Next() {
+		var i Person
+		if err := rows.Scan(
+			&i.ID,
+			&i.DisplayName,
+			&i.Username,
+			&i.Coins,
+			&i.IsGuest,
+			&i.MergedAt,
+			&i.UpdatedAt,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getTgUsersStatic = `-- name: GetTgUsersStatic :one
 SELECT
   COUNT(*) FILTER (WHERE is_active = TRUE) AS active_users,

@@ -23,13 +23,14 @@ const (
 )
 
 type Chat struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	ChatType      string                 `protobuf:"bytes,2,opt,name=chat_type,json=chatType,proto3" json:"chat_type,omitempty"`
-	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	ChatRoomId      int64                  `protobuf:"varint,1,opt,name=chat_room_id,json=chatRoomId,proto3" json:"chat_room_id,omitempty"`
+	ChatType        string                 `protobuf:"bytes,2,opt,name=chat_type,json=chatType,proto3" json:"chat_type,omitempty"`
+	OtherPersonId   int64                  `protobuf:"varint,3,opt,name=other_person_id,json=otherPersonId,proto3" json:"other_person_id,omitempty"`
+	OtherPersonName string                 `protobuf:"bytes,4,opt,name=other_person_name,json=otherPersonName,proto3" json:"other_person_name,omitempty"`
+	UpdatedAt       *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Chat) Reset() {
@@ -62,9 +63,9 @@ func (*Chat) Descriptor() ([]byte, []int) {
 	return file_chat_v1_chat_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Chat) GetId() int64 {
+func (x *Chat) GetChatRoomId() int64 {
 	if x != nil {
-		return x.Id
+		return x.ChatRoomId
 	}
 	return 0
 }
@@ -76,9 +77,16 @@ func (x *Chat) GetChatType() string {
 	return ""
 }
 
-func (x *Chat) GetName() string {
+func (x *Chat) GetOtherPersonId() int64 {
 	if x != nil {
-		return x.Name
+		return x.OtherPersonId
+	}
+	return 0
+}
+
+func (x *Chat) GetOtherPersonName() string {
+	if x != nil {
+		return x.OtherPersonName
 	}
 	return ""
 }
@@ -91,15 +99,16 @@ func (x *Chat) GetUpdatedAt() *timestamppb.Timestamp {
 }
 
 type Message struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	ChatId        int64                  `protobuf:"varint,2,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
-	Content       string                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
-	SentAt        *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=sent_at,json=sentAt,proto3" json:"sent_at,omitempty"`
-	EditedAt      *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=edited_at,json=editedAt,proto3" json:"edited_at,omitempty"`
-	DeletedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Id             int64                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	ChatId         int64                  `protobuf:"varint,2,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
+	Content        string                 `protobuf:"bytes,3,opt,name=content,proto3" json:"content,omitempty"`
+	SenderPersonId int64                  `protobuf:"varint,4,opt,name=sender_person_id,json=senderPersonId,proto3" json:"sender_person_id,omitempty"`
+	SentAt         *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=sent_at,json=sentAt,proto3" json:"sent_at,omitempty"`
+	EditedAt       *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=edited_at,json=editedAt,proto3" json:"edited_at,omitempty"`
+	DeletedAt      *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *Message) Reset() {
@@ -151,6 +160,13 @@ func (x *Message) GetContent() string {
 		return x.Content
 	}
 	return ""
+}
+
+func (x *Message) GetSenderPersonId() int64 {
+	if x != nil {
+		return x.SenderPersonId
+	}
+	return 0
 }
 
 func (x *Message) GetSentAt() *timestamppb.Timestamp {
@@ -255,10 +271,11 @@ func (x *GetAllChatsResponse) GetChats() []*Chat {
 }
 
 type GetMessagesRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ChatId        int64                  `protobuf:"varint,1,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	ChatId               int64                  `protobuf:"varint,1,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
+	LastMessageTimestamp *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=last_message_timestamp,json=lastMessageTimestamp,proto3" json:"last_message_timestamp,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *GetMessagesRequest) Reset() {
@@ -296,6 +313,13 @@ func (x *GetMessagesRequest) GetChatId() int64 {
 		return x.ChatId
 	}
 	return 0
+}
+
+func (x *GetMessagesRequest) GetLastMessageTimestamp() *timestamppb.Timestamp {
+	if x != nil {
+		return x.LastMessageTimestamp
+	}
+	return nil
 }
 
 type GetMessagesResponse struct {
@@ -442,26 +466,30 @@ var File_chat_v1_chat_proto protoreflect.FileDescriptor
 
 const file_chat_v1_chat_proto_rawDesc = "" +
 	"\n" +
-	"\x12chat/v1/chat.proto\x12\achat.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x82\x01\n" +
-	"\x04Chat\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x1b\n" +
-	"\tchat_type\x18\x02 \x01(\tR\bchatType\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x129\n" +
+	"\x12chat/v1/chat.proto\x12\achat.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd4\x01\n" +
+	"\x04Chat\x12 \n" +
+	"\fchat_room_id\x18\x01 \x01(\x03R\n" +
+	"chatRoomId\x12\x1b\n" +
+	"\tchat_type\x18\x02 \x01(\tR\bchatType\x12&\n" +
+	"\x0fother_person_id\x18\x03 \x01(\x03R\rotherPersonId\x12*\n" +
+	"\x11other_person_name\x18\x04 \x01(\tR\x0fotherPersonName\x129\n" +
 	"\n" +
-	"updated_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xf5\x01\n" +
+	"updated_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x9f\x02\n" +
 	"\aMessage\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x17\n" +
 	"\achat_id\x18\x02 \x01(\x03R\x06chatId\x12\x18\n" +
-	"\acontent\x18\x03 \x01(\tR\acontent\x123\n" +
-	"\asent_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\x06sentAt\x127\n" +
-	"\tedited_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\beditedAt\x129\n" +
+	"\acontent\x18\x03 \x01(\tR\acontent\x12(\n" +
+	"\x10sender_person_id\x18\x04 \x01(\x03R\x0esenderPersonId\x123\n" +
+	"\asent_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\x06sentAt\x127\n" +
+	"\tedited_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\beditedAt\x129\n" +
 	"\n" +
-	"deleted_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tdeletedAt\"\x14\n" +
+	"deleted_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tdeletedAt\"\x14\n" +
 	"\x12GetAllChatsRequest\":\n" +
 	"\x13GetAllChatsResponse\x12#\n" +
-	"\x05chats\x18\x01 \x03(\v2\r.chat.v1.ChatR\x05chats\"-\n" +
+	"\x05chats\x18\x01 \x03(\v2\r.chat.v1.ChatR\x05chats\"\x7f\n" +
 	"\x12GetMessagesRequest\x12\x17\n" +
-	"\achat_id\x18\x01 \x01(\x03R\x06chatId\"C\n" +
+	"\achat_id\x18\x01 \x01(\x03R\x06chatId\x12P\n" +
+	"\x16last_message_timestamp\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\x14lastMessageTimestamp\"C\n" +
 	"\x13GetMessagesResponse\x12,\n" +
 	"\bmessages\x18\x01 \x03(\v2\x10.chat.v1.MessageR\bmessages\"G\n" +
 	"\x12SendMessageRequest\x12\x17\n" +
@@ -505,19 +533,20 @@ var file_chat_v1_chat_proto_depIdxs = []int32{
 	8,  // 2: chat.v1.Message.edited_at:type_name -> google.protobuf.Timestamp
 	8,  // 3: chat.v1.Message.deleted_at:type_name -> google.protobuf.Timestamp
 	0,  // 4: chat.v1.GetAllChatsResponse.chats:type_name -> chat.v1.Chat
-	1,  // 5: chat.v1.GetMessagesResponse.messages:type_name -> chat.v1.Message
-	1,  // 6: chat.v1.SendMessageResponse.message:type_name -> chat.v1.Message
-	2,  // 7: chat.v1.ChatService.GetAllChats:input_type -> chat.v1.GetAllChatsRequest
-	4,  // 8: chat.v1.ChatService.GetMessages:input_type -> chat.v1.GetMessagesRequest
-	6,  // 9: chat.v1.ChatService.SendMessage:input_type -> chat.v1.SendMessageRequest
-	3,  // 10: chat.v1.ChatService.GetAllChats:output_type -> chat.v1.GetAllChatsResponse
-	5,  // 11: chat.v1.ChatService.GetMessages:output_type -> chat.v1.GetMessagesResponse
-	7,  // 12: chat.v1.ChatService.SendMessage:output_type -> chat.v1.SendMessageResponse
-	10, // [10:13] is the sub-list for method output_type
-	7,  // [7:10] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	8,  // 5: chat.v1.GetMessagesRequest.last_message_timestamp:type_name -> google.protobuf.Timestamp
+	1,  // 6: chat.v1.GetMessagesResponse.messages:type_name -> chat.v1.Message
+	1,  // 7: chat.v1.SendMessageResponse.message:type_name -> chat.v1.Message
+	2,  // 8: chat.v1.ChatService.GetAllChats:input_type -> chat.v1.GetAllChatsRequest
+	4,  // 9: chat.v1.ChatService.GetMessages:input_type -> chat.v1.GetMessagesRequest
+	6,  // 10: chat.v1.ChatService.SendMessage:input_type -> chat.v1.SendMessageRequest
+	3,  // 11: chat.v1.ChatService.GetAllChats:output_type -> chat.v1.GetAllChatsResponse
+	5,  // 12: chat.v1.ChatService.GetMessages:output_type -> chat.v1.GetMessagesResponse
+	7,  // 13: chat.v1.ChatService.SendMessage:output_type -> chat.v1.SendMessageResponse
+	11, // [11:14] is the sub-list for method output_type
+	8,  // [8:11] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_chat_v1_chat_proto_init() }

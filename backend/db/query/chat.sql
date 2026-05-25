@@ -23,10 +23,19 @@ ORDER BY sent_at DESC
 LIMIT 20;
 
 -- name: GetAllChatsOfUser :many
-SELECT c.*
+SELECT 
+    c.chat_room_id,
+    c.created_at,
+    c.updated_at,
+    c.deleted_at,
+    other_p.person_id AS other_person_id
 FROM chat_rooms c
 JOIN chat_participants p ON p.chat_room_id_ref = c.chat_room_id
-WHERE p.person_id = $1 AND p.left_at IS NULL;
+JOIN chat_participants other_p ON other_p.chat_room_id_ref = c.chat_room_id
+    AND other_p.person_id != $1
+    AND other_p.left_at IS NULL
+WHERE p.person_id = $1 AND p.left_at IS NULL
+GROUP BY c.chat_room_id, c.created_at, c.updated_at, c.deleted_at, other_p.person_id;
 
 -- name: InsertChatParticipants :exec
 INSERT INTO chat_participants (chat_room_id_ref, person_id)

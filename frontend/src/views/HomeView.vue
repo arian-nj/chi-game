@@ -111,34 +111,34 @@ async function handleExistRoom() {
 </script>
 
 <template>
-  <main class="h-screen">
-    <div
+<main class="h-screen">
+  <div
       class="relative h-full w-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white overflow-hidden">
       
-        <div class="flex justify-center pt-12">
-    <div class="bg-gray-900/60 p-6 rounded-2xl shadow-xl backdrop-blur-md border border-gray-700">
-      <div class="flex items-center gap-3">
-        <OnlineComponent />
-        <MeComponent />
+    <div class="flex justify-center pt-12">
+      <div class="bg-gray-900/60 p-6 rounded-2xl shadow-xl backdrop-blur-md border border-gray-700">
+        <div class="flex items-center gap-3">
+          <OnlineComponent />
+          <MeComponent />
+        </div>
       </div>
     </div>
-  </div>
-      <div class="flex justify-center gap-2 pt-16 flex-wrap">
+    <!-- <div class="flex justify-center gap-2 pt-16 flex-wrap">
         <GameSelectorBtn v-for="game in games" :key="game" :game-name="game" :selected="game == selectedGame"
           @choosed="selectedGame = game" />
-      </div>
+    </div> -->
 
-      <div class="absolute bottom-0 left-0 w-full flex flex-col gap-1 items-center justify-center">
-        <button class="bg-linear-to-r to-cyan-500 from-pink-300
+    <!-- <div class="absolute bottom-0 left-0 w-full flex flex-col gap-1 items-center justify-center">
+      <button class="bg-linear-to-r to-cyan-500 from-pink-300
                   rounded-2xl px-10 py-4
                  text-2xl font-extrabold text-white tracking-wide
                  shadow-lg hover:shadow-cyan-400/30
                  hover:scale-105 active:scale-95
                  transition-all duration-300 ease-in-out" @click="onPlayFriendsClick()">
           🎮 بازی با دوستان
-        </button>
+      </button>
         
-        <button v-if="hasRoom" ref="exitBtnRef" type="button" :disabled="selectedGame == ''" @click="handleExistRoom" :class="[
+      <button v-if="hasRoom" ref="exitBtnRef" type="button" :disabled="selectedGame == ''" @click="handleExistRoom" :class="[
           `w-1/3 py-6 text-3xl font-bold
               focus:outline-none ring-2 ring-gray-900
               transition-colors duration-400
@@ -149,9 +149,9 @@ async function handleExistRoom() {
             : 'bg-gray-700 text-gray-400 cursor-not-allowed'
         ]">
        ❌ خروج از بازی قبلی
-        </button>
+      </button>
 
-        <button ref="playBtnRef" type="button" :disabled="selectedGame == ''" @click="handlePlayClick" :class="[
+      <button ref="playBtnRef" type="button" :disabled="selectedGame == ''" @click="handlePlayClick" :class="[
           `w-full py-6 text-3xl font-bold
               focus:outline-none focus:ring-4 focus:ring-pink-400/40
               transition-colors duration-400`,
@@ -162,10 +162,10 @@ async function handleExistRoom() {
           {{ hasRoom ?
             "ادامه بازی"
             : "🚀 شروع بازی" }}
-        </button>
+      </button>
 
-      </div>
+    </div> -->
 
-    </div>
-  </main>
+  </div>
+</main>
 </template>

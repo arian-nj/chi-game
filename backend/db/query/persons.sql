@@ -83,3 +83,10 @@ SELECT
   COUNT(*) FILTER ( WHERE created_at >= NOW() - INTERVAL '7 days') AS users_created_last_week,
   COUNT(*) FILTER ( WHERE created_at >= NOW() - INTERVAL '1 month') AS users_created_last_month
 FROM persons;
+
+-- name: GetPersonsByIDs :many
+SELECT p.*
+FROM persons p
+JOIN unnest($1::bigint[]) WITH ORDINALITY AS t(id, ord)
+    ON p.id = t.id
+ORDER BY t.ord;

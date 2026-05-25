@@ -1,3 +1,10 @@
+# explain symbols
+[X] Done
+[-] Doing
+[ ] Not Done
+
+
+
 [X] bash script
 [X] database connection
 [X] vue initialize
@@ -37,11 +44,16 @@
 [X] delete request friendship
 [X] accept friendship request
 
-[ ] remove friend
-[ ] friend request list
+[X] fix chat backbones
+[X] friend request as a chat base
+[X] basic chat listing
+[X] chat messages
+[ ] accept/reject friend request ui
 
-[ ] list chats (show friends and chats in rooms page)
-[ ] chat
+[ ] seperate tabs for friends and request
+
+[ ] remove friend
+
 
 [ ] create group
 

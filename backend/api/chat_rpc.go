@@ -23,11 +23,22 @@ func (app *APIApplication) GetAllChats(ctx context.Context, req *connect.Request
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
+
 	chats := []*chatv1.Chat{}
+	chatIds := []int{}
 	for _, chat := range chatsRows {
+		chatIds = append(chatIds, chat.OtherPersonID)
+	}
+	personsRows, err := app.Queries.GetPersonsByIDs(ctx, chatIds)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+	for i, chat := range chatsRows {
 		chats = append(chats, &chatv1.Chat{
-			Id:        int64(chat.ChatRoomID),
-			UpdatedAt: timestamppb.New(chat.UpdatedAt.Time),
+			ChatRoomId:      int64(chat.ChatRoomID),
+			OtherPersonId:   int64(personsRows[i].ID),
+			OtherPersonName: personsRows[i].DisplayName,
+			UpdatedAt:       timestamppb.New(chat.UpdatedAt.Time),
 		})
 	}
 
@@ -63,11 +74,12 @@ func (app *APIApplication) GetMessages(ctx context.Context, req *connect.Request
 	messages := []*chatv1.Message{}
 	for _, message := range messagesRows {
 		messages = append(messages, &chatv1.Message{
-			Id:        int64(message.MessageID),
-			ChatId:    int64(message.ChatRoomIDRef),
-			Content:   message.Content,
-			SentAt:    timestamppb.New(message.SentAt.Time),
-			DeletedAt: timestamppb.New(message.DeletedAt.Time),
+			Id:             int64(message.MessageID),
+			ChatId:         int64(message.ChatRoomIDRef),
+			Content:        message.Content,
+			SentAt:         timestamppb.New(message.SentAt.Time),
+			DeletedAt:      timestamppb.New(message.DeletedAt.Time),
+			SenderPersonId: int64(message.SenderPersonID),
 		})
 	}
 

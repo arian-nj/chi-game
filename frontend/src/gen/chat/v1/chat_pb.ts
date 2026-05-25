@@ -12,16 +12,16 @@ import type { Message as Message$1 } from "@bufbuild/protobuf";
  * Describes the file chat/v1/chat.proto.
  */
 export const file_chat_v1_chat: GenFile = /*@__PURE__*/
-  fileDesc("ChJjaGF0L3YxL2NoYXQucHJvdG8SB2NoYXQudjEiYwoEQ2hhdBIKCgJpZBgBIAEoAxIRCgljaGF0X3R5cGUYAiABKAkSDAoEbmFtZRgDIAEoCRIuCgp1cGRhdGVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCLDAQoHTWVzc2FnZRIKCgJpZBgBIAEoAxIPCgdjaGF0X2lkGAIgASgDEg8KB2NvbnRlbnQYAyABKAkSKwoHc2VudF9hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLQoJZWRpdGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgpkZWxldGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCIUChJHZXRBbGxDaGF0c1JlcXVlc3QiMwoTR2V0QWxsQ2hhdHNSZXNwb25zZRIcCgVjaGF0cxgBIAMoCzINLmNoYXQudjEuQ2hhdCIlChJHZXRNZXNzYWdlc1JlcXVlc3QSDwoHY2hhdF9pZBgBIAEoAyI5ChNHZXRNZXNzYWdlc1Jlc3BvbnNlEiIKCG1lc3NhZ2VzGAEgAygLMhAuY2hhdC52MS5NZXNzYWdlIjYKElNlbmRNZXNzYWdlUmVxdWVzdBIPCgdjaGF0X2lkGAEgASgDEg8KB2NvbnRlbnQYAiABKAkiOAoTU2VuZE1lc3NhZ2VSZXNwb25zZRIhCgdtZXNzYWdlGAEgASgLMhAuY2hhdC52MS5NZXNzYWdlMvEBCgtDaGF0U2VydmljZRJKCgtHZXRBbGxDaGF0cxIbLmNoYXQudjEuR2V0QWxsQ2hhdHNSZXF1ZXN0GhwuY2hhdC52MS5HZXRBbGxDaGF0c1Jlc3BvbnNlIgASSgoLR2V0TWVzc2FnZXMSGy5jaGF0LnYxLkdldE1lc3NhZ2VzUmVxdWVzdBocLmNoYXQudjEuR2V0TWVzc2FnZXNSZXNwb25zZSIAEkoKC1NlbmRNZXNzYWdlEhsuY2hhdC52MS5TZW5kTWVzc2FnZVJlcXVlc3QaHC5jaGF0LnYxLlNlbmRNZXNzYWdlUmVzcG9uc2UiAEKNAQoLY29tLmNoYXQudjFCCUNoYXRQcm90b1ABWjZnaXRodWIuY29tL2FyaWFuLW5qL2NoaWdhbWUvYmFja2VuZC9nZW4vY2hhdC92MTtjaGF0djGiAgNDWFiqAgdDaGF0LlYxygIHQ2hhdFxWMeICE0NoYXRcVjFcR1BCTWV0YWRhdGHqAghDaGF0OjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp]);
+  fileDesc("ChJjaGF0L3YxL2NoYXQucHJvdG8SB2NoYXQudjEikwEKBENoYXQSFAoMY2hhdF9yb29tX2lkGAEgASgDEhEKCWNoYXRfdHlwZRgCIAEoCRIXCg9vdGhlcl9wZXJzb25faWQYAyABKAMSGQoRb3RoZXJfcGVyc29uX25hbWUYBCABKAkSLgoKdXBkYXRlZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi3QEKB01lc3NhZ2USCgoCaWQYASABKAMSDwoHY2hhdF9pZBgCIAEoAxIPCgdjb250ZW50GAMgASgJEhgKEHNlbmRlcl9wZXJzb25faWQYBCABKAMSKwoHc2VudF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLQoJZWRpdGVkX2F0GAYgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgpkZWxldGVkX2F0GAcgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCIUChJHZXRBbGxDaGF0c1JlcXVlc3QiMwoTR2V0QWxsQ2hhdHNSZXNwb25zZRIcCgVjaGF0cxgBIAMoCzINLmNoYXQudjEuQ2hhdCJhChJHZXRNZXNzYWdlc1JlcXVlc3QSDwoHY2hhdF9pZBgBIAEoAxI6ChZsYXN0X21lc3NhZ2VfdGltZXN0YW1wGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCI5ChNHZXRNZXNzYWdlc1Jlc3BvbnNlEiIKCG1lc3NhZ2VzGAEgAygLMhAuY2hhdC52MS5NZXNzYWdlIjYKElNlbmRNZXNzYWdlUmVxdWVzdBIPCgdjaGF0X2lkGAEgASgDEg8KB2NvbnRlbnQYAiABKAkiOAoTU2VuZE1lc3NhZ2VSZXNwb25zZRIhCgdtZXNzYWdlGAEgASgLMhAuY2hhdC52MS5NZXNzYWdlMvEBCgtDaGF0U2VydmljZRJKCgtHZXRBbGxDaGF0cxIbLmNoYXQudjEuR2V0QWxsQ2hhdHNSZXF1ZXN0GhwuY2hhdC52MS5HZXRBbGxDaGF0c1Jlc3BvbnNlIgASSgoLR2V0TWVzc2FnZXMSGy5jaGF0LnYxLkdldE1lc3NhZ2VzUmVxdWVzdBocLmNoYXQudjEuR2V0TWVzc2FnZXNSZXNwb25zZSIAEkoKC1NlbmRNZXNzYWdlEhsuY2hhdC52MS5TZW5kTWVzc2FnZVJlcXVlc3QaHC5jaGF0LnYxLlNlbmRNZXNzYWdlUmVzcG9uc2UiAEKNAQoLY29tLmNoYXQudjFCCUNoYXRQcm90b1ABWjZnaXRodWIuY29tL2FyaWFuLW5qL2NoaWdhbWUvYmFja2VuZC9nZW4vY2hhdC92MTtjaGF0djGiAgNDWFiqAgdDaGF0LlYxygIHQ2hhdFxWMeICE0NoYXRcVjFcR1BCTWV0YWRhdGHqAghDaGF0OjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message chat.v1.Chat
  */
 export type Chat = Message$1<"chat.v1.Chat"> & {
   /**
-   * @generated from field: int64 id = 1;
+   * @generated from field: int64 chat_room_id = 1;
    */
-  id: bigint;
+  chatRoomId: bigint;
 
   /**
    * @generated from field: string chat_type = 2;
@@ -29,12 +29,17 @@ export type Chat = Message$1<"chat.v1.Chat"> & {
   chatType: string;
 
   /**
-   * @generated from field: string name = 3;
+   * @generated from field: int64 other_person_id = 3;
    */
-  name: string;
+  otherPersonId: bigint;
 
   /**
-   * @generated from field: google.protobuf.Timestamp updated_at = 4;
+   * @generated from field: string other_person_name = 4;
+   */
+  otherPersonName: string;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp updated_at = 5;
    */
   updatedAt?: Timestamp;
 };
@@ -66,17 +71,22 @@ export type Message = Message$1<"chat.v1.Message"> & {
   content: string;
 
   /**
-   * @generated from field: google.protobuf.Timestamp sent_at = 4;
+   * @generated from field: int64 sender_person_id = 4;
+   */
+  senderPersonId: bigint;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp sent_at = 5;
    */
   sentAt?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.Timestamp edited_at = 5;
+   * @generated from field: google.protobuf.Timestamp edited_at = 6;
    */
   editedAt?: Timestamp;
 
   /**
-   * @generated from field: google.protobuf.Timestamp deleted_at = 6;
+   * @generated from field: google.protobuf.Timestamp deleted_at = 7;
    */
   deletedAt?: Timestamp;
 };
@@ -126,6 +136,11 @@ export type GetMessagesRequest = Message$1<"chat.v1.GetMessagesRequest"> & {
    * @generated from field: int64 chat_id = 1;
    */
   chatId: bigint;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp last_message_timestamp = 2;
+   */
+  lastMessageTimestamp?: Timestamp;
 };
 
 /**

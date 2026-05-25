@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import XoOnline from '../components/game/xo/XoOnline.vue';
-import Chat from '../components/chat/Chat.vue';
+import Chat from '../components/chat/GameChat.vue';
 import { useToast } from '../components/Toast.vue';
 import { GameType, RoomErrorType } from '../gen/room/v1/room_pb';
 
