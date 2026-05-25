@@ -94,40 +94,40 @@ const acceptFriendRequest = async () => {
             <!-- Friendship Status Buttons -->
             <div class="w-1/2 mt-2">
                 <!-- Loading State -->
-                <button v-if="fIsPending" class="bg-blue-900/30 w-full h-16 rounded-xl text-2xl font-extrabold" disabled>
+                <button v-if="fIsPending" class="bg-gray-500/60 w-full h-16 rounded-xl text-2xl font-extrabold" disabled>
                     <p>Loading...</p>
                 </button>
 
                 <!-- Error State -->
-                <button v-else-if="fError" class="bg-red-900/30 w-full h-16 rounded-xl text-2xl font-extrabold" disabled>
+                <button v-else-if="fError" class="bg-red-700/50 w-full h-16 rounded-xl text-2xl font-extrabold" disabled>
                     <p>Error</p>
                 </button>
 
                 <!-- Nothing State - Send Friend Request -->
                 <button v-else-if="fData?.fstatus == FriendshipStatus.NOTHING" 
                         @click="sendFriendRequest"
-                        class="bg-blue-600 hover:bg-blue-700 w-full h-16 rounded-xl text-2xl font-extrabold transition-colors">
+                        class="bg-cyan-500 hover:bg-cyan-600 w-full h-16 rounded-xl text-2xl font-extrabold transition-colors">
                     <p>دعوت به دوستی</p>
                 </button>
 
                 <!-- Friend State - Send Message -->
                 <button v-else-if="fData?.fstatus == FriendshipStatus.FRIEND" 
                         @click="sendMessage"
-                        class="bg-green-600 hover:bg-green-700 w-full h-16 rounded-xl text-2xl font-extrabold transition-colors">
+                        class="bg-emerald-600 hover:bg-emerald-700 w-full h-16 rounded-xl text-2xl font-extrabold transition-colors">
                     <p>پیام دادن</p>
                 </button>
 
                 <!-- Requested State - Cancel Request -->
                 <button v-else-if="fData?.fstatus == FriendshipStatus.REQUESTED" 
                         @click="cancelFriendRequest"
-                        class="bg-yellow-600 hover:bg-yellow-700 w-full h-16 rounded-xl text-2xl font-extrabold transition-colors">
+                        class="bg-orange-400 hover:bg-orange-500 w-full h-16 rounded-xl text-2xl font-extrabold transition-colors">
                     <p>پس گرفتن درخواست</p>
                 </button>
 
                 <!-- Received Request State - Accept Request -->
                 <button v-else-if="fData?.fstatus == FriendshipStatus.RECEIVED_REQUEST" 
                         @click="acceptFriendRequest"
-                        class="bg-purple-600 hover:bg-purple-700 w-full h-16 rounded-xl text-2xl font-extrabold transition-colors">
+                        class="bg-fuchsia-500 hover:bg-fuchsia-600 w-full h-16 rounded-xl text-2xl font-extrabold transition-colors">
                     <p>قبول درخواست</p>
                 </button>
             </div>

@@ -37,10 +37,11 @@ async function sendMessage(msgText: string) {
   }
   const chatClient = createClient(ChatService, authTransport);
   try {
-    const data = await chatClient.sendMessage({
+    await chatClient.sendMessage({
       chatId: BigInt(chatId.value),
       content: msgText,
     });
+
     // Success feedback (e.g., optional animation or sound)
   } catch (error) {
     console.error(error);

@@ -102,6 +102,9 @@ async function handleExistRoom() {
     queryClient.invalidateQueries({queryKey:["hasRoom"]})
   }
 }
+function sendToMePage() {
+  router.push(`/me/`)
+}
 </script>
 
 <template>
@@ -115,9 +118,9 @@ async function handleExistRoom() {
       <div class="absolute bottom-[-10%] right-[10%] w-96 h-80 bg-linear-to-br from-[#ea00ff] to-cyan-500 opacity-10  rounded-full blur-3xl animate-[pulse_10s_infinite_2s]" />
     </div>
 
-    <div class="flex justify-center pt-16 z-10 relative">
-      <div class="bg-linear-to-b from-gray-950 via-gray-900/80 to-gray-800/80 p-8 rounded-3xl shadow-2xl backdrop-blur-xl border border-gray-700 transition-all duration-500 hover:scale-[1.02]">
-        <div class="flex items-center gap-5 drop-shadow-lg">
+    <div class="flex justify-center pt-8 z-10 relative" @click="sendToMePage">
+      <div class="bg-linear-to-b from-gray-950 via-gray-900/80 to-gray-800/80 p-4 lg:p-6 rounded-3xl shadow-2xl backdrop-blur-xl border border-gray-700 transition-all duration-500 hover:scale-[1.02]">
+        <div class="flex items-center gap-2 drop-shadow-lg">
           <OnlineComponent />
           <span class="mx-2 w-0.5 h-12 bg-blue-700/30 rounded-xl"></span>
           <MeComponent />
@@ -133,14 +136,14 @@ async function handleExistRoom() {
         @click="selectedGame = game.key"
         :class="[
           'px-8 py-4 cursor-pointer rounded-2xl font-bold text-lg shadow-lg ring-1 ring-blue-800/20 border-none transition-all duration-300 select-none flex items-center gap-2',
-          'sm:w-40 sm:max-w-40 lg:w-60 lg:max-w-60',
+          'w-45 sm:w-40 sm:max-w-40 lg:w-60 lg:max-w-60',
           'flex flex-col items-center justify-center',
           selectedGame === game.key
             ? 'bg-linear-to-tr text-white scale-105 shadow-2xl ring-4 ring-gray-50/80'
             : 'bg-gray-800/80 text-blue-100 hover:bg-gray-700/70 hover:scale-105'
         ]"
       >
-        <div class="flex flex-col items-center gap-2 text-center">
+        <div class="flex flex-col items-center gap-2 text-center w-full">
           <span class="text-3xl w-full text-center">{{ game.emoji }}</span>
           <span class="text-lg w-full text-center">{{ game.name }}</span>
         </div>
