@@ -33,4 +33,12 @@ case $COMMAND in
 	sqlc)
 		generate_sqlc
 		;;
+	run-front)
+		cd ./frontend/
+		npm run dev
+		cd ..
+		;;
+	*)
+		echo "Invalid command"
+		;;
 esac

@@ -11,26 +11,15 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const createChat = `-- name: CreateChat :one
-INSERT INTO chats (type, name, created_by)
-VALUES ($1, $2, $3)
-RETURNING id, type, name, created_by, created_at, updated_at, deleted_at
+const createOrGetChatRoom = `-- name: CreateOrGetChatRoom :one
+INSERT INTO chat_rooms DEFAULT VALUES RETURNING chat_room_id, created_at, updated_at, deleted_at
 `
 
-type CreateChatParams struct {
-	Type      ChatType
-	Name      pgtype.Text
-	CreatedBy int
-}
-
-func (q *Queries) CreateChat(ctx context.Context, arg CreateChatParams) (Chat, error) {
-	row := q.db.QueryRow(ctx, createChat, arg.Type, arg.Name, arg.CreatedBy)
-	var i Chat
+func (q *Queries) CreateOrGetChatRoom(ctx context.Context) (ChatRoom, error) {
+	row := q.db.QueryRow(ctx, createOrGetChatRoom)
+	var i ChatRoom
 	err := row.Scan(
-		&i.ID,
-		&i.Type,
-		&i.Name,
-		&i.CreatedBy,
+		&i.ChatRoomID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.DeletedAt,
@@ -39,48 +28,44 @@ func (q *Queries) CreateChat(ctx context.Context, arg CreateChatParams) (Chat, e
 }
 
 const doesChatExist = `-- name: DoesChatExist :one
-SELECT c.id
-FROM chats c
-JOIN chat_participants p1 ON p1.chat_id = c.id
-JOIN chat_participants p2 ON p2.chat_id = c.id
-WHERE c.type = 'direct'
-  AND p1.user_id = $1
-  AND p2.user_id = $2
+SELECT c.chat_room_id
+FROM chat_rooms c
+JOIN chat_participants p1 ON p1.chat_room_id_ref = c.chat_room_id
+JOIN chat_participants p2 ON p2.chat_room_id_ref = c.chat_room_id
+  AND p1.person_id = $1
+  AND p2.person_id = $2
 `
 
 type DoesChatExistParams struct {
-	UserID   int
-	UserID_2 int
+	PersonID   int
+	PersonID_2 int
 }
 
 func (q *Queries) DoesChatExist(ctx context.Context, arg DoesChatExistParams) (int, error) {
-	row := q.db.QueryRow(ctx, doesChatExist, arg.UserID, arg.UserID_2)
-	var id int
-	err := row.Scan(&id)
-	return id, err
+	row := q.db.QueryRow(ctx, doesChatExist, arg.PersonID, arg.PersonID_2)
+	var chat_room_id int
+	err := row.Scan(&chat_room_id)
+	return chat_room_id, err
 }
 
 const getAllChatsOfUser = `-- name: GetAllChatsOfUser :many
-SELECT c.id, c.type, c.name, c.created_by, c.created_at, c.updated_at, c.deleted_at
-FROM chats c
-JOIN chat_participants p ON p.chat_id = c.id
-WHERE p.user_id = $1 AND p.left_at IS NULL
+SELECT c.chat_room_id, c.created_at, c.updated_at, c.deleted_at
+FROM chat_rooms c
+JOIN chat_participants p ON p.chat_room_id_ref = c.chat_room_id
+WHERE p.person_id = $1 AND p.left_at IS NULL
 `
 
-func (q *Queries) GetAllChatsOfUser(ctx context.Context, userID int) ([]Chat, error) {
-	rows, err := q.db.Query(ctx, getAllChatsOfUser, userID)
+func (q *Queries) GetAllChatsOfUser(ctx context.Context, personID int) ([]ChatRoom, error) {
+	rows, err := q.db.Query(ctx, getAllChatsOfUser, personID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Chat
+	var items []ChatRoom
 	for rows.Next() {
-		var i Chat
+		var i ChatRoom
 		if err := rows.Scan(
-			&i.ID,
-			&i.Type,
-			&i.Name,
-			&i.CreatedBy,
+			&i.ChatRoomID,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.DeletedAt,
@@ -96,14 +81,14 @@ func (q *Queries) GetAllChatsOfUser(ctx context.Context, userID int) ([]Chat, er
 }
 
 const getLastMessagesOfChat = `-- name: GetLastMessagesOfChat :many
-SELECT id, chat_id, sender_user_id, content, reply_to_message_id, sent_at, deleted_at FROM chat_messages
-WHERE chat_id = $1 AND deleted_at IS NULL
+SELECT message_id, chat_room_id_ref, sender_person_id, content, reply_to_message_id, sent_at, deleted_at, metadata FROM chat_messages
+WHERE chat_room_id_ref = $1 AND deleted_at IS NULL
 ORDER BY sent_at DESC
 LIMIT 20
 `
 
-func (q *Queries) GetLastMessagesOfChat(ctx context.Context, chatID int) ([]ChatMessage, error) {
-	rows, err := q.db.Query(ctx, getLastMessagesOfChat, chatID)
+func (q *Queries) GetLastMessagesOfChat(ctx context.Context, chatRoomIDRef int) ([]ChatMessage, error) {
+	rows, err := q.db.Query(ctx, getLastMessagesOfChat, chatRoomIDRef)
 	if err != nil {
 		return nil, err
 	}
@@ -112,13 +97,14 @@ func (q *Queries) GetLastMessagesOfChat(ctx context.Context, chatID int) ([]Chat
 	for rows.Next() {
 		var i ChatMessage
 		if err := rows.Scan(
-			&i.ID,
-			&i.ChatID,
-			&i.SenderUserID,
+			&i.MessageID,
+			&i.ChatRoomIDRef,
+			&i.SenderPersonID,
 			&i.Content,
 			&i.ReplyToMessageID,
 			&i.SentAt,
 			&i.DeletedAt,
+			&i.Metadata,
 		); err != nil {
 			return nil, err
 		}
@@ -131,14 +117,14 @@ func (q *Queries) GetLastMessagesOfChat(ctx context.Context, chatID int) ([]Chat
 }
 
 const getMessagesOfChat = `-- name: GetMessagesOfChat :many
-SELECT id, chat_id, sender_user_id, content, reply_to_message_id, sent_at, deleted_at FROM chat_messages
-WHERE chat_id = $1 AND deleted_at IS NULL
+SELECT message_id, chat_room_id_ref, sender_person_id, content, reply_to_message_id, sent_at, deleted_at, metadata FROM chat_messages
+WHERE chat_room_id_ref = $1 AND deleted_at IS NULL
 ORDER BY sent_at DESC
 LIMIT 20
 `
 
-func (q *Queries) GetMessagesOfChat(ctx context.Context, chatID int) ([]ChatMessage, error) {
-	rows, err := q.db.Query(ctx, getMessagesOfChat, chatID)
+func (q *Queries) GetMessagesOfChat(ctx context.Context, chatRoomIDRef int) ([]ChatMessage, error) {
+	rows, err := q.db.Query(ctx, getMessagesOfChat, chatRoomIDRef)
 	if err != nil {
 		return nil, err
 	}
@@ -147,13 +133,14 @@ func (q *Queries) GetMessagesOfChat(ctx context.Context, chatID int) ([]ChatMess
 	for rows.Next() {
 		var i ChatMessage
 		if err := rows.Scan(
-			&i.ID,
-			&i.ChatID,
-			&i.SenderUserID,
+			&i.MessageID,
+			&i.ChatRoomIDRef,
+			&i.SenderPersonID,
 			&i.Content,
 			&i.ReplyToMessageID,
 			&i.SentAt,
 			&i.DeletedAt,
+			&i.Metadata,
 		); err != nil {
 			return nil, err
 		}
@@ -166,66 +153,72 @@ func (q *Queries) GetMessagesOfChat(ctx context.Context, chatID int) ([]ChatMess
 }
 
 const insertChatMessage = `-- name: InsertChatMessage :one
-INSERT INTO chat_messages (chat_id, sender_user_id, content)
-VALUES ($1, $2, $3)
-RETURNING id, chat_id, sender_user_id, content, reply_to_message_id, sent_at, deleted_at
+INSERT INTO chat_messages (chat_room_id_ref, sender_person_id, content, metadata)
+VALUES ($1, $2, $3, $4)
+RETURNING message_id, chat_room_id_ref, sender_person_id, content, reply_to_message_id, sent_at, deleted_at, metadata
 `
 
 type InsertChatMessageParams struct {
-	ChatID       int
-	SenderUserID int
-	Content      string
+	ChatRoomIDRef  int
+	SenderPersonID int
+	Content        string
+	Metadata       []byte
 }
 
 func (q *Queries) InsertChatMessage(ctx context.Context, arg InsertChatMessageParams) (ChatMessage, error) {
-	row := q.db.QueryRow(ctx, insertChatMessage, arg.ChatID, arg.SenderUserID, arg.Content)
+	row := q.db.QueryRow(ctx, insertChatMessage,
+		arg.ChatRoomIDRef,
+		arg.SenderPersonID,
+		arg.Content,
+		arg.Metadata,
+	)
 	var i ChatMessage
 	err := row.Scan(
-		&i.ID,
-		&i.ChatID,
-		&i.SenderUserID,
+		&i.MessageID,
+		&i.ChatRoomIDRef,
+		&i.SenderPersonID,
 		&i.Content,
 		&i.ReplyToMessageID,
 		&i.SentAt,
 		&i.DeletedAt,
+		&i.Metadata,
 	)
 	return i, err
 }
 
 const insertChatParticipants = `-- name: InsertChatParticipants :exec
-INSERT INTO chat_participants (chat_id, user_id)
+INSERT INTO chat_participants (chat_room_id_ref, person_id)
 VALUES ($1, $2)
-ON CONFLICT (chat_id, user_id) DO NOTHING
+ON CONFLICT (chat_room_id_ref, person_id) DO NOTHING
 `
 
 type InsertChatParticipantsParams struct {
-	ChatID int
-	UserID int
+	ChatRoomIDRef int
+	PersonID      int
 }
 
 func (q *Queries) InsertChatParticipants(ctx context.Context, arg InsertChatParticipantsParams) error {
-	_, err := q.db.Exec(ctx, insertChatParticipants, arg.ChatID, arg.UserID)
+	_, err := q.db.Exec(ctx, insertChatParticipants, arg.ChatRoomIDRef, arg.PersonID)
 	return err
 }
 
 const isChatParticipant = `-- name: IsChatParticipant :one
-SELECT id, chat_id, user_id, role, joined_at, left_at, last_read_message_id FROM chat_participants
-WHERE chat_id = $1 AND user_id = $2
+SELECT participant_id, chat_room_id_ref, person_id, joined_at, left_at, last_read_message_id FROM chat_participants
+WHERE chat_room_id_ref = $1 AND person_id = $2
 `
 
 type IsChatParticipantParams struct {
-	ChatID int
-	UserID int
+	ChatRoomIDRef int
+	PersonID      int
 }
 
 func (q *Queries) IsChatParticipant(ctx context.Context, arg IsChatParticipantParams) (ChatParticipant, error) {
-	row := q.db.QueryRow(ctx, isChatParticipant, arg.ChatID, arg.UserID)
+	row := q.db.QueryRow(ctx, isChatParticipant, arg.ChatRoomIDRef, arg.PersonID)
 	var i ChatParticipant
 	err := row.Scan(
-		&i.ID,
-		&i.ChatID,
-		&i.UserID,
-		&i.Role,
+		&i.ParticipantID,
+		&i.ChatRoomIDRef,
+		&i.PersonID,
 		&i.JoinedAt,
 		&i.LeftAt,
 		&i.LastReadMessageID,
@@ -236,27 +229,27 @@ func (q *Queries) IsChatParticipant(ctx context.Context, arg IsChatParticipantPa
 const markMessageAsRead = `-- name: MarkMessageAsRead :exec
 UPDATE chat_messages
 SET read_at = NOW()
-WHERE id = $1
+WHERE message_id = $1
 `
 
-func (q *Queries) MarkMessageAsRead(ctx context.Context, id int) error {
-	_, err := q.db.Exec(ctx, markMessageAsRead, id)
+func (q *Queries) MarkMessageAsRead(ctx context.Context, messageID int) error {
+	_, err := q.db.Exec(ctx, markMessageAsRead, messageID)
 	return err
 }
 
 const setLastReadId = `-- name: SetLastReadId :exec
 UPDATE chat_participants
 SET last_read_message_id = $1
-WHERE chat_id = $2 AND user_id = $3
+WHERE chat_room_id_ref = $2 AND person_id = $3
 `
 
 type SetLastReadIdParams struct {
 	LastReadMessageID pgtype.Int8
-	ChatID            int
-	UserID            int
+	ChatRoomIDRef     int
+	PersonID          int
 }
 
 func (q *Queries) SetLastReadId(ctx context.Context, arg SetLastReadIdParams) error {
-	_, err := q.db.Exec(ctx, setLastReadId, arg.LastReadMessageID, arg.ChatID, arg.UserID)
+	_, err := q.db.Exec(ctx, setLastReadId, arg.LastReadMessageID, arg.ChatRoomIDRef, arg.PersonID)
 	return err
 }

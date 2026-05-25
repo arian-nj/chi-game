@@ -37,11 +37,6 @@ func (app *APIApplication) createRouter() http.Handler {
 	roomPath, roomHandler := roomv1connect.NewRoomServiceHandler(app)
 	mux.Handle(roomPath, roomHandler)
 
-	// if app.Config.ReleaseMode == config.Develop {
-	// 	dummyAuthPath, dummyAuthHandler := dummy_authv1connect.NewDummyAuthServiceHandler(app)
-	// 	mux.Handle(dummyAuthPath, dummyAuthHandler)
-	// }
-
 	accountPath, accountHandler := accountv1connect.NewAccountServiceHandler(app)
 	mux.Handle(accountPath, accountHandler)
 

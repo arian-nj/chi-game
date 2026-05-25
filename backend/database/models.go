@@ -5,82 +5,34 @@
 package database
 
 import (
-	"database/sql/driver"
-	"fmt"
-
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type ChatType string
-
-const (
-	ChatTypeDirect ChatType = "direct"
-	ChatTypeGroup  ChatType = "group"
-)
-
-func (e *ChatType) Scan(src interface{}) error {
-	switch s := src.(type) {
-	case []byte:
-		*e = ChatType(s)
-	case string:
-		*e = ChatType(s)
-	default:
-		return fmt.Errorf("unsupported scan type for ChatType: %T", src)
-	}
-	return nil
-}
-
-type NullChatType struct {
-	ChatType ChatType
-	Valid    bool // Valid is true if ChatType is not NULL
-}
-
-// Scan implements the Scanner interface.
-func (ns *NullChatType) Scan(value interface{}) error {
-	if value == nil {
-		ns.ChatType, ns.Valid = "", false
-		return nil
-	}
-	ns.Valid = true
-	return ns.ChatType.Scan(value)
-}
-
-// Value implements the driver Valuer interface.
-func (ns NullChatType) Value() (driver.Value, error) {
-	if !ns.Valid {
-		return nil, nil
-	}
-	return string(ns.ChatType), nil
-}
-
-type Chat struct {
-	ID        int
-	Type      ChatType
-	Name      pgtype.Text
-	CreatedBy int
-	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
-	DeletedAt pgtype.Timestamptz
-}
-
 type ChatMessage struct {
-	ID               int
-	ChatID           int
-	SenderUserID     int
+	MessageID        int
+	ChatRoomIDRef    int
+	SenderPersonID   int
 	Content          string
 	ReplyToMessageID pgtype.Int8
 	SentAt           pgtype.Timestamptz
 	DeletedAt        pgtype.Timestamptz
+	Metadata         []byte
 }
 
 type ChatParticipant struct {
-	ID                int
-	ChatID            int
-	UserID            int
-	Role              string
+	ParticipantID     int
+	ChatRoomIDRef     int
+	PersonID          int
 	JoinedAt          pgtype.Timestamptz
 	LeftAt            pgtype.Timestamptz
 	LastReadMessageID pgtype.Int8
+}
+
+type ChatRoom struct {
+	ChatRoomID int
+	CreatedAt  pgtype.Timestamptz
+	UpdatedAt  pgtype.Timestamptz
+	DeletedAt  pgtype.Timestamptz
 }
 
 type Friend struct {

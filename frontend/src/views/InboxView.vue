@@ -6,7 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { createClient } from '@connectrpc/connect';
 import { ChatService } from '../gen/chat/v1/chat_pb';
 import { authTransport } from '../lib/transport';
-import { useQuery } from '@tanstack/vue-query';
+import { useQuery, useQueryClient } from '@tanstack/vue-query';
 
 const scrollContainerRef = ref<HTMLDivElement | null>(null)
 
@@ -50,6 +50,12 @@ function showFriendsPage() {
 function hideFriendsPage() {
 	showAddFriendPage.value = false
 }
+
+const queryClient = useQueryClient()
+// query every 10 seconds
+setInterval(() => {
+	queryClient.invalidateQueries({ queryKey: ['chats'] })
+}, 1_000)
 
 const { data: chatsData } = useQuery({
 	queryKey: ['chats'],
