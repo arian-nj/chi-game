@@ -138,7 +138,7 @@ const getMessagesOfChat = `-- name: GetMessagesOfChat :many
 SELECT message_id, chat_room_id_ref, sender_person_id, content, reply_to_message_id, sent_at, deleted_at, metadata FROM chat_messages
 WHERE chat_room_id_ref = $1 AND deleted_at IS NULL
 ORDER BY sent_at DESC
-LIMIT 20
+LIMIT 100
 `
 
 func (q *Queries) GetMessagesOfChat(ctx context.Context, chatRoomIDRef int) ([]ChatMessage, error) {
