@@ -1,9 +1,16 @@
 # Chi Game
-a social game platform that let's prople talk to each other and and play games
+a offline first game platform
+online functionalities will be added 
 xo connect 4 backgommon uno and etc...
 
+# Stack
+frontend with js (ts) + vue framework
+
+managing users, statistics, data, chat .... in **golang** (protobuf + rpc)
+game logic in **ts**
 
 ## Prepare
+
 ### protobuf + rpc
 note: not a good idea to install globaly but ...
 ```bash

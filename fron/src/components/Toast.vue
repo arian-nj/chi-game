@@ -75,11 +75,11 @@ export function configureToast(options: Partial<ToastConfig>) {
 export function useToast(): UseToastReturn {
   const remove = (id: number) => {
     const index = toasts.findIndex((t) => t.id === id);
-    if (index === -1) return;
-    const toast = toasts[index];
-    if (!toast) return;
-    if (toast._timeoutId) clearTimeout(toast._timeoutId);
-    toasts.splice(index, 1);
+    if (index !== -1) {
+      const toast = toasts[index];
+      if (toast._timeoutId) clearTimeout(toast._timeoutId);
+      toasts.splice(index, 1);
+    }
   };
 
   const pause = (toast: Toast) => {

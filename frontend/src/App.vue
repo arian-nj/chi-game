@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router';
-import Toast, { configureToast } from './components/Toast.vue';
-import { onMounted } from 'vue';
-import BottomNav from './components/BottomNav.vue';
 
+
+import { onMounted } from 'vue';
+import Toast, { configureToast } from './components/Toast.vue';
+import { useToast } from './components/Toast.vue';
 
 onMounted(() => {
   configureToast({
@@ -14,17 +14,16 @@ onMounted(() => {
   });
 });
 
+function showToast() {
+  useToast().toast.success('Hello, world!');
+}
+
 </script>
 
 <template>
 
-  <div class="flex flex-col h-screen bg-gray-50 text-gray-200">
-    <div class="flex-1 overflow-y-auto">
-        <RouterView />
-    </div>
-      <BottomNav />
-  </div>
-
+  <RouterView />
   <Toast />
-
 </template>
+
+<style scoped></style>

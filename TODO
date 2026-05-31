@@ -3,90 +3,21 @@
 [-] Doing
 [ ] Not Done
 
+- [ ] basic home screen
 
+- [ ] XO game
 
-[X] bash script
-[X] database connection
-[X] vue initialize
-[X] setup connect rpc
-[X] health check
+- [ ] Connect 4
 
-[X] jwt authentication
-[X] guest user
-
-[X] Home user info box
-[---] users list page (use db viewer instead)
-
-[X] finder
-[X] room
-[X] room chat
-[X] xo game
-[X] conn4 game
-[X] refetch hasroom
-[X] better game selector
-[X] home page close room button
-[X] exit room button
-
-# make backend great again
-[X] rename session to room
-
-# new era
-[X] tabs
-[X] remove rooms timer
-
-[X] friends top menu ui
-[X] add display name
-[X] friends add friend ui
-[X] search usernames backend
-[X] others profile page 
-[X] get current users relation with profile
-[X] request friendship 
-[X] delete request friendship
-[X] accept friendship request
-
-[X] fix chat backbones
-[X] friend request as a chat base
-[X] basic chat listing
-[X] chat messages
-[X] better chat ui
-
-[ ] accept/reject friend request button in chat
-[ ] seperate tabs for friends and requesteds
-[ ] remove friend
-
-[ ] add game session seperate from rooms
-[ ] games list in db
-
-[ ] add a per move time
-[ ] ai player
-
-[ ] capacitor
-
-[ ] right last updated (for removing inactive accounts)
-
-[ ] create group
-[ ] load older messages
-
-# Profile
-[ ] profile page
-[ ] change display name
-[ ] change username (only authenticated users)
-
-[ ] invite bonus
 
 # Games
 [ ] dots and boxes
-[ ] takhteh (Backgammon)
-[ ] snake and ladder
-[ ] Hokm
 [ ] go game
-[ ] Dominoes
+[ ] snake and ladder
 [ ] mench
+[ ] Dominoes
+[ ] takhteh (Backgammon)
+[ ] Hokm
 [ ] pool 8-ball
 [ ] Poker
 [ ] Sea Battle
-
-# not needed now
-[ ] search friends and chats messages
-[ ] admin user
-[ ] screen looks white on new user when backend is off
