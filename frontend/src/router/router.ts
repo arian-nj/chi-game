@@ -9,6 +9,25 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
     },
+    {
+      path: '/game/:game',
+      name: 'game',
+      component: () => import('../views/GameView.vue'),
+      children : [
+        {
+          // Matches exactly "/game/:game"
+          path: '', 
+          component: () => import('../views/GamePlayView.vue'),
+          name: 'game-play'
+        },
+        {
+          // Matches exactly "/game/:game/rules"
+          path: 'rules', 
+          component: () => import('../views/GameRulesView.vue'),
+          name: 'game-rules'
+        }
+      ]
+    },
     // {
     //   path: '/finder',
     //   name: 'finder',

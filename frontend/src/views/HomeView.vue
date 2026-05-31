@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { onMounted } from "vue";
+import { RouterLink, useRouter } from "vue-router";
 
 const router = useRouter();
 
 const games = [
-  { key: "xo3x3", name: "XO 3x3" },
+  { key: "tictactoe", name: "Tic Tac Toe" },
   { key: "conn4", name: "Connect 4" },
   { key: "linedot", name: "Line Dot" },
   { key: "go", name: "Go!" }
 ];
 
-function goToGame(key: string) {
-  router.push(`/game/${key}`);
-}
+onMounted(() => {
+  import('../views/GameView.vue')
+})
+
 </script>
 
 <template>
@@ -32,10 +34,10 @@ function goToGame(key: string) {
              px-4
       "
     >
-      <button
+    <RouterLink
         v-for="game in games"
         :key="game.key"
-        @click="goToGame(game.key)"
+        :to="`/game/${game.key}`" 
         class="
           bg-custom-lite-blue hover:bg-custom-deep-blue 
           rounded-2xl 
@@ -48,6 +50,7 @@ function goToGame(key: string) {
           aspect-4/3
           overflow-hidden
           flex flex-col items-center justify-center
+          cursor-pointer
         "
       >
         <div class="flex flex-col items-center justify-center w-full h-full p-4">
@@ -55,7 +58,7 @@ function goToGame(key: string) {
             {{ game.name }}
           </span>
         </div>
-      </button>
+    </RouterLink>
     </div>
   </div>
 </template>

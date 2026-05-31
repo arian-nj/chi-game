@@ -142,8 +142,6 @@ export function useToast(): UseToastReturn {
 </script>
 
 <script setup lang="ts">
-import gsap from 'gsap';
-
 // Use the composable within the component itself to get access to the state.
 const { toasts, remove, config, _pause, _resume } = useToast();
 
@@ -162,42 +160,46 @@ const handleMouseLeave = (toast: Toast) => {
 
 // --- ANIMATION HOOKS ---
 const onEnter = (el: Element, done: () => void) => {
-  // Find the icon element within the toast
-  const icon = el.querySelector('[data-toast-icon]');
+  el.classList.add('toast-enter-from');
+  // Force reflow to ensure transition is triggered
+  // @ts-ignore
+  void el.offsetHeight;
+  el.classList.add('toast-enter-active');
 
-  // Animate the main toast container
-  gsap.fromTo(
-    el,
-    { y: -60, opacity: 0, scale: 0.9 },
-    { y: 0, opacity: 1, scale: 1, duration: 0.4, ease: 'power3.out', onComplete: done }
-  );
-
-  // Animate the icon with a pop effect after the container starts appearing
-  if (icon) {
-    gsap.fromTo(
-      icon,
-      { scale: 0, opacity: 0, rotation: -30 },
-      {
-        scale: 1,
-        opacity: 1,
-        rotation: 0,
-        duration: 0.4,
-        ease: 'back.out(1.7)',
-        delay: 0.15 // Start a little after the main animation
-      }
-    );
+  function cleanup() {
+    el.classList.remove('toast-enter-from', 'toast-enter-active');
+    el.removeEventListener('transitionend', onTransitionEnd);
+    done();
   }
+
+  function onTransitionEnd(e: Event) {
+    // Only clean up for the element itself, not children
+    if (e.target === el) cleanup();
+  }
+
+  el.addEventListener('transitionend', onTransitionEnd);
+  setTimeout(cleanup, 500); // Fallback in case transitionend isn't fired
 };
 
 const onLeave = (el: Element, done: () => void) => {
-  gsap.to(el, {
-    opacity: 0,
-    y: -20,
-    scale: 0.95,
-    duration: 0.3,
-    ease: 'power2.in',
-    onComplete: done,
-  });
+  el.classList.add('toast-leave-from');
+  // Force reflow
+  // @ts-ignore
+  void el.offsetHeight;
+  el.classList.add('toast-leave-active');
+
+  function cleanup() {
+    el.classList.remove('toast-leave-from', 'toast-leave-active');
+    el.removeEventListener('transitionend', onTransitionEnd);
+    done();
+  }
+
+  function onTransitionEnd(e: Event) {
+    if (e.target === el) cleanup();
+  }
+
+  el.addEventListener('transitionend', onTransitionEnd);
+  setTimeout(cleanup, 400); // Fallback
 };
 
 // --- DYNAMIC STYLING ---
@@ -240,8 +242,16 @@ const iconClasses = computed(() => (type: ToastType) => {
 
 <template>
   <div :class="containerClasses" aria-live="assertive">
-    <TransitionGroup tag="div" class="flex flex-col items-center justify-center space-y-4" @enter="onEnter"
-      @leave="onLeave">
+    <!--
+      These classes are for CSS animation based transitions.
+      See below for the style block to be included in the component.
+    -->
+    <TransitionGroup
+      tag="div"
+      class="flex flex-col items-center justify-center space-y-4"
+      @enter="onEnter"
+      @leave="onLeave"
+    >
       <div v-for="toast in toasts" :key="toast.id" :class="toastClasses(toast.type)" role="alert"
         @mouseenter="handleMouseEnter(toast)" @mouseleave="handleMouseLeave(toast)">
         <!-- Icon based on type -->
@@ -289,3 +299,27 @@ const iconClasses = computed(() => (type: ToastType) => {
     </TransitionGroup>
   </div>
 </template>
+
+<style scoped>
+/* Enter transition */
+.toast-enter-from {
+  opacity: 0;
+  transform: translateY(-60px) scale(0.9);
+}
+.toast-enter-active {
+  transition: all 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Leave transition */
+.toast-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.toast-leave-active {
+  transition: all 0.3s cubic-bezier(0.41, 0.08, 0.82, 0.98);
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+}
+</style>
