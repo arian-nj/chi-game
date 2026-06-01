@@ -5,7 +5,7 @@
 <template>
   <div>
     <section class="max-w-2xl mx-auto p-6 bg-custom-lite-blue/40 rounded-2xl border border-white/10 shadow-md">
-  <h2 class="text-3xl font-extrabold mb-6 tracking-wide text-center bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+  <h2 class="text-3xl font-extrabold mb-6 tracking-wide text-center bg-linear-to-r from-white to-blue-200 bg-clip-text text-transparent">
     How to Play XO (Tic Tac Toe)
   </h2>
 

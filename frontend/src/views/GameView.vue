@@ -2,9 +2,11 @@
 import { useToast } from '@/components/Toast.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { gamesData } from '../libs/game';
 
 const route = useRoute();
 const urlGameName = route.params.game;
+const gameData = gamesData.find(game => game.key === urlGameName);
 
 // Tabs
 const tabs = [
@@ -37,7 +39,7 @@ function playGame() {
 <template>
   <div class="bg-custom-blue min-h-screen w-screen flex flex-col items-center pb-3 text-white relative">
     <h1 class="text-4xl font-bold text-white mb-8 mt-2 animate-pop select-none drop-shadow-sm uppercase">
-      {{ urlGameName }}
+      {{ gameData?.name }}
     </h1>
     
     <!-- Tab Navigation -->

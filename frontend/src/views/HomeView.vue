@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { RouterLink, useRouter } from "vue-router";
+import {gamesData} from "../libs/game";
 
 const router = useRouter();
 
-const games = [
-  { key: "tictactoe", name: "Tic Tac Toe" },
-  { key: "conn4", name: "Connect 4" },
-  { key: "linedot", name: "Line Dot" },
-  { key: "go", name: "Go!" }
-];
 
 onMounted(() => {
   import('../views/GameView.vue')
@@ -35,7 +30,7 @@ onMounted(() => {
       "
     >
     <RouterLink
-        v-for="game in games"
+        v-for="game in gamesData"
         :key="game.key"
         :to="`/game/${game.key}`" 
         class="
