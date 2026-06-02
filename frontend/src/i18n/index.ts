@@ -1,21 +1,16 @@
 import { createI18n } from 'vue-i18n';
 import en from './locales/en';
 import fa from './locales/fa';
+import {
+  isRtlLocale,
+  type AppLocale,
+  supportedLocales,
+} from './config';
+
+export type { AppLocale } from './config';
+export { isRtlLocale, rtlLocales, supportedLocales } from './config';
 
 export const LOCALE_STORAGE_KEY = 'chigame-locale';
-
-export const supportedLocales = [
-  { code: 'en', labelKey: 'locale.en' },
-  { code: 'fa', labelKey: 'locale.fa' },
-] as const;
-
-export type AppLocale = (typeof supportedLocales)[number]['code'];
-
-export const rtlLocales = ['fa'] as const;
-
-export function isRtlLocale(locale: string): boolean {
-  return (rtlLocales as readonly string[]).includes(locale);
-}
 
 export function getInitialLocale(): AppLocale {
   const stored = localStorage.getItem(LOCALE_STORAGE_KEY);

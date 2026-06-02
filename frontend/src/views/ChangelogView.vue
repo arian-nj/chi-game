@@ -16,7 +16,13 @@ const { textDir } = useTextDirection();
 const entries: ChangelogEntry[] = [
   {
     date: '2026-06-02',
-    new: ['Changelog page.','Each game has its own rules page.'],
+    new: [
+      'Changelog page.',
+      'Each game has its own rules page.',
+      'Added lang and text side in document.',
+      'Added robots.txt.',
+      'Added sitemap.xml.',
+    ],
     changed: ['Tic Tac Toe: medium bot is a little easier (occasionally misses blocks / center).'],
   },
 ];

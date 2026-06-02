@@ -25,7 +25,11 @@
 - [X] google analytics? 
 - [ ] add unhead for SEO Heading
 - [X] changelog
-
+- [X] per page heading
+- [X] alternante links
+- [X] add lang and text side in document
+- [X] robots.txt
+- [ ] sitemap.xml
 
 # V 0.2.0 simple backend
 - [ ] Agent for backend
