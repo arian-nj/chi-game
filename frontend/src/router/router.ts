@@ -1,33 +1,45 @@
 import HomeView from '@/views/HomeView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { gamesData } from '@/libs/game'
+import LocaleLayout from '@/views/LocaleLayout.vue'
+import { getInitialLocale, i18n, persistLocale, type AppLocale } from '@/i18n'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView,
+      redirect: () => `/${getInitialLocale()}`,
     },
     {
-      path: '/game/:game',
-      name: 'game',
-      component: () => import('../views/GameView.vue'),
-      children : [
+      path: '/:locale(en|fa)',
+      component: LocaleLayout,
+      children: [
         {
-          // Matches exactly "/game/:game"
-          path: '', 
-          component: () => import('../views/GamePlayView.vue'),
-          name: 'game-play'
+          path: '',
+          name: 'home',
+          component: HomeView,
         },
         {
-          // Matches exactly "/game/:game/rules"
-          path: 'rules', 
-          component: () => import('../views/GameRulesView.vue'),
-          name: 'game-rules'
-        }
-      ]
+          path: 'game/:game',
+          name: 'game',
+          component: () => import('../views/GameView.vue'),
+          children: [
+            {
+              // Matches exactly "/:locale/game/:game"
+              path: '',
+              component: () => import('../views/GamePlayView.vue'),
+              name: 'game-play',
+            },
+            {
+              // Matches exactly "/:locale/game/:game/rules"
+              path: 'rules',
+              component: () => import('../views/GameRulesView.vue'),
+              name: 'game-rules',
+            },
+          ],
+        },
+      ],
     },
     // {
     //   path: '/finder',
@@ -70,13 +82,28 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  if (!to.path.startsWith('/game/')) return true
+  // Legacy URL support: "/game/x" -> "/<locale>/game/x"
+  if (!('locale' in to.params) && to.path.startsWith('/game/')) {
+    const locale = getInitialLocale()
+    return { path: `/${locale}${to.fullPath}` }
+  }
+
+  const localeParam = to.params.locale
+  if (typeof localeParam !== 'string') return true
+
+  const locale = localeParam as AppLocale
+  if (locale !== i18n.global.locale.value) {
+    i18n.global.locale.value = locale
+    persistLocale(locale)
+  }
+
+  if (to.name !== 'game' && to.name !== 'game-play' && to.name !== 'game-rules') return true
 
   const gameKey = to.params.game
-  if (typeof gameKey !== 'string') return { path: '/' }
+  if (typeof gameKey !== 'string') return { name: 'home', params: { locale } }
 
   const game = gamesData.find(g => g.key === gameKey)
-  if (!game || !game.isEnable) return { path: '/' }
+  if (!game || !game.isEnable) return { name: 'home', params: { locale } }
 
   return true
 })

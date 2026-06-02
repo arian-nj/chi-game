@@ -8,7 +8,7 @@ import type { TicTacToeSettings } from '@/libs/tictactoe';
 import { gamesData, type GameKey } from '@/libs/game';
 import type { PlaySettings } from '@/views/GamePlayView.vue';
 import { computed, ref, useTemplateRef } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 type ActiveGame =
@@ -16,8 +16,8 @@ type ActiveGame =
   | { type: 'conn4'; settings: Connect4Settings };
 
 const route = useRoute();
-const router = useRouter();
 const { t } = useI18n();
+const locale = computed(() => route.params.locale as string);
 const urlGameName = route.params.game as GameKey;
 const gameData = gamesData.find(game => game.key === urlGameName);
 const isTicTacToe = computed(() => route.params.game === 'tictactoe');
@@ -32,8 +32,8 @@ const playButtonAnimationKey = ref(0);
 const playViewRef = useTemplateRef<{ getSettings: () => PlaySettings }>('playViewRef');
 
 const tabs = computed(() => [
-  { name: t('nav.play'), icon: '🚀', to: `/game/${urlGameName}` },
-  { name: t('nav.rules'), icon: '📖', to: `/game/${urlGameName}/rules` },
+  { name: t('nav.play'), icon: '🚀', to: `/${locale.value}/game/${urlGameName}` },
+  { name: t('nav.rules'), icon: '📖', to: `/${locale.value}/game/${urlGameName}/rules` },
 ]);
 
 function playGame() {
@@ -79,7 +79,7 @@ function quitGame() {
 <template>
   <div class="bg-custom-blue min-h-screen w-screen flex flex-col items-center pb-3 pt-14 text-white relative">
     <RouterLink
-      to="/"
+      :to="`/${locale}`"
       class="absolute left-4 top-14 z-30 flex items-center gap-2 rounded-xl border border-white/10 bg-custom-lite-blue/70 px-4 py-2 text-sm font-bold text-blue-100 shadow-md transition hover:bg-white/20 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
       :aria-label="t('nav.backToHome')"
     >

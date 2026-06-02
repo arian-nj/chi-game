@@ -2,9 +2,12 @@
 import { gamesData } from '../libs/game';
 import { onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
+const route = useRoute();
+const locale = route.params.locale as string;
 
 onMounted(() => {
   import('../views/GameView.vue');
@@ -25,7 +28,7 @@ onMounted(() => {
         :is="game.isEnable ? RouterLink : 'div'"
         v-for="game in gamesData"
         :key="game.key"
-        v-bind="game.isEnable ? { to: `/game/${game.key}` } : {}"
+        v-bind="game.isEnable ? { to: `/${locale}/game/${game.key}` } : {}"
         class="rounded-2xl w-full transition duration-100 shadow outline-none focus:ring-2 focus:ring-blue-500 aspect-4/3 overflow-hidden flex flex-col items-center justify-center"
         :class="
           game.isEnable

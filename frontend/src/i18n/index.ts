@@ -17,7 +17,7 @@ export function isRtlLocale(locale: string): boolean {
   return (rtlLocales as readonly string[]).includes(locale);
 }
 
-function getInitialLocale(): AppLocale {
+export function getInitialLocale(): AppLocale {
   const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
   if (stored === 'en' || stored === 'fa') {
     return stored;
