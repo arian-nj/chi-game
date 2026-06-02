@@ -102,5 +102,28 @@ export default {
       hintText:
         'If you go first, controlling the center square or the outer corners gives you the highest mathematical probability to force a winning trap!',
     },
+    conn4: {
+      title: 'How to Play Connect 4',
+      objective: 'Objective',
+      objectiveText:
+        'Be the first player to connect {highlight} in a straight line. The line can be horizontal, vertical, or diagonal.',
+      objectiveHighlight: 'four of your discs',
+      gameplay: 'Gameplay Rules',
+      rule1: 'The game is played on a {highlight} with 7 columns and 6 rows.',
+      rule1Highlight: '7×6 vertical board',
+      rule2: 'Player 1 uses {red} discs, and Player 2 (or the bot) uses {yellow} discs.',
+      rule3: 'On your turn, pick a column; your disc drops into the lowest empty slot in that column.',
+      rule4: 'Once a disc is placed, it cannot be moved. You cannot play in a full column.',
+      winning: 'Winning & Draws',
+      victory:
+        '{label} Connect four of your discs in a row, column, or diagonal to win immediately.',
+      victoryLabel: 'Victory:',
+      drawRule:
+        '{label} If every slot on the board is filled and neither player has four in a row, the game ends in a draw.',
+      drawLabel: 'Draw:',
+      hintTitle: 'Quick Strategy Hint:',
+      hintText:
+        'Watch the center columns, set up double threats, and block your opponent when they are one move from four in a row.',
+    },
   },
 } as const;
