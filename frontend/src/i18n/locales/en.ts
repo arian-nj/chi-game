@@ -2,6 +2,56 @@ export default {
   app: {
     title: 'Chi Game',
   },
+  seo: {
+    siteName: 'Chi Game',
+    defaultDescription:
+      'Play free board games in your browser — Tic Tac Toe, Connect 4, and more. Offline-friendly, vs bot or two players.',
+    home: {
+      title: 'Chi Game — Play Tic Tac Toe & Connect 4 Online',
+      description:
+        'Free browser games at Chi Game. Play Tic Tac Toe and Connect 4 against a bot or a friend — no install required.',
+    },
+    changelog: {
+      title: 'Changelog | Chi Game',
+      description: 'What is new, changed, and fixed in Chi Game.',
+    },
+    notFound: {
+      title: 'Page not found | Chi Game',
+      description: "This page doesn't exist. Head back to Chi Game and pick a game to play.",
+    },
+    gamePlay: {
+      tictactoe: {
+        title: 'Play Tic Tac Toe | Chi Game',
+        description:
+          'Play Tic Tac Toe (XO) free in your browser. Choose 3×3 or 5×5, play vs bot or two players.',
+      },
+      conn4: {
+        title: 'Play Connect 4 | Chi Game',
+        description:
+          'Play Connect 4 free online. Drop discs on a classic 7×6 board — vs bot or two players.',
+      },
+      fallback: {
+        title: 'Play {game} | Chi Game',
+        description: 'Play {game} free in your browser at Chi Game.',
+      },
+    },
+    gameRules: {
+      tictactoe: {
+        title: 'Tic Tac Toe Rules | Chi Game',
+        description:
+          'Learn how to play Tic Tac Toe: objective, turns, winning lines, draws, and a quick strategy tip.',
+      },
+      conn4: {
+        title: 'Connect 4 Rules | Chi Game',
+        description:
+          'Learn how to play Connect 4: board setup, turns, four-in-a-row wins, draws, and strategy.',
+      },
+      fallback: {
+        title: '{game} Rules | Chi Game',
+        description: 'How to play {game} — rules and tips at Chi Game.',
+      },
+    },
+  },
   notFound: {
     title: 'Page not found',
     description: "This page doesn't exist (or was moved).",

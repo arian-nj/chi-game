@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import LocaleSwitcher from '@/components/LocaleSwitcher.vue';
+import { usePageSeo } from '@/composables/use-page-seo';
 import Toast, { configureToast } from './components/Toast.vue';
 import { onMounted } from 'vue';
+
+usePageSeo();
 
 onMounted(() => {
   configureToast({

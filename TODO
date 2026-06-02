@@ -22,9 +22,12 @@
 - [ ] logo and title and stuff
 - [X] lang in url
 
+- [X] google analytics? 
+- [ ] add unhead for SEO Heading
+- [X] changelog
+
+
 # V 0.2.0 simple backend
-- [X] google analytics?
-- [ ] changelog
 - [ ] Agent for backend
 - [ ] base backend
 
