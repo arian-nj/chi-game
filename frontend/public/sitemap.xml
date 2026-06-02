@@ -16,6 +16,12 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="chigame.site/en/changelog" />
   </url>
   <url>
+    <loc>chigame.site/en/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="chigame.site/en/about" />
+    <xhtml:link rel="alternate" hreflang="fa" href="chigame.site/fa/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="chigame.site/en/about" />
+  </url>
+  <url>
     <loc>chigame.site/en/game/tictactoe</loc>
     <xhtml:link rel="alternate" hreflang="en" href="chigame.site/en/game/tictactoe" />
     <xhtml:link rel="alternate" hreflang="fa" href="chigame.site/fa/game/tictactoe" />

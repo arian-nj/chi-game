@@ -3,7 +3,7 @@ import { gamesData } from './game';
 
 /** Locale-agnostic public paths (after `/:locale`), shared by sitemap and hreflang helpers. */
 export function getPublicPathSuffixes(): string[] {
-  const suffixes = ['', '/changelog'];
+  const suffixes = ['', '/changelog', '/about'];
 
   for (const game of gamesData) {
     if (!game.isEnable) continue;

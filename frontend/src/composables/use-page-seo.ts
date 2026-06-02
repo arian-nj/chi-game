@@ -44,6 +44,13 @@ export function resolvePageSeo(
     };
   }
 
+  if (routeName === 'about') {
+    return {
+      title: t('seo.about.title'),
+      description: t('seo.about.description'),
+    };
+  }
+
   if (routeName === 'not-found' || routeName === 'not-found-catchall') {
     return {
       title: t('seo.notFound.title'),

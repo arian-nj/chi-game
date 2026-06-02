@@ -15,6 +15,11 @@ export default {
       title: 'Changelog | Chi Game',
       description: 'What is new, changed, and fixed in Chi Game.',
     },
+    about: {
+      title: 'About | Chi Game',
+      description:
+        'Learn about Chi Game — free browser board games, offline play, bot and two-player modes, and what is coming next.',
+    },
     notFound: {
       title: 'Page not found | Chi Game',
       description: "This page doesn't exist. Head back to Chi Game and pick a game to play.",
@@ -63,6 +68,26 @@ export default {
     rules: 'Rules',
     backToHome: 'Back to home',
     changelog: 'Changelog',
+    about: 'About',
+  },
+  about: {
+    title: 'About Chi Game',
+    tagline:
+      'Chi Game is a free collection of classic board games you can play in your browser — no install required.',
+    sections: {
+      mission: {
+        title: 'What we are building',
+        body: 'We want a simple place to pick a game, learn the rules, and start playing right away. Everything runs in the browser and works offline once loaded.',
+      },
+      games: {
+        title: 'Games today',
+        body: 'Phase 1 focuses on single-device play: challenge the bot or pass the device with a friend. Tic Tac Toe and Connect 4 are available now, with more classics on the way.',
+      },
+      roadmap: {
+        title: 'What is next',
+        body: 'Later phases will add online multiplayer so you can play with friends remotely. Until then, enjoy quick offline matches and check the changelog for updates.',
+      },
+    },
   },
   changelog: {
     title: 'Changelog',

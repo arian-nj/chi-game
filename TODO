@@ -29,8 +29,8 @@
 - [X] alternante links
 - [X] add lang and text side in document
 - [X] robots.txt
-- [ ] sitemap.xml
-
+- [X] sitemap.xml
+- [X] about page
 # V 0.2.0 simple backend
 - [ ] Agent for backend
 - [ ] base backend

@@ -17,6 +17,7 @@ export function resolveLocalePathSuffix(
 
   if (routeName === 'home') return '';
   if (routeName === 'changelog') return '/changelog';
+  if (routeName === 'about') return '/about';
   if (routeName === 'not-found') return '/404';
 
   const gameKey = route.params.game;

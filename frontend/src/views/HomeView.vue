@@ -45,13 +45,19 @@ onMounted(() => {
       </component>
     </div>
 
-    <div class="mt-8">
+    <nav class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Site">
+      <RouterLink
+        :to="`/${locale}/about`"
+        class="text-blue-100 hover:text-white underline underline-offset-4 font-semibold"
+      >
+        {{ t('nav.about') }}
+      </RouterLink>
       <RouterLink
         :to="`/${locale}/changelog`"
         class="text-blue-100 hover:text-white underline underline-offset-4 font-semibold"
       >
         {{ t('nav.changelog') }}
       </RouterLink>
-    </div>
+    </nav>
   </div>
 </template>
