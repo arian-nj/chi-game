@@ -1,9 +1,7 @@
 <script setup lang="ts">
-
-
-import { onMounted } from 'vue';
+import LocaleSwitcher from '@/components/LocaleSwitcher.vue';
 import Toast, { configureToast } from './components/Toast.vue';
-import { useToast } from './components/Toast.vue';
+import { onMounted } from 'vue';
 
 onMounted(() => {
   configureToast({
@@ -13,17 +11,14 @@ onMounted(() => {
     limit: 2,
   });
 });
-
-function showToast() {
-  useToast().toast.success('Hello, world!');
-}
-
 </script>
 
 <template>
-
-  <RouterView />
-  <Toast />
+  <div class="relative min-h-screen">
+    <div class="fixed right-4 top-4 z-40">
+      <LocaleSwitcher />
+    </div>
+    <RouterView />
+    <Toast />
+  </div>
 </template>
-
-<style scoped></style>

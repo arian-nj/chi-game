@@ -6,24 +6,24 @@ const props = defineProps<{
   optionTwo: string;
 }>();
 
-const activeOption = ref(props.optionOne);
+const activeIndex = ref<1 | 2>(1);
 
-const isFirstActive = computed(() => activeOption.value === props.optionOne);
+const isFirstActive = computed(() => activeIndex.value === 1);
 
-function selectOption(option: string) {
-  activeOption.value = option;
+function selectOption(index: 1 | 2) {
+  activeIndex.value = index;
 }
 
-const activeOptionNumber = computed(() => activeOption.value === props.optionOne ? 1 : 2);
-// expose option1 as 1 and option2 as 2
+const activeOptionNumber = computed(() => activeIndex.value);
+
 defineExpose({
   optionNumber: activeOptionNumber,
 });
-
 </script>
 
 <template>
   <div
+    dir="ltr"
     class="relative inline-flex w-full min-w-56 rounded-2xl border border-white/10 bg-custom-deep-blue/90 p-1 shadow-[inset_0_2px_8px_rgba(0,0,0,0.35)]"
     role="group"
     :aria-label="`${props.optionOne} or ${props.optionTwo}`"
@@ -36,20 +36,22 @@ defineExpose({
 
     <button
       type="button"
+      dir="auto"
       class="relative z-10 flex flex-1 cursor-pointer items-center justify-center rounded-xl px-4 py-2.5 text-lg font-bold tracking-wide transition-colors duration-200 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-custom-deep-blue"
       :class="isFirstActive ? 'text-custom-blue' : 'text-blue-100/80 hover:text-blue-50'"
       :aria-pressed="isFirstActive"
-      @click="selectOption(props.optionOne)"
+      @click="selectOption(1)"
     >
       {{ props.optionOne }}
     </button>
 
     <button
       type="button"
+      dir="auto"
       class="relative z-10 flex flex-1 cursor-pointer items-center justify-center rounded-xl px-4 py-2.5 text-lg font-bold tracking-wide transition-colors duration-200 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-custom-deep-blue"
       :class="!isFirstActive ? 'text-custom-blue' : 'text-blue-100/80 hover:text-blue-50'"
       :aria-pressed="!isFirstActive"
-      @click="selectOption(props.optionTwo)"
+      @click="selectOption(2)"
     >
       {{ props.optionTwo }}
     </button>

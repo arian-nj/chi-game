@@ -9,6 +9,8 @@ import {
   type Player,
 } from '@/libs/tictactoe';
 import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useTextDirection } from '@/composables/use-text-direction';
 
 const props = defineProps<{
   isBot: boolean;
@@ -18,6 +20,9 @@ const props = defineProps<{
 const emit = defineEmits<{
   quit: [];
 }>();
+
+const { t } = useI18n();
+const { textDir } = useTextDirection();
 
 const HUMAN: Player = 'X';
 const BOT: Player = 'O';
@@ -35,20 +40,20 @@ const statusMessage = computed(() => {
   if (result.value) {
     const { winner } = result.value;
     if (props.isBot) {
-      return winner === HUMAN ? 'You win!' : 'Bot wins!';
+      return winner === HUMAN ? t('game.youWin') : t('game.botWins');
     }
-    return `Player ${winner} wins!`;
+    return t('game.playerWins', { player: winner });
   }
   if (hasDraw.value) {
-    return "It's a draw!";
+    return t('game.draw');
   }
   if (isBotThinking.value) {
-    return 'Bot is thinking…';
+    return t('game.botThinking');
   }
   if (props.isBot) {
-    return currentPlayer.value === HUMAN ? 'Your turn (X)' : 'Bot turn (O)';
+    return currentPlayer.value === HUMAN ? t('game.yourTurnX') : t('game.botTurnO');
   }
-  return `Player ${currentPlayer.value}'s turn`;
+  return t('game.playerTurn', { player: currentPlayer.value });
 });
 
 function resetGame() {
@@ -127,6 +132,7 @@ watch(
 <template>
   <div class="flex flex-col items-center gap-5">
     <div
+      :dir="textDir"
       class="w-full rounded-2xl border border-white/10 bg-custom-lite-blue/40 p-4 shadow-md"
       role="status"
       aria-live="polite"
@@ -138,7 +144,7 @@ watch(
       class="grid w-full max-w-md gap-2"
       :class="boardSize === 3 ? 'grid-cols-3' : 'grid-cols-5'"
       role="grid"
-      :aria-label="`${boardSize} by ${boardSize} tic tac toe board`"
+      :aria-label="t('game.tttBoardAria', { size: boardSize })"
     >
       <button
         v-for="(cell, index) in board"
@@ -152,7 +158,11 @@ watch(
           isGameOver || isBotThinking ? 'cursor-default' : 'cursor-pointer',
         ]"
         :disabled="cell !== null || isGameOver || isBotThinking || (isBot && currentPlayer !== HUMAN)"
-        :aria-label="cell ? `Cell ${index + 1}, ${cell}` : `Empty cell ${index + 1}`"
+        :aria-label="
+          cell
+            ? t('game.cellOccupied', { index: index + 1, symbol: cell })
+            : t('game.cellEmpty', { index: index + 1 })
+        "
         @click="handleCellClick(index)"
       >
         {{ cell ?? '' }}
@@ -165,14 +175,14 @@ watch(
         class="flex-1 rounded-xl bg-white/90 px-4 py-3 text-lg font-bold text-custom-blue transition hover:bg-white"
         @click="resetGame"
       >
-        New game
+        {{ t('game.newGame') }}
       </button>
       <button
         type="button"
         class="flex-1 rounded-xl border border-white/20 bg-transparent px-4 py-3 text-lg font-bold text-blue-100 transition hover:bg-white/10"
         @click="emit('quit')"
       >
-        Back to settings
+        {{ t('game.backToSettings') }}
       </button>
     </div>
   </div>
