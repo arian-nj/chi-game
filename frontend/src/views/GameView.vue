@@ -2,6 +2,7 @@
 import Connect4Game from '@/components/connect4/Connect4Game.vue';
 import TicTacToeGame from '@/components/tictactoe/TicTacToeGame.vue';
 import { useToast } from '@/components/Toast.vue';
+import type { BotDifficulty } from '@/libs/bot-difficulty';
 import type { Connect4Settings } from '@/libs/connect4';
 import type { TicTacToeSettings } from '@/libs/tictactoe';
 import { gamesData, type GameKey } from '@/libs/game';
@@ -44,7 +45,7 @@ function playGame() {
   const settings =
     playView && typeof playView.getSettings === 'function'
       ? playView.getSettings()
-      : { isBot: true };
+      : { isBot: true, botDifficulty: 'medium' as BotDifficulty };
 
   if (isTicTacToe.value) {
     activeGame.value = {
@@ -52,12 +53,13 @@ function playGame() {
       settings: {
         isBot: settings.isBot,
         boardSize: 'boardSize' in settings ? settings.boardSize : 3,
+        botDifficulty: settings.botDifficulty,
       },
     };
   } else if (isConnect4.value) {
     activeGame.value = {
       type: 'conn4',
-      settings: { isBot: settings.isBot },
+      settings: { isBot: settings.isBot, botDifficulty: settings.botDifficulty },
     };
   }
 
@@ -86,7 +88,10 @@ function quitGame() {
       {{ gameData ? t(`games.${gameData.key}`) : '' }}
     </h1>
 
-    <div class="flex gap-4 bg-custom-lite-blue/70 rounded-xl mb-6 px-2 py-1 shadow-lg">
+    <div
+      v-show="!isPlaying"
+      class="flex gap-4 bg-custom-lite-blue/70 rounded-xl mb-6 px-2 py-1 shadow-lg"
+    >
       <RouterLink
         v-for="tab in tabs"
         :key="tab.to"
@@ -112,11 +117,13 @@ function quitGame() {
         v-if="isPlaying && activeGame?.type === 'tictactoe'"
         :is-bot="activeGame.settings.isBot"
         :board-size="activeGame.settings.boardSize"
+        :bot-difficulty="activeGame.settings.botDifficulty"
         @quit="quitGame"
       />
       <Connect4Game
         v-else-if="isPlaying && activeGame?.type === 'conn4'"
         :is-bot="activeGame.settings.isBot"
+        :bot-difficulty="activeGame.settings.botDifficulty"
         @quit="quitGame"
       />
       <RouterView v-else v-slot="{ Component }">

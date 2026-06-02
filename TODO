@@ -11,16 +11,16 @@
 - [X] Publish
 - [X] TTT Bot AI Setting in Game Play View
 
-- [ ] basic TTT game
-- [ ] i18 multi lang
+- [X] basic TTT game
+- [X] i18 multi lang
 
-- [ ] make rules dynamic
-- [ ] logo and title and stuff
+- [X] make rules dynamic
+- [X] logo and title and stuff
 
 # V 0.0.2
-- [ ] Connect 4
-
-
+- [X] Connect 4
+- [X] add bot difficulty
+- [X] whoes turn visual
 
 - [ ] google analytics?
 

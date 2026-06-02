@@ -1,3 +1,5 @@
+import type { BotDifficulty } from '@/libs/bot-difficulty';
+
 export type Cell = 'X' | 'O' | null;
 export type Player = 'X' | 'O';
 export type BoardSize = 3 | 5;
@@ -5,6 +7,7 @@ export type BoardSize = 3 | 5;
 export interface TicTacToeSettings {
   isBot: boolean;
   boardSize: BoardSize;
+  botDifficulty: BotDifficulty;
 }
 
 export interface GameResult {
@@ -85,10 +88,24 @@ export function isDraw(board: Cell[], size: BoardSize): boolean {
   return checkWinner(board, size) === null && getAvailableMoves(board).length === 0;
 }
 
-export function getBotMove(board: Cell[], size: BoardSize, bot: Player, human: Player): number {
+export function getBotMove(
+  board: Cell[],
+  size: BoardSize,
+  bot: Player,
+  human: Player,
+  difficulty: BotDifficulty = 'hard',
+): number {
   const moves = getAvailableMoves(board);
   if (moves.length === 0) {
     return -1;
+  }
+
+  if (difficulty === 'easy') {
+    return pickRandomMove(moves);
+  }
+
+  if (difficulty === 'medium') {
+    return getMediumMove(board, size, bot, human, moves);
   }
 
   if (size === 3) {
@@ -96,6 +113,42 @@ export function getBotMove(board: Cell[], size: BoardSize, bot: Player, human: P
   }
 
   return getHeuristicMove(board, size, bot, human, moves);
+}
+
+function pickRandomMove(moves: number[]): number {
+  return moves[Math.floor(Math.random() * moves.length)]!;
+}
+
+function getMediumMove(
+  board: Cell[],
+  size: BoardSize,
+  bot: Player,
+  human: Player,
+  moves: number[],
+): number {
+  for (const move of moves) {
+    board[move] = bot;
+    const won = checkWinner(board, size)?.winner === bot;
+    board[move] = null;
+    if (won) {
+      return move;
+    }
+  }
+
+  for (const move of moves) {
+    board[move] = human;
+    const blocked = checkWinner(board, size)?.winner === human;
+    board[move] = null;
+    if (blocked) {
+      return move;
+    }
+  }
+
+  if (size === 3 && moves.includes(4)) {
+    return 4;
+  }
+
+  return pickRandomMove(moves);
 }
 
 function getPerfectMove(board: Cell[], size: BoardSize, bot: Player, human: Player): number {

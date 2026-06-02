@@ -1,3 +1,6 @@
+import type { BotDifficulty } from '@/libs/bot-difficulty';
+import { pickRandomItem } from '@/libs/bot-difficulty';
+
 export const CONNECT4_ROWS = 6;
 export const CONNECT4_COLS = 7;
 export const CONNECT4_WIN_LENGTH = 4;
@@ -7,6 +10,7 @@ export type Player = 'R' | 'Y';
 
 export interface Connect4Settings {
   isBot: boolean;
+  botDifficulty: BotDifficulty;
 }
 
 export interface Connect4Result {
@@ -115,26 +119,34 @@ function orderColumns(columns: number[]): number[] {
   );
 }
 
-export function getBotMove(board: Board, bot: Player, human: Player): number {
+export function getBotMove(
+  board: Board,
+  bot: Player,
+  human: Player,
+  difficulty: BotDifficulty = 'hard',
+): number {
   const validColumns = getValidColumns(board);
   if (validColumns.length === 0) {
     return -1;
   }
 
-  for (const col of orderColumns(validColumns)) {
-    const trialBoard = cloneBoard(board);
-    const row = dropDisc(trialBoard, col, bot);
-    if (row !== -1 && checkWinnerFrom(trialBoard, row, col)) {
-      return col;
-    }
+  if (difficulty === 'easy') {
+    return pickRandomItem(orderColumns(validColumns));
   }
 
-  for (const col of orderColumns(validColumns)) {
-    const trialBoard = cloneBoard(board);
-    const row = dropDisc(trialBoard, col, human);
-    if (row !== -1 && checkWinnerFrom(trialBoard, row, col)) {
-      return col;
-    }
+  const winColumn = findWinningColumn(board, bot);
+  if (winColumn !== null) {
+    return winColumn;
+  }
+
+  const blockColumn = findWinningColumn(board, human);
+  if (blockColumn !== null) {
+    return blockColumn;
+  }
+
+  if (difficulty === 'medium') {
+    const preferred = orderColumns(validColumns);
+    return pickRandomItem(preferred.slice(0, Math.min(3, preferred.length)));
   }
 
   let bestColumn = validColumns[0]!;
@@ -147,7 +159,15 @@ export function getBotMove(board: Board, bot: Player, human: Player): number {
       continue;
     }
 
-    const score = minimax(trialBoard, 6, false, bot, human, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
+    const score = minimax(
+      trialBoard,
+      6,
+      false,
+      bot,
+      human,
+      Number.NEGATIVE_INFINITY,
+      Number.POSITIVE_INFINITY,
+    );
     if (score > bestScore) {
       bestScore = score;
       bestColumn = col;
@@ -155,6 +175,17 @@ export function getBotMove(board: Board, bot: Player, human: Player): number {
   }
 
   return bestColumn;
+}
+
+function findWinningColumn(board: Board, player: Player): number | null {
+  for (const col of orderColumns(getValidColumns(board))) {
+    const trialBoard = cloneBoard(board);
+    const row = dropDisc(trialBoard, col, player);
+    if (row !== -1 && checkWinnerFrom(trialBoard, row, col)) {
+      return col;
+    }
+  }
+  return null;
 }
 
 function minimax(

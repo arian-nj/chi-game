@@ -36,6 +36,21 @@
 	animation: play-btn-enter 0.7s cubic-bezier(0.23, 1.12, 0.75, 0.95) forwards;
 }
 
+@keyframes turn-pulse {
+	0%,
+	100% {
+		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45);
+	}
+
+	50% {
+		box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+	}
+}
+
+.turn-indicator-active {
+	animation: turn-pulse 1.4s ease-in-out infinite;
+}
+
 @theme {
 	--color-custom-blue: #17212b;
 	--color-custom-deep-blue: #030712;

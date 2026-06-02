@@ -10,8 +10,13 @@ const activeIndex = ref<1 | 2>(1);
 
 const isFirstActive = computed(() => activeIndex.value === 1);
 
+const emit = defineEmits<{
+  change: [option: 1 | 2];
+}>();
+
 function selectOption(index: 1 | 2) {
   activeIndex.value = index;
+  emit('change', index);
 }
 
 const activeOptionNumber = computed(() => activeIndex.value);

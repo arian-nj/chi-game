@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { BotDifficulty } from '@/libs/bot-difficulty';
 import {
   checkWinner,
   createEmptyBoard,
@@ -11,10 +12,12 @@ import {
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useTextDirection } from '@/composables/use-text-direction';
+import GameTurnIndicator, { type TurnPlayer } from '@/components/GameTurnIndicator.vue';
 
 const props = defineProps<{
   isBot: boolean;
   boardSize: BoardSize;
+  botDifficulty: BotDifficulty;
 }>();
 
 const emit = defineEmits<{
@@ -54,6 +57,49 @@ const statusMessage = computed(() => {
     return currentPlayer.value === HUMAN ? t('game.yourTurnX') : t('game.botTurnO');
   }
   return t('game.playerTurn', { player: currentPlayer.value });
+});
+
+const turnPlayers = computed<TurnPlayer[]>(() => [
+  {
+    key: HUMAN,
+    label: props.isBot ? t('game.you') : t('game.playerX'),
+    markerType: 'symbol',
+    markerText: 'X',
+    markerClass: 'text-sky-300',
+  },
+  {
+    key: BOT,
+    label: props.isBot ? t('game.botPlayer') : t('game.playerO'),
+    markerType: 'symbol',
+    markerText: 'O',
+    markerClass: 'text-rose-300',
+  },
+]);
+
+const activePlayerKey = computed(() => {
+  if (result.value) {
+    return result.value.winner;
+  }
+  if (hasDraw.value) {
+    return null;
+  }
+  if (isBotThinking.value) {
+    return BOT;
+  }
+  return currentPlayer.value;
+});
+
+const turnStatus = computed(() => {
+  if (result.value) {
+    return 'win' as const;
+  }
+  if (hasDraw.value) {
+    return 'draw' as const;
+  }
+  if (isBotThinking.value) {
+    return 'thinking' as const;
+  }
+  return 'playing' as const;
 });
 
 function resetGame() {
@@ -108,7 +154,7 @@ function runBotMove() {
 
   isBotThinking.value = true;
   window.setTimeout(() => {
-    const move = getBotMove([...board.value], props.boardSize, BOT, HUMAN);
+    const move = getBotMove([...board.value], props.boardSize, BOT, HUMAN, props.botDifficulty);
     isBotThinking.value = false;
 
     if (move >= 0) {
@@ -131,14 +177,14 @@ watch(
 
 <template>
   <div class="flex flex-col items-center gap-5">
-    <div
+    <GameTurnIndicator
       :dir="textDir"
-      class="w-full rounded-2xl border border-white/10 bg-custom-lite-blue/40 p-4 shadow-md"
-      role="status"
-      aria-live="polite"
-    >
-      <p class="text-center text-lg font-bold text-white">{{ statusMessage }}</p>
-    </div>
+      :message="statusMessage"
+      :status="turnStatus"
+      :players="turnPlayers"
+      :active-player-key="activePlayerKey"
+      :show-players="!hasDraw"
+    />
 
     <div
       class="grid w-full max-w-md gap-2"
