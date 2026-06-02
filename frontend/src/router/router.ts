@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { gamesData } from '@/libs/game'
 import LocaleLayout from '@/views/LocaleLayout.vue'
 import { getInitialLocale, i18n, persistLocale, type AppLocale } from '@/i18n'
+import NotFoundView from '@/views/NotFoundView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,6 +20,11 @@ const router = createRouter({
           path: '',
           name: 'home',
           component: HomeView,
+        },
+        {
+          path: '404',
+          name: 'not-found',
+          component: NotFoundView,
         },
         {
           path: 'game/:game',
@@ -39,7 +45,21 @@ const router = createRouter({
             },
           ],
         },
+        {
+          path: ':pathMatch(.*)*',
+          name: 'not-found-catchall',
+          component: NotFoundView,
+        },
       ],
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: (to) => {
+        const rest = Array.isArray(to.params.pathMatch)
+          ? to.params.pathMatch.join('/')
+          : String(to.params.pathMatch ?? '')
+        return `/${getInitialLocale()}/${rest}`
+      },
     },
     // {
     //   path: '/finder',
@@ -97,7 +117,12 @@ router.beforeEach((to) => {
     persistLocale(locale)
   }
 
-  if (to.name !== 'game' && to.name !== 'game-play' && to.name !== 'game-rules') return true
+  if (
+    to.name !== 'game' &&
+    to.name !== 'game-play' &&
+    to.name !== 'game-rules'
+  )
+    return true
 
   const gameKey = to.params.game
   if (typeof gameKey !== 'string') return { name: 'home', params: { locale } }

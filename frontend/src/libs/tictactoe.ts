@@ -126,6 +126,13 @@ function getMediumMove(
   human: Player,
   moves: number[],
 ): number {
+  // Medium should feel decent, but make occasional mistakes.
+  // - Always take a winning move.
+  // - Sometimes miss a block.
+  // - Sometimes skip the center.
+  const shouldBlock = Math.random() < 0.75;
+  const shouldTakeCenter = Math.random() < 0.65;
+
   for (const move of moves) {
     board[move] = bot;
     const won = checkWinner(board, size)?.winner === bot;
@@ -135,16 +142,18 @@ function getMediumMove(
     }
   }
 
-  for (const move of moves) {
-    board[move] = human;
-    const blocked = checkWinner(board, size)?.winner === human;
-    board[move] = null;
-    if (blocked) {
-      return move;
+  if (shouldBlock) {
+    for (const move of moves) {
+      board[move] = human;
+      const blocked = checkWinner(board, size)?.winner === human;
+      board[move] = null;
+      if (blocked) {
+        return move;
+      }
     }
   }
 
-  if (size === 3 && moves.includes(4)) {
+  if (shouldTakeCenter && size === 3 && moves.includes(4)) {
     return 4;
   }
 

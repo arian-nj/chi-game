@@ -2,6 +2,11 @@ export default {
   app: {
     title: 'چی گیم',
   },
+  notFound: {
+    title: 'صفحه پیدا نشد',
+    description: 'این صفحه وجود ندارد (یا منتقل شده است).',
+    backHome: 'بازگشت به خانه',
+  },
   nav: {
     home: 'خانه',
     play: 'بازی',

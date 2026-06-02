@@ -2,6 +2,11 @@ export default {
   app: {
     title: 'Chi Game',
   },
+  notFound: {
+    title: 'Page not found',
+    description: "This page doesn't exist (or was moved).",
+    backHome: 'Back to home',
+  },
   nav: {
     home: 'Home',
     play: 'Play',

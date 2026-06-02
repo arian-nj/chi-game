@@ -20,11 +20,11 @@
 - [X] whoes turn visual
 
 - [ ] logo and title and stuff
-- [ ] lang in url
+- [X] lang in url
 
 # V 0.2.0 simple backend
-- [ ] google analytics?
-- [ ] change log
+- [X] google analytics?
+- [ ] changelog
 - [ ] Agent for backend
 - [ ] base backend
 
