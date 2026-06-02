@@ -34,3 +34,4 @@ Key Conventions
 
 - Web Page size is important specially initial loads
 - SEO is very important write search engine (crawler) friendly code
+- alt text on any images/icons you add later.

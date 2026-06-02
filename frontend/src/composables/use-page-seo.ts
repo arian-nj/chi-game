@@ -2,7 +2,7 @@ import type { GameKey } from '@/libs/game';
 import { resolveLocaleAlternateUrls } from '@/libs/locale-alternate-urls';
 import type { Composer } from 'vue-i18n';
 import type { RouteLocationNormalizedLoaded } from 'vue-router';
-import { computed, watch } from 'vue';
+import { computed } from 'vue';
 import { useHead } from '@unhead/vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -90,7 +90,7 @@ export function resolvePageSeo(
 
 export function usePageSeo() {
   const route = useRoute();
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
 
   const siteUrl = import.meta.env.VITE_SITE_URL?.replace(/\/$/, '') ?? '';
 
@@ -136,13 +136,4 @@ export function usePageSeo() {
       ];
     },
   });
-
-  watch(
-    () => locale.value,
-    code => {
-      document.documentElement.lang = code;
-      document.documentElement.dir = code === 'fa' ? 'rtl' : 'ltr';
-    },
-    { immediate: true },
-  );
 }

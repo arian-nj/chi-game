@@ -38,9 +38,13 @@ export const i18n = createI18n({
   messages: { en, fa },
 });
 
+export function documentDirection(locale: AppLocale): 'ltr' | 'rtl' {
+  return isRtlLocale(locale) ? 'rtl' : 'ltr';
+}
+
 export function setDocumentLocale(locale: AppLocale) {
   document.documentElement.lang = locale;
-  document.documentElement.dir = 'ltr';
+  document.documentElement.dir = documentDirection(locale);
 }
 
 export function persistLocale(locale: AppLocale) {

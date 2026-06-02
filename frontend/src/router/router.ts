@@ -2,7 +2,7 @@ import HomeView from '@/views/HomeView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import { gamesData } from '@/libs/game'
 import LocaleLayout from '@/views/LocaleLayout.vue'
-import { getInitialLocale, i18n, persistLocale, type AppLocale } from '@/i18n'
+import { getInitialLocale, i18n, persistLocale, setDocumentLocale, type AppLocale } from '@/i18n'
 import NotFoundView from '@/views/NotFoundView.vue'
 import ChangelogView from '@/views/ChangelogView.vue'
 
@@ -121,6 +121,8 @@ router.beforeEach((to) => {
   if (locale !== i18n.global.locale.value) {
     i18n.global.locale.value = locale
     persistLocale(locale)
+  } else {
+    setDocumentLocale(locale)
   }
 
   if (
