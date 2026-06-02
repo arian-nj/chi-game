@@ -20,6 +20,22 @@
 	animation: pop 0.4s ease-out;
 }
 
+@keyframes play-btn-enter {
+	from {
+		opacity: 0;
+		transform: translateX(-50%) translateY(120%);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX(-50%) translateY(0);
+	}
+}
+
+.animate-play-btn-enter {
+	animation: play-btn-enter 0.7s cubic-bezier(0.23, 1.12, 0.75, 0.95) forwards;
+}
+
 @theme {
 	--color-custom-blue: #17212b;
 	--color-custom-deep-blue: #030712;

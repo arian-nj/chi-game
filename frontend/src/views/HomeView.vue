@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
-import { RouterLink, useRouter } from "vue-router";
+import { RouterLink } from "vue-router";
 import {gamesData} from "../libs/game";
-
-const router = useRouter();
 
 
 onMounted(() => {

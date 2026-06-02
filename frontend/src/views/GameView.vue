@@ -1,12 +1,20 @@
 <script setup lang="ts">
+import TicTacToeGame from '@/components/tictactoe/TicTacToeGame.vue';
 import { useToast } from '@/components/Toast.vue';
-import { ref, onMounted } from 'vue';
+import type { TicTacToeSettings } from '@/libs/tictactoe';
+import { computed, ref, useTemplateRef } from 'vue';
 import { useRoute } from 'vue-router';
 import { gamesData } from '../libs/game';
 
 const route = useRoute();
 const urlGameName = route.params.game;
 const gameData = gamesData.find(game => game.key === urlGameName);
+const isTicTacToe = computed(() => route.params.game === 'tictactoe');
+const isPlayTab = computed(() => route.name === 'game-play' || route.path.match(/\/game\/[^/]+$/));
+const isPlaying = ref(false);
+const gameSettings = ref<TicTacToeSettings | null>(null);
+const playButtonAnimationKey = ref(0);
+const playViewRef = useTemplateRef<{ getSettings: () => TicTacToeSettings }>('playViewRef');
 
 // Tabs
 const tabs = [
@@ -14,30 +22,41 @@ const tabs = [
     { name: 'Rules', icon: '📖', to: `/game/${urlGameName}/rules` },
 ];
 
-// Play Button Animation
-const playBtnRef = ref<HTMLButtonElement | null>(null);
-
-    onMounted(() => {
-  if (playBtnRef.value) {
-    playBtnRef.value.style.transform = 'translateY(120%)';
-    playBtnRef.value.style.opacity = '0';
-    setTimeout(() => {
-      playBtnRef.value!.style.transition = 'transform 0.7s cubic-bezier(.23,1.12,.75,.95), opacity 0.7s cubic-bezier(.23,1.12,.75,.95)';
-      playBtnRef.value!.style.transform = 'translateY(0%)';
-      playBtnRef.value!.style.opacity = '1';
-    }, 30);
-  }
-});
-
 function playGame() {
-    const toast = useToast();
-    toast.toast.success('Game started');
+  const toast = useToast();
+
+  if (!isTicTacToe.value) {
+    toast.toast.info('This game is coming soon');
+    return;
+  }
+
+  const playView = playViewRef.value;
+  gameSettings.value =
+    playView && typeof playView.getSettings === 'function'
+      ? playView.getSettings()
+      : { isBot: true, boardSize: 3 };
+  isPlaying.value = true;
+}
+
+function quitGame() {
+  isPlaying.value = false;
+  gameSettings.value = null;
+  playButtonAnimationKey.value += 1;
 }
 
 </script>
 
 <template>
   <div class="bg-custom-blue min-h-screen w-screen flex flex-col items-center pb-3 text-white relative">
+    <RouterLink
+      to="/"
+      class="absolute left-4 top-4 z-30 flex items-center gap-2 rounded-xl border border-white/10 bg-custom-lite-blue/70 px-4 py-2 text-sm font-bold text-blue-100 shadow-md transition hover:bg-white/20 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+      aria-label="Back to home"
+    >
+      <span aria-hidden="true">←</span>
+      Home
+    </RouterLink>
+
     <h1 class="text-4xl font-bold text-white mb-8 mt-2 animate-pop select-none drop-shadow-sm uppercase">
       {{ gameData?.name }}
     </h1>
@@ -67,20 +86,30 @@ function playGame() {
         </RouterLink>
     </div>
 
-    <div class="w-full max-w-3xl px-4 flex-1">
-      <RouterView />
+    <div class="w-full max-w-3xl px-4 flex-1 pb-28">
+      <TicTacToeGame
+        v-if="isPlaying && gameSettings"
+        :is-bot="gameSettings.isBot"
+        :board-size="gameSettings.boardSize"
+        @quit="quitGame"
+      />
+      <RouterView v-else v-slot="{ Component }">
+        <component :is="Component" ref="playViewRef" />
+      </RouterView>
     </div>
 
-    <!-- Play Button (Only show if on the main play tab, or keep visible everywhere based on your design) -->
-    <div class="flex flex-col items-center justify-center">
-        <button
-          ref="playBtnRef"
-          class="bg-green-500 text-white p-3 rounded-lg w-3/4 mx-auto text-3xl font-extrabold fixed left-1/2 -translate-x-1/2 bottom-10 z-20"
-          style="opacity: 0; transform: translateY(120%);"
-          @click="playGame"
-        >
-          <span class="text-3xl animate-bounce inline-block">🚀</span><span>Play</span>
-        </button>
+    <div
+      v-show="isPlayTab && !isPlaying"
+      :key="playButtonAnimationKey"
+      class="animate-play-btn-enter fixed bottom-10 left-1/2 z-20 w-3/4 max-w-md"
+    >
+      <button
+        type="button"
+        class="w-full rounded-lg bg-green-500 p-3 text-3xl font-extrabold text-white"
+        @click="playGame"
+      >
+        <span class="inline-block animate-bounce text-3xl">🚀</span><span>Play</span>
+      </button>
     </div>
   </div>
 </template>
