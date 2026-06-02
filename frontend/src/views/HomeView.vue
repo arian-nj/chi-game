@@ -8,6 +8,7 @@ const router = useRouter();
 
 onMounted(() => {
   import('../views/GameView.vue')
+  import('../views/GamePlayView.vue')
 })
 
 </script>

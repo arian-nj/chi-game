@@ -6,23 +6,23 @@
 # V 0.0.1
 - [X] basic Home View
 - [X] Game Page View
-- [ ] seperate games data
-- [ ] TTT Setting in Game Play View
-- [ ] basic TTT game
 
+- [X] seperate games data
+- [X] Publish
+- [X] TTT Bot AI Setting in Game Play View
+
+- [ ] basic TTT game
 - [ ] i18 multi lang
 
 - [ ] make rules dynamic
-
 - [ ] logo and title and stuff
-
-- [ ] Publish
 
 # V 0.0.2
 - [ ] Connect 4
 
 
 
+- [ ] google analytics?
 
 # Games
 [ ] dots and boxes
