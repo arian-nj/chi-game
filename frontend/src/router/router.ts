@@ -4,6 +4,7 @@ import { gamesData } from '@/libs/game'
 import LocaleLayout from '@/views/LocaleLayout.vue'
 import { getInitialLocale, i18n, persistLocale, type AppLocale } from '@/i18n'
 import NotFoundView from '@/views/NotFoundView.vue'
+import ChangelogView from '@/views/ChangelogView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,11 @@ const router = createRouter({
           path: '404',
           name: 'not-found',
           component: NotFoundView,
+        },
+        {
+          path: 'changelog',
+          name: 'changelog',
+          component: ChangelogView,
         },
         {
           path: 'game/:game',

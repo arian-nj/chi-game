@@ -12,6 +12,15 @@ export default {
     play: 'Play',
     rules: 'Rules',
     backToHome: 'Back to home',
+    changelog: 'Changelog',
+  },
+  changelog: {
+    title: 'Changelog',
+    sections: {
+      new: 'New',
+      changed: 'Changed',
+      fixed: 'Fixed',
+    },
   },
   locale: {
     label: 'Language',

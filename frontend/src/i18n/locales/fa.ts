@@ -12,6 +12,15 @@ export default {
     play: 'بازی',
     rules: 'قوانین',
     backToHome: 'بازگشت به خانه',
+    changelog: 'تغییرات',
+  },
+  changelog: {
+    title: 'تغییرات',
+    sections: {
+      new: 'جدید',
+      changed: 'تغییر کرده',
+      fixed: 'رفع مشکل',
+    },
   },
   locale: {
     label: 'زبان',

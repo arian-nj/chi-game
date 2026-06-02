@@ -44,5 +44,14 @@ onMounted(() => {
         </div>
       </component>
     </div>
+
+    <div class="mt-8">
+      <RouterLink
+        :to="`/${locale}/changelog`"
+        class="text-blue-100 hover:text-white underline underline-offset-4 font-semibold"
+      >
+        {{ t('nav.changelog') }}
+      </RouterLink>
+    </div>
   </div>
 </template>
