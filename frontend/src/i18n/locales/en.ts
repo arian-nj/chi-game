@@ -34,7 +34,6 @@ export default {
   },
   play: {
     button: 'Play',
-    comingSoon: 'This game is coming soon',
   },
   game: {
     newGame: 'New game',

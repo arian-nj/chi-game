@@ -1,8 +1,8 @@
 export const gamesData = [
-  { key: 'tictactoe' },
-  { key: 'conn4' },
-  { key: 'linedot' },
-  { key: 'go' },
+  { key: 'tictactoe',isEnable:true },
+  { key: 'conn4',isEnable:true },
+  { key: 'linedot',isEnable:false },
+  { key: 'go',isEnable:false },
 ] as const;
 
 export type GameKey = (typeof gamesData)[number]['key'];

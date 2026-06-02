@@ -21,18 +21,25 @@ onMounted(() => {
     <div
       class="grid w-full max-w-5xl gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center mx-auto px-4"
     >
-      <RouterLink
+      <component
+        :is="game.isEnable ? RouterLink : 'div'"
         v-for="game in gamesData"
         :key="game.key"
-        :to="`/game/${game.key}`"
-        class="bg-custom-lite-blue hover:bg-custom-deep-blue rounded-2xl w-full transition duration-100 shadow outline-none focus:ring-2 focus:ring-blue-500 aspect-4/3 overflow-hidden flex flex-col items-center justify-center cursor-pointer"
+        v-bind="game.isEnable ? { to: `/game/${game.key}` } : {}"
+        class="rounded-2xl w-full transition duration-100 shadow outline-none focus:ring-2 focus:ring-blue-500 aspect-4/3 overflow-hidden flex flex-col items-center justify-center"
+        :class="
+          game.isEnable
+            ? 'bg-custom-lite-blue hover:bg-custom-deep-blue cursor-pointer'
+            : 'bg-custom-deep-blue/40 cursor-not-allowed opacity-55 saturate-0'
+        "
+        :aria-disabled="game.isEnable ? undefined : 'true'"
       >
-        <div class="flex flex-col items-center justify-center w-full h-full p-4">
+        <div class="relative flex flex-col items-center justify-center w-full h-full p-4">
           <span class="text-lg md:text-xl font-semibold text-white select-none text-center">
             {{ t(`games.${game.key}`) }}
           </span>
         </div>
-      </RouterLink>
+      </component>
     </div>
   </div>
 </template>

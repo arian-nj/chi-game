@@ -3,7 +3,7 @@
 [-] Doing
 [ ] Not Done
 
-# V 0.0.1
+# V 0.1.0 offline games
 - [X] basic Home View
 - [X] Game Page View
 
@@ -15,14 +15,19 @@
 - [X] i18 multi lang
 
 - [X] make rules dynamic
-- [X] logo and title and stuff
-
-# V 0.0.2
 - [X] Connect 4
 - [X] add bot difficulty
 - [X] whoes turn visual
 
+- [ ] logo and title and stuff
+- [ ] lang in url
+
+# V 0.2.0 simple backend
 - [ ] google analytics?
+- [ ] change log
+- [ ] Agent for backend
+- [ ] base backend
+
 
 # Games
 [ ] dots and boxes

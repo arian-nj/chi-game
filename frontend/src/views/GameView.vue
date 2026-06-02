@@ -8,7 +8,7 @@ import type { TicTacToeSettings } from '@/libs/tictactoe';
 import { gamesData, type GameKey } from '@/libs/game';
 import type { PlaySettings } from '@/views/GamePlayView.vue';
 import { computed, ref, useTemplateRef } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
 type ActiveGame =
@@ -16,12 +16,15 @@ type ActiveGame =
   | { type: 'conn4'; settings: Connect4Settings };
 
 const route = useRoute();
+const router = useRouter();
 const { t } = useI18n();
 const urlGameName = route.params.game as GameKey;
 const gameData = gamesData.find(game => game.key === urlGameName);
 const isTicTacToe = computed(() => route.params.game === 'tictactoe');
 const isConnect4 = computed(() => route.params.game === 'conn4');
-const isPlayable = computed(() => isTicTacToe.value || isConnect4.value);
+const isEnabled = computed(() => Boolean(gameData?.isEnable));
+const isSupported = computed(() => isTicTacToe.value || isConnect4.value);
+const isPlayable = computed(() => isEnabled.value && isSupported.value);
 const isPlayTab = computed(() => route.name === 'game-play' || route.path.match(/\/game\/[^/]+$/));
 const isPlaying = ref(false);
 const activeGame = ref<ActiveGame | null>(null);
@@ -132,7 +135,7 @@ function quitGame() {
     </div>
 
     <div
-      v-show="isPlayTab && !isPlaying"
+      v-show="isPlayTab && !isPlaying && isPlayable"
       :key="playButtonAnimationKey"
       class="animate-play-btn-enter fixed bottom-10 left-1/2 z-20 w-3/4 max-w-md"
     >

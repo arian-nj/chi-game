@@ -1,5 +1,6 @@
 import HomeView from '@/views/HomeView.vue'
 import { createRouter, createWebHistory } from 'vue-router'
+import { gamesData } from '@/libs/game'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -66,6 +67,18 @@ const router = createRouter({
     //   component: () => import('../components/game/card/CardView.vue')
     // },
   ],
+})
+
+router.beforeEach((to) => {
+  if (!to.path.startsWith('/game/')) return true
+
+  const gameKey = to.params.game
+  if (typeof gameKey !== 'string') return { path: '/' }
+
+  const game = gamesData.find(g => g.key === gameKey)
+  if (!game || !game.isEnable) return { path: '/' }
+
+  return true
 })
 
 export default router
