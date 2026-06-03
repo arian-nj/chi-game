@@ -35,8 +35,16 @@
 # V 0.2.0 simple backend
 - [X] Agent for backend
 - [X] reimport base backend
-- [ ] health check
-- [ ] optional guest users
+- [X] health check
+- [X] optional guest users
+- [X] admin page
+- [ ] setup vps
+- [ ] ./release to vps
+
+# V 0.3.0 game backend frameworkish
+- [ ] rooms
+- [ ] online xo
+- [ ] online connect 4
 
 # Games
 [ ] dots and boxes

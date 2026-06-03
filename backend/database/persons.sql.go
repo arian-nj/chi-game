@@ -7,7 +7,31 @@ package database
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const countGuestPersons = `-- name: CountGuestPersons :one
+SELECT COUNT(*)::bigint FROM persons WHERE is_guest = true
+`
+
+func (q *Queries) CountGuestPersons(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, countGuestPersons)
+	var column_1 int64
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
+const countPersons = `-- name: CountPersons :one
+SELECT COUNT(*)::bigint FROM persons
+`
+
+func (q *Queries) CountPersons(ctx context.Context) (int64, error) {
+	row := q.db.QueryRow(ctx, countPersons)
+	var column_1 int64
+	err := row.Scan(&column_1)
+	return column_1, err
+}
 
 const getPersonByAuthMethod = `-- name: GetPersonByAuthMethod :one
 SELECT p.id, p.display_name, p.username, p.coins, p.is_guest, p.merged_at, p.updated_at, p.created_at
@@ -111,4 +135,43 @@ func (q *Queries) InsertPerson(ctx context.Context, arg InsertPersonParams) (Per
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const listRecentPersons = `-- name: ListRecentPersons :many
+SELECT id, username, is_guest, created_at
+FROM persons
+ORDER BY created_at DESC
+LIMIT 20
+`
+
+type ListRecentPersonsRow struct {
+	ID        int64
+	Username  string
+	IsGuest   bool
+	CreatedAt pgtype.Timestamp
+}
+
+func (q *Queries) ListRecentPersons(ctx context.Context) ([]ListRecentPersonsRow, error) {
+	rows, err := q.db.Query(ctx, listRecentPersons)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListRecentPersonsRow
+	for rows.Next() {
+		var i ListRecentPersonsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Username,
+			&i.IsGuest,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

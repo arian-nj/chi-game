@@ -19,3 +19,15 @@ RETURNING id, user_id, auth_type, auth_value, created_at;
 SELECT id, display_name, username, coins, is_guest, merged_at, updated_at, created_at
 FROM persons
 WHERE id = $1;
+
+-- name: CountPersons :one
+SELECT COUNT(*)::bigint FROM persons;
+
+-- name: CountGuestPersons :one
+SELECT COUNT(*)::bigint FROM persons WHERE is_guest = true;
+
+-- name: ListRecentPersons :many
+SELECT id, username, is_guest, created_at
+FROM persons
+ORDER BY created_at DESC
+LIMIT 20;

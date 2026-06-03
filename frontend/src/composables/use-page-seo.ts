@@ -59,6 +59,13 @@ export function resolvePageSeo(
     };
   }
 
+  if (routeName === 'admin') {
+    return {
+      title: 'Admin | Chi Game',
+      description: 'Chi Game admin overview.',
+    };
+  }
+
   if (routeName === 'not-found' || routeName === 'not-found-catchall') {
     return {
       title: t('seo.notFound.title'),
@@ -120,6 +127,7 @@ export function usePageSeo() {
       const { title, description } = pageSeo.value;
       const meta = [
         { name: 'description', content: description },
+        ...(route.name === 'admin' ? [{ name: 'robots', content: 'noindex, nofollow' }] : []),
         { property: 'og:title', content: title },
         { property: 'og:description', content: description },
         { property: 'og:type', content: 'website' },

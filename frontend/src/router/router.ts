@@ -7,10 +7,16 @@ import NotFoundView from '@/views/NotFoundView.vue'
 import ChangelogView from '@/views/ChangelogView.vue'
 import AboutView from '@/views/AboutView.vue'
 import HealthView from '@/views/HealthView.vue'
+import AdminView from '@/views/AdminView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminView,
+    },
     {
       path: '/',
       redirect: () => `/${getInitialLocale()}`,
@@ -120,6 +126,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
+  if (to.name === 'admin') {
+    return true;
+  }
+
   // Legacy URL support: "/game/x" -> "/<locale>/game/x"
   if (!('locale' in to.params) && to.path.startsWith('/game/')) {
     const locale = getInitialLocale()

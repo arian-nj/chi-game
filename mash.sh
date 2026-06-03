@@ -3,6 +3,7 @@
 export DATABASE_URL="postgres://admin:adminpass@127.0.0.1:5432/game?sslmode=disable"
 export RELEASE_MODE=dev
 export JWT_SECRET="jjlkds5r6789uipokkjhj3t7y8u9psty543sghh0jlkkd5r6t7y8u"
+export ADMIN_SECRET="b12v44DSacdxserte5r467t78youijDSFHEYTWiuyuehdhyhqwdd"
 
 set -e
 

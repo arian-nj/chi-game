@@ -21,6 +21,7 @@ type Config struct {
 	ReleaseMode ReleaseMode
 	DatabaseURL string
 	Jwt         JWTConfig
+	AdminSecret string
 }
 
 func ParseConfig() (*Config, error) {
@@ -48,6 +49,8 @@ func ParseConfig() (*Config, error) {
 		return nil, fmt.Errorf("env var JWT_SECRET is empty")
 	}
 	conf.Jwt = JWTConfig{SecretKey: []byte(jwtSecret)}
+
+	conf.AdminSecret = os.Getenv("ADMIN_SECRET")
 
 	return &conf, nil
 }
