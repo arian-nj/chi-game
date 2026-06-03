@@ -6,20 +6,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Play free board games in your browser — Tic Tac Toe, Connect 4, and more. Offline-friendly, vs bot or two players.">
     <title>Chi Game — Play Tic Tac Toe &amp; Connect 4 Online</title>
+    <style>
+      html, body { margin: 0; min-height: 100%; background: #17212b; color: #fff; }
+      #app { min-height: 100%; }
+    </style>
   </head>
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-S083W1S7JJ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-S083W1S7JJ');
-  </script>
 
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    <script>
+      (function () {
+        var loaded = false;
+        function loadGtag() {
+          if (loaded) return;
+          loaded = true;
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-S083W1S7JJ';
+          s.onload = function () {
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            window.gtag = gtag;
+            gtag('js', new Date());
+            gtag('config', 'G-S083W1S7JJ');
+          };
+          document.head.appendChild(s);
+        }
+        ['pointerdown', 'keydown'].forEach(function (type) {
+          document.addEventListener(type, loadGtag, { once: true, passive: true });
+        });
+      })();
+    </script>
   </body>
 </html>

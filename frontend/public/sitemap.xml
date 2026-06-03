@@ -4,45 +4,45 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml"
 >
   <url>
-    <loc>chigame.site/en</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="chigame.site/en" />
-    <xhtml:link rel="alternate" hreflang="fa" href="chigame.site/fa" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="chigame.site/en" />
+    <loc>https://chigame.site/en</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chigame.site/en" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chigame.site/fa" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chigame.site/en" />
   </url>
   <url>
-    <loc>chigame.site/en/changelog</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="chigame.site/en/changelog" />
-    <xhtml:link rel="alternate" hreflang="fa" href="chigame.site/fa/changelog" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="chigame.site/en/changelog" />
+    <loc>https://chigame.site/en/changelog</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chigame.site/en/changelog" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chigame.site/fa/changelog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chigame.site/en/changelog" />
   </url>
   <url>
-    <loc>chigame.site/en/about</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="chigame.site/en/about" />
-    <xhtml:link rel="alternate" hreflang="fa" href="chigame.site/fa/about" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="chigame.site/en/about" />
+    <loc>https://chigame.site/en/about</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chigame.site/en/about" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chigame.site/fa/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chigame.site/en/about" />
   </url>
   <url>
-    <loc>chigame.site/en/game/tictactoe</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="chigame.site/en/game/tictactoe" />
-    <xhtml:link rel="alternate" hreflang="fa" href="chigame.site/fa/game/tictactoe" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="chigame.site/en/game/tictactoe" />
+    <loc>https://chigame.site/en/game/tictactoe</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chigame.site/en/game/tictactoe" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chigame.site/fa/game/tictactoe" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chigame.site/en/game/tictactoe" />
   </url>
   <url>
-    <loc>chigame.site/en/game/tictactoe/rules</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="chigame.site/en/game/tictactoe/rules" />
-    <xhtml:link rel="alternate" hreflang="fa" href="chigame.site/fa/game/tictactoe/rules" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="chigame.site/en/game/tictactoe/rules" />
+    <loc>https://chigame.site/en/game/tictactoe/rules</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chigame.site/en/game/tictactoe/rules" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chigame.site/fa/game/tictactoe/rules" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chigame.site/en/game/tictactoe/rules" />
   </url>
   <url>
-    <loc>chigame.site/en/game/conn4</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="chigame.site/en/game/conn4" />
-    <xhtml:link rel="alternate" hreflang="fa" href="chigame.site/fa/game/conn4" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="chigame.site/en/game/conn4" />
+    <loc>https://chigame.site/en/game/conn4</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chigame.site/en/game/conn4" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chigame.site/fa/game/conn4" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chigame.site/en/game/conn4" />
   </url>
   <url>
-    <loc>chigame.site/en/game/conn4/rules</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="chigame.site/en/game/conn4/rules" />
-    <xhtml:link rel="alternate" hreflang="fa" href="chigame.site/fa/game/conn4/rules" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="chigame.site/en/game/conn4/rules" />
+    <loc>https://chigame.site/en/game/conn4/rules</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chigame.site/en/game/conn4/rules" />
+    <xhtml:link rel="alternate" hreflang="fa" href="https://chigame.site/fa/game/conn4/rules" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chigame.site/en/game/conn4/rules" />
   </url>
 </urlset>

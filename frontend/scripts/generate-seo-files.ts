@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { loadEnv } from 'vite';
 import { supportedLocales } from '../src/i18n/config.ts';
 import { getPublicLocalePaths } from '../src/libs/public-path-suffixes.ts';
+import { normalizeSiteOrigin } from '../src/libs/site-origin.ts';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const publicDir = resolve(root, 'public');
@@ -57,7 +58,7 @@ ${urlNodes}
 
 function main() {
   const env = loadEnv(process.env.MODE ?? 'production', root, '');
-  const siteOrigin = env.VITE_SITE_URL?.replace(/\/$/, '');
+  const siteOrigin = normalizeSiteOrigin(env.VITE_SITE_URL);
   const base = env.BASE_URL?.replace(/\/$/, '') ?? '';
   const prefix = base && base !== '/' ? base : '';
 

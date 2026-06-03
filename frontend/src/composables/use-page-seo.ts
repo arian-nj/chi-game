@@ -1,5 +1,6 @@
 import type { GameKey } from '@/libs/game';
 import { resolveLocaleAlternateUrls } from '@/libs/locale-alternate-urls';
+import { normalizeSiteOrigin } from '@/libs/site-origin';
 import type { Composer } from 'vue-i18n';
 import type { RouteLocationNormalizedLoaded } from 'vue-router';
 import { computed } from 'vue';
@@ -99,7 +100,7 @@ export function usePageSeo() {
   const route = useRoute();
   const { t } = useI18n();
 
-  const siteUrl = import.meta.env.VITE_SITE_URL?.replace(/\/$/, '') ?? '';
+  const siteUrl = normalizeSiteOrigin(import.meta.env.VITE_SITE_URL) ?? '';
 
   const pageSeo = computed(() => resolvePageSeo(route, t));
   const localeAlternates = computed(() =>

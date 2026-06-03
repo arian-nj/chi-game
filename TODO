@@ -31,10 +31,11 @@
 - [X] robots.txt
 - [X] sitemap.xml
 - [X] about page
+
 # V 0.2.0 simple backend
 - [ ] Agent for backend
-- [ ] base backend
-
+- [ ] reimport base backend
+- [ ] guest users
 
 # Games
 [ ] dots and boxes
