@@ -1,0 +1,39 @@
+package games
+
+import (
+	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
+	"github.com/arian-nj/chigame/backend/internals/socket"
+	"gopkg.in/telebot.v4"
+)
+
+type Game interface {
+	AddPlayer(id int, name string, socket *socket.Socket)
+
+	SocketRouter(room *roomv1.GameMessage, playerId int)
+	CallBackRouter(c telebot.Context) error
+
+	StartGame() error
+
+	GetGameData() *GameData
+
+	SubToTelegram(ID int, bot *telebot.Bot, ViaMessageId string)
+	SubToSocket(ID int, newSocket *socket.Socket) func()
+
+	OnEnd(func())
+}
+
+type GameData struct {
+	GameType  GameType
+	StartText string
+	RulesText string
+	MaxPlayer int
+}
+
+func NewGameData(gameType GameType, startText, rulesText string, maxPlayer int) *GameData {
+	return &GameData{
+		GameType:  gameType,
+		StartText: startText,
+		RulesText: rulesText,
+		MaxPlayer: maxPlayer,
+	}
+}

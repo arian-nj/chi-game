@@ -2,6 +2,7 @@
 
 export DATABASE_URL="postgres://admin:adminpass@127.0.0.1:5432/game?sslmode=disable"
 export RELEASE_MODE=dev
+export JWT_SECRET="jjlkds5r6789uipokkjhj3t7y8u9psty543sghh0jlkkd5r6t7y8u"
 
 set -e
 
@@ -12,23 +13,27 @@ generate_sqlc() {
 	cd ./backend/
 	sqlc generate
 	cd ..
-	echo "OK"	
+	echo "OK"
+}
+
+run_backend() {
+	generate_sqlc
+	echo "Starting backend on :8383"
+	cd ./backend/
+	go run ./cmd/api/
+	cd ..
 }
 
 COMMAND=$1
 
-if [ -z "COMMAND" ]; then
-    echo "i need a command"
+if [ -z "$COMMAND" ]; then
+	echo "Usage: ./mash.sh {run-back|run-front|sqlc|run}"
+	exit 1
 fi
 
 case $COMMAND in
-	run)
-		generate_sqlc
-		echo "Starting Core"
-		cd ./backend/
-		go run ./cmd/api/.
-		cd ..
-		echo "The End"
+	run|run-back)
+		run_backend
 		;;
 	sqlc)
 		generate_sqlc

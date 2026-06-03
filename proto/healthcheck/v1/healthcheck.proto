@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package healthcheck.v1;
+
+enum HealthType {
+  HEALTH_TYPE_UNSPECIFIED = 0;
+  HEALTH_TYPE_OK = 1;
+}
+
+
+service HealthcheckService {
+  rpc HealthCheck(HealthRequest) returns (HealthResponse);
+}
+
+message HealthRequest {}
+
+message HealthResponse {
+  HealthType health_type = 1; 
+}
+
