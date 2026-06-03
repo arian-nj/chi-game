@@ -5,9 +5,10 @@ import {
 } from '@connectrpc/connect-query-core';
 import { getApiTransport } from '@/libs/api-client';
 import { useQuery, type QueryKey } from '@tanstack/vue-query';
+import type { MaybeRefOrGetter } from 'vue';
 
 type ConnectQueryExtraOptions = {
-  enabled?: boolean;
+  enabled?: MaybeRefOrGetter<boolean>;
   refetchInterval?: number | false;
   staleTime?: number;
   retry?: number | false;

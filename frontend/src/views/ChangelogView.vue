@@ -15,6 +15,15 @@ const { textDir } = useTextDirection();
 
 const entries: ChangelogEntry[] = [
   {
+    date: '2026-06-03',
+    new: [
+      'We are online 🎉 (now we have backend)',
+      'Added health check.',
+      'Added guest users.',
+      'Added about page.',
+    ],
+  },
+  {
     date: '2026-06-02',
     new: [
       'Changelog page.',

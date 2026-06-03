@@ -3,3 +3,26 @@
 //   sqlc v1.30.0
 
 package database
+
+import (
+	"github.com/jackc/pgx/v5/pgtype"
+)
+
+type Person struct {
+	ID          int64
+	DisplayName string
+	Username    string
+	Coins       int32
+	IsGuest     bool
+	MergedAt    pgtype.Timestamp
+	UpdatedAt   pgtype.Timestamp
+	CreatedAt   pgtype.Timestamp
+}
+
+type PersonAuthMethod struct {
+	ID        int64
+	UserID    int64
+	AuthType  string
+	AuthValue string
+	CreatedAt pgtype.Timestamp
+}

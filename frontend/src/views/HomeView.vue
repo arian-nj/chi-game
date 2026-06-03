@@ -3,9 +3,11 @@ import { gamesData } from '../libs/game';
 import { onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useRoute } from 'vue-router';
+import { useGuestProfile } from '@/composables/use-guest-profile';
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
+const { displayUsername } = useGuestProfile();
 const route = useRoute();
 const locale = route.params.locale as string;
 
@@ -17,9 +19,16 @@ onMounted(() => {
 
 <template>
   <div class="bg-custom-blue min-h-screen w-screen flex flex-col items-center p-6 pt-16">
-    <h1 class="text-4xl font-bold text-white mb-8 mt-2 animate-pop select-none drop-shadow-sm">
+    <h1 class="text-4xl font-bold text-white mb-2 mt-2 animate-pop select-none drop-shadow-sm">
       {{ t('app.title') }}
     </h1>
+    <p
+      v-if="displayUsername"
+      class="mb-8 text-lg font-medium text-blue-100 select-none"
+    >
+      {{ displayUsername }}
+    </p>
+    <div v-else class="mb-8" aria-hidden="true" />
 
     <div
       class="grid w-full max-w-5xl gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center mx-auto px-4"

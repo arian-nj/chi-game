@@ -24,10 +24,24 @@ run_backend() {
 	cd ..
 }
 
+run_tests() {
+	generate_sqlc
+	echo "Running backend tests..."
+	cd ./backend/
+	mapfile -t test_pkgs < <(go list -f '{{if len .TestGoFiles}}{{.ImportPath}}{{end}}' ./...)
+	if [ "${#test_pkgs[@]}" -eq 0 ]; then
+		echo "No packages with tests found"
+		exit 1
+	fi
+	go test -count=1 "${test_pkgs[@]}"
+	cd ..
+	echo "OK"
+}
+
 COMMAND=$1
 
 if [ -z "$COMMAND" ]; then
-	echo "Usage: ./mash.sh {run-back|run-front|sqlc|run}"
+	echo "Usage: ./mash.sh {run-back|run-front|sqlc|test|run}"
 	exit 1
 fi
 
@@ -37,6 +51,9 @@ case $COMMAND in
 		;;
 	sqlc)
 		generate_sqlc
+		;;
+	test)
+		run_tests
 		;;
 	run-front)
 		cd ./frontend/

@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	connectcors "connectrpc.com/cors"
+	"github.com/arian-nj/chigame/backend/gen/account/v1/accountv1connect"
+	"github.com/arian-nj/chigame/backend/gen/auth/v1/authv1connect"
 	"github.com/arian-nj/chigame/backend/gen/healthcheck/v1/healthcheckv1connect"
 	"github.com/rs/cors"
 )
@@ -23,6 +25,12 @@ func (app *APIApplication) createRouter() http.Handler {
 
 	healthPath, healthHandler := healthcheckv1connect.NewHealthcheckServiceHandler(app)
 	mux.Handle(healthPath, healthHandler)
+
+	authPath, authHandler := authv1connect.NewAuthServiceHandler(app)
+	mux.Handle(authPath, authHandler)
+
+	accountPath, accountHandler := accountv1connect.NewAccountServiceHandler(app)
+	mux.Handle(accountPath, accountHandler)
 
 	return withCORS(mux)
 }

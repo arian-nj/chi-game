@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import LocaleSwitcher from '@/components/LocaleSwitcher.vue';
 import { useBackendHealth } from '@/composables/use-backend-health';
+import { useGuestAuth } from '@/composables/use-guest-auth';
 import { usePageSeo } from '@/composables/use-page-seo';
 import Toast, { configureToast } from './components/Toast.vue';
 import { onMounted } from 'vue';
 
 usePageSeo();
+useGuestAuth();
 const { isBackendHealthy, backendError, isLoading } = useBackendHealth();
 const isDev = import.meta.env.DEV;
 
