@@ -2,3 +2,21 @@
 SELECT 'DROP TABLE IF EXISTS "' || tablename || '" CASCADE;' 
 FROM pg_tables 
 WHERE schemaname = 'public';
+
+
+
+sudo swapon --show
+sudo fallocate -l 2G /swapfile
+sudo dd if=/dev/zero of=/swapfile bs=1M count=2048
+sudo chmod 600 /swapfile
+
+sudo mkswap /swapfile
+sudo swapon /swapfile
+
+sudo swapon --show
+sudo cp /etc/fstab /etc/fstab.bak
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+
+sudo sysctl vm.swappiness=15
+echo 'vm.swappiness=15' | sudo tee -a /etc/sysctl.conf
