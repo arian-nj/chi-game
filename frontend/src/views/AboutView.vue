@@ -45,6 +45,15 @@ const sectionKeys = ['mission', 'games', 'roadmap'] as const;
           <p>{{ t(`about.sections.${key}.body`) }}</p>
         </article>
       </div>
+
+      <p class="mt-8 text-center text-sm text-blue-200/80">
+        <RouterLink
+          :to="{ name: 'health', params: { locale: $route.params.locale } }"
+          class="underline underline-offset-4 hover:text-white"
+        >
+          {{ t('nav.health') }}
+        </RouterLink>
+      </p>
     </section>
   </div>
 </template>

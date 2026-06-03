@@ -20,6 +20,10 @@ export default {
       description:
         'درباره چی گیم — بازی‌های رایگان در مرورگر، بازی آفلاین، حالت ربات و دو نفره، و برنامه آینده.',
     },
+    health: {
+      title: 'وضعیت API | چی گیم',
+      description: 'وضعیت سلامت API بک‌اند چی گیم.',
+    },
     notFound: {
       title: 'صفحه پیدا نشد | چی گیم',
       description: 'این صفحه وجود ندارد. به چی گیم برگردید و یک بازی انتخاب کنید.',
@@ -69,6 +73,33 @@ export default {
     backToHome: 'بازگشت به خانه',
     changelog: 'تغییرات',
     about: 'درباره',
+    health: 'وضعیت API',
+  },
+  health: {
+    title: 'وضعیت API',
+    description: 'وضعیت زنده از RPC سلامت بک‌اند چی گیم (TanStack Query + Connect).',
+    apiSameOrigin: '(همان مبدأ — پروکسی Vite در توسعه)',
+    refresh: 'بررسی دوباره',
+    refreshing: 'در حال بررسی…',
+    failures: 'تلاش ناموفق: {count}',
+    status: {
+      checking: 'در حال بررسی…',
+      online: 'آنلاین',
+      error: 'در دسترس نیست',
+      degraded: 'پاسخ غیرمنتظره',
+    },
+    healthType: {
+      ok: 'HEALTH_TYPE_OK',
+      unspecified: 'HEALTH_TYPE_UNSPECIFIED',
+      unknown: 'نامشخص',
+    },
+    fields: {
+      status: 'وضعیت',
+      healthType: 'نوع سلامت',
+      apiBase: 'آدرس پایه API',
+      lastChecked: 'آخرین بررسی',
+      error: 'خطا',
+    },
   },
   about: {
     title: 'درباره چی گیم',

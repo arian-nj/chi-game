@@ -20,6 +20,10 @@ export default {
       description:
         'Learn about Chi Game — free browser board games, offline play, bot and two-player modes, and what is coming next.',
     },
+    health: {
+      title: 'API Health | Chi Game',
+      description: 'Backend API health status for Chi Game.',
+    },
     notFound: {
       title: 'Page not found | Chi Game',
       description: "This page doesn't exist. Head back to Chi Game and pick a game to play.",
@@ -69,6 +73,33 @@ export default {
     backToHome: 'Back to home',
     changelog: 'Changelog',
     about: 'About',
+    health: 'API health',
+  },
+  health: {
+    title: 'API health',
+    description: 'Live status from the Chi Game backend Healthcheck RPC (TanStack Query + Connect).',
+    apiSameOrigin: '(same origin — Vite proxy in dev)',
+    refresh: 'Check again',
+    refreshing: 'Checking…',
+    failures: 'Failed attempts: {count}',
+    status: {
+      checking: 'Checking…',
+      online: 'Online',
+      error: 'Unreachable',
+      degraded: 'Unexpected response',
+    },
+    healthType: {
+      ok: 'HEALTH_TYPE_OK',
+      unspecified: 'HEALTH_TYPE_UNSPECIFIED',
+      unknown: 'Unknown',
+    },
+    fields: {
+      status: 'Status',
+      healthType: 'Health type',
+      apiBase: 'API base URL',
+      lastChecked: 'Last checked',
+      error: 'Error',
+    },
   },
   about: {
     title: 'About Chi Game',

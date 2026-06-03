@@ -52,6 +52,13 @@ export function resolvePageSeo(
     };
   }
 
+  if (routeName === 'health') {
+    return {
+      title: t('seo.health.title'),
+      description: t('seo.health.description'),
+    };
+  }
+
   if (routeName === 'not-found' || routeName === 'not-found-catchall') {
     return {
       title: t('seo.notFound.title'),

@@ -17,4 +17,12 @@ export default defineConfig(({ mode }) => ({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server: {
+    proxy: {
+      '^/(healthcheck|auth|account|chat|friends|finder|room|dummy_auth|conn4_game|xo_game)\\.': {
+        target: 'http://127.0.0.1:8383',
+        changeOrigin: true,
+      },
+    },
+  },
 }))

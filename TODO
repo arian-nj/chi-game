@@ -19,11 +19,11 @@
 - [X] add bot difficulty
 - [X] whoes turn visual
 
-- [ ] logo and title and stuff
+- [X] logo and title and stuff
 - [X] lang in url
 
 - [X] google analytics? 
-- [ ] add unhead for SEO Heading
+- [X] add unhead for SEO Heading
 - [X] changelog
 - [X] per page heading
 - [X] alternante links
@@ -33,9 +33,10 @@
 - [X] about page
 
 # V 0.2.0 simple backend
-- [ ] Agent for backend
-- [ ] reimport base backend
-- [ ] guest users
+- [X] Agent for backend
+- [X] reimport base backend
+- [ ] health check
+- [ ] optional guest users
 
 # Games
 [ ] dots and boxes
