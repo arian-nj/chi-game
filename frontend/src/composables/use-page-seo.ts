@@ -13,7 +13,7 @@ type SeoPayload = {
   description: string;
 };
 
-const PLAYABLE_GAMES = ['tictactoe', 'conn4'] as const satisfies readonly GameKey[];
+const PLAYABLE_GAMES = ['tic-tac-toe', 'connect-4'] as const satisfies readonly GameKey[];
 
 function isPlayableGameKey(key: string): key is (typeof PLAYABLE_GAMES)[number] {
   return (PLAYABLE_GAMES as readonly string[]).includes(key);
@@ -75,7 +75,7 @@ export function resolvePageSeo(
 
   const gameKey = route.params.game;
   if (typeof gameKey === 'string') {
-    if (routeName === 'game-play') {
+    if (routeName === 'game') {
       if (isPlayableGameKey(gameKey)) {
         return {
           title: t(`seo.gamePlay.${gameKey}.title`),
@@ -86,20 +86,6 @@ export function resolvePageSeo(
       return {
         title: t('seo.gamePlay.fallback.title', { game }),
         description: t('seo.gamePlay.fallback.description', { game }),
-      };
-    }
-
-    if (routeName === 'game-rules') {
-      if (isPlayableGameKey(gameKey)) {
-        return {
-          title: t(`seo.gameRules.${gameKey}.title`),
-          description: t(`seo.gameRules.${gameKey}.description`),
-        };
-      }
-      const game = localizedGameName(t, gameKey);
-      return {
-        title: t('seo.gameRules.fallback.title', { game }),
-        description: t('seo.gameRules.fallback.description', { game }),
       };
     }
   }

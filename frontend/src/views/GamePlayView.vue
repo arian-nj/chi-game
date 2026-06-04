@@ -15,8 +15,8 @@ const route = useRoute();
 const { t } = useI18n();
 const { textDir } = useTextDirection();
 const gameKey = computed(() => route.params.game as string);
-const isTicTacToe = computed(() => gameKey.value === 'tictactoe');
-const isConnect4 = computed(() => gameKey.value === 'conn4');
+const isTicTacToe = computed(() => gameKey.value === 'tic-tac-toe');
+const isConnect4 = computed(() => gameKey.value === 'connect-4');
 const isBotMode = ref(true);
 const botDifficulty = ref<BotDifficulty>('medium');
 

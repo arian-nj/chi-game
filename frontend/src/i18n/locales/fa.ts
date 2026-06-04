@@ -29,12 +29,12 @@ export default {
       description: 'این صفحه وجود ندارد. به چی گیم برگردید و یک بازی انتخاب کنید.',
     },
     gamePlay: {
-      tictactoe: {
+      'tic-tac-toe': {
         title: 'بازی دوز | چی گیم',
         description:
           'دوز (تیک‌تاک‌تو) را رایگان در مرورگر بازی کنید. صفحه ۳×۳ یا ۵×۵، در برابر ربات یا دو نفره.',
       },
-      conn4: {
+      'connect-4': {
         title: 'بازی چهار به خط | چی گیم',
         description:
           'چهار به خط را رایگان آنلاین بازی کنید. صفحه کلاسیک ۷×۶ — در برابر ربات یا دو نفره.',
@@ -45,12 +45,12 @@ export default {
       },
     },
     gameRules: {
-      tictactoe: {
+      'tic-tac-toe': {
         title: 'قوانین دوز | چی گیم',
         description:
           'آموزش بازی دوز: هدف، نوبت‌ها، خط برد، مساوی و یک نکته استراتژیک.',
       },
-      conn4: {
+      'connect-4': {
         title: 'قوانین چهار به خط | چی گیم',
         description:
           'آموزش چهار به خط: صفحه، نوبت‌ها، چهار تایی، مساوی و نکات استراتژیک.',
@@ -134,9 +134,9 @@ export default {
     fa: 'فارسی',
   },
   games: {
-    tictactoe: 'دوز',
-    conn4: 'چهار به خط',
-    linedot: 'خط و نقطه',
+    'tic-tac-toe': 'دوز',
+    'connect-4': 'چهار به خط',
+    'line-dot': 'خط و نقطه',
     go: 'گو!',
   },
   settings: {
@@ -186,7 +186,7 @@ export default {
     columnRow: 'ستون {col}، ردیف {row}',
   },
   rules: {
-    tictactoe: {
+    'tic-tac-toe': {
       title: 'آموزش بازی دوز (تیک‌تاک‌تو)',
       objective: 'هدف بازی',
       objectiveText:
@@ -209,7 +209,7 @@ export default {
       hintText:
         'اگر اول بازی می‌کنید، کنترل خانه وسط یا گوشه‌های بیرونی بیشترین شانس ریاضی برای ساختن تله برد را به شما می‌دهد!',
     },
-    conn4: {
+    'connect-4': {
       title: 'آموزش بازی چهار به خط',
       objective: 'هدف بازی',
       objectiveText:

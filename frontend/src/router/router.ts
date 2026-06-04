@@ -54,20 +54,6 @@ const router = createRouter({
           path: 'game/:game',
           name: 'game',
           component: () => import('../views/GameView.vue'),
-          children: [
-            {
-              // Matches exactly "/:locale/game/:game"
-              path: '',
-              component: () => import('../views/GamePlayView.vue'),
-              name: 'game-play',
-            },
-            {
-              // Matches exactly "/:locale/game/:game/rules"
-              path: 'rules',
-              component: () => import('../views/GameRulesView.vue'),
-              name: 'game-rules',
-            },
-          ],
         },
         {
           path: ':pathMatch(.*)*',
@@ -147,12 +133,7 @@ router.beforeEach((to) => {
     setDocumentLocale(locale)
   }
 
-  if (
-    to.name !== 'game' &&
-    to.name !== 'game-play' &&
-    to.name !== 'game-rules'
-  )
-    return true
+  if (to.name !== 'game') return true
 
   const gameKey = to.params.game
   if (typeof gameKey !== 'string') return { name: 'home', params: { locale } }

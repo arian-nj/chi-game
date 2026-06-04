@@ -34,7 +34,4 @@ From repo root:
 - `buf generate`
 - `buf lint`
 
-## Phase 1 minimum
-- `HealthcheckService.HealthCheck` must work for ops/CI
-- DB migrations run on startup via goose
-- No requirement to implement room/game/chat/friends RPCs yet
+Write Modular code where possible

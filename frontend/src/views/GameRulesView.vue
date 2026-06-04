@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTextDirection } from '@/composables/use-text-direction';
+import type { GameKey } from '@/libs/game';
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
@@ -8,10 +9,10 @@ const { t } = useI18n();
 const { textDir } = useTextDirection();
 const route = useRoute();
 
-type RulesGameKey = 'tictactoe' | 'conn4';
+type RulesGameKey = Extract<GameKey, 'tic-tac-toe' | 'connect-4'>;
 
 const rulesKey = computed<RulesGameKey>(() =>
-  route.params.game === 'conn4' ? 'conn4' : 'tictactoe',
+  route.params.game === 'connect-4' ? 'connect-4' : 'tic-tac-toe',
 );
 
 function rulesPath(suffix: string): string {
@@ -54,7 +55,7 @@ function rulesPath(suffix: string): string {
               </template>
             </i18n-t>
 
-            <i18n-t v-if="rulesKey === 'tictactoe'" keypath="rules.tictactoe.rule2" tag="li">
+            <i18n-t v-if="rulesKey === 'tic-tac-toe'" keypath="rules.tic-tac-toe.rule2" tag="li">
               <template #x>
                 <strong>X</strong>
               </template>
@@ -62,7 +63,7 @@ function rulesPath(suffix: string): string {
                 <strong>O</strong>
               </template>
             </i18n-t>
-            <i18n-t v-else keypath="rules.conn4.rule2" tag="li">
+            <i18n-t v-else keypath="rules.connect-4.rule2" tag="li">
               <template #red>
                 <strong>{{ t('game.red') }}</strong>
               </template>

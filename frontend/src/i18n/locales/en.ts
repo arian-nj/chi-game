@@ -29,12 +29,12 @@ export default {
       description: "This page doesn't exist. Head back to Chi Game and pick a game to play.",
     },
     gamePlay: {
-      tictactoe: {
+      'tic-tac-toe': {
         title: 'Play Tic Tac Toe | Chi Game',
         description:
           'Play Tic Tac Toe (XO) free in your browser. Choose 3×3 or 5×5, play vs bot or two players.',
       },
-      conn4: {
+      'connect-4': {
         title: 'Play Connect 4 | Chi Game',
         description:
           'Play Connect 4 free online. Drop discs on a classic 7×6 board — vs bot or two players.',
@@ -45,12 +45,12 @@ export default {
       },
     },
     gameRules: {
-      tictactoe: {
+      'tic-tac-toe': {
         title: 'Tic Tac Toe Rules | Chi Game',
         description:
           'Learn how to play Tic Tac Toe: objective, turns, winning lines, draws, and a quick strategy tip.',
       },
-      conn4: {
+      'connect-4': {
         title: 'Connect 4 Rules | Chi Game',
         description:
           'Learn how to play Connect 4: board setup, turns, four-in-a-row wins, draws, and strategy.',
@@ -134,8 +134,8 @@ export default {
     fa: 'Persian',
   },
   games: {
-    tictactoe: 'Tic Tac Toe',
-    conn4: 'Connect 4',
+    'tic-tac-toe': 'Tic Tac Toe',
+    'connect-4': 'Connect 4',
     linedot: 'Line Dot',
     go: 'Go!',
   },
@@ -186,7 +186,7 @@ export default {
     columnRow: 'Column {col}, row {row}',
   },
   rules: {
-    tictactoe: {
+    'tic-tac-toe': {
       title: 'How to Play XO (Tic Tac Toe)',
       objective: 'Objective',
       objectiveText:
@@ -208,7 +208,7 @@ export default {
       hintText:
         'If you go first, controlling the center square or the outer corners gives you the highest mathematical probability to force a winning trap!',
     },
-    conn4: {
+    'connect-4': {
       title: 'How to Play Connect 4',
       objective: 'Objective',
       objectiveText:

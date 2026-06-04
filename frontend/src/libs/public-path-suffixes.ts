@@ -7,7 +7,7 @@ export function getPublicPathSuffixes(): string[] {
 
   for (const game of gamesData) {
     if (!game.isEnable) continue;
-    suffixes.push(`/game/${game.key}`, `/game/${game.key}/rules`);
+    suffixes.push(`/game/${game.key}`);
   }
 
   return suffixes;

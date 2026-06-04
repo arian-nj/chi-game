@@ -9,7 +9,7 @@ export type LocaleAlternateUrls = {
 
 const DEFAULT_LOCALE: AppLocale = 'en';
 
-/** Path after locale segment, e.g. `` or `/changelog` or `/game/tictactoe/rules`. */
+/** Path after locale segment, e.g. `` or `/changelog` or `/game/tictactoe`. */
 export function resolveLocalePathSuffix(
   route: RouteLocationNormalizedLoaded,
 ): string | null {
@@ -23,8 +23,7 @@ export function resolveLocalePathSuffix(
   const gameKey = route.params.game;
   if (typeof gameKey !== 'string') return null;
 
-  if (routeName === 'game-play') return `/game/${gameKey}`;
-  if (routeName === 'game-rules') return `/game/${gameKey}/rules`;
+  if (routeName === 'game') return `/game/${gameKey}`;
 
   return null;
 }
