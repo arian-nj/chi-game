@@ -1,14 +1,11 @@
 import { useBackendHealth } from '@/composables/use-backend-health';
-import { validateGuest } from '@/gen/auth/v1/auth-AuthService_connectquery';
-import { ValidateGuestRequestSchema } from '@/gen/auth/v1/auth_pb';
-import { getApiTransport } from '@/libs/api-client';
+import { AuthService } from '@/gen/auth/v1/auth_pb';
+import { createApiClient } from '@/libs/api-client';
 import {
   readGuestDeviceId,
   readGuestToken,
   saveGuestSession,
 } from '@/libs/guest-auth-storage';
-import { create } from '@bufbuild/protobuf';
-import { callUnaryMethod } from '@connectrpc/connect-query-core';
 import { computed, ref, watch } from 'vue';
 
 // Shared across all useGuestAuth() callers (App + views).
@@ -25,13 +22,10 @@ async function ensureGuestSession(isBackendHealthy: boolean) {
   }
 
   try {
-    const response = await callUnaryMethod(
-      getApiTransport(),
-      validateGuest,
-      create(ValidateGuestRequestSchema, {
-        deviceId: deviceId.value ?? '',
-      }),
-    );
+    const client = createApiClient(AuthService);
+    const response = await client.validateGuest({
+      deviceId: deviceId.value ?? '',
+    });
     deviceId.value = response.deviceId;
     token.value = response.token;
     saveGuestSession(response.deviceId, response.token);

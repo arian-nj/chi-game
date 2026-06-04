@@ -1,5 +1,5 @@
 ## Project
-Chi Game backend: Go API for chigame.ir. Phase 1: minimal surface (healthcheck, DB bootstrap). Multiplayer, rooms, matchmaking, and chat come later — do not add them until the frontend needs them.
+Chi Game backend: Go API for chigame.ir.See [`docs/auth.md`](../docs/auth.md). **Invite rooms** (`invite.v1.InviteService`): create/join by code, list players in room (no in-room game logic yet). See [`docs/invite.md`](../docs/invite.md). Matchmaking/finder and chat are deferred.
 
 ## Stack
 - **Connect RPC** (`connectrpc.com/connect`) over HTTP/2 (h2c) on port **8383**

@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://chigame.site/sitemap.xml

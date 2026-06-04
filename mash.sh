@@ -4,8 +4,7 @@ export DATABASE_URL="postgres://admin:adminpass@127.0.0.1:5432/game?sslmode=disa
 export RELEASE_MODE=dev
 export JWT_SECRET="jjlkds5r6789uipokkjhj3t7y8u9psty543sghh0jlkkd5r6t7y8u"
 export ADMIN_SECRET="b12v44DSacdxserte5r467t78youijDSFHEYTWiuyuehdhyhqwdd"
-export VITE_API_BASE_URL="https://api.chigame.site"
-export VITE_SITE_URL="https://chigame.site"
+# VITE_* for production builds only — see deploy-front (dev uses Vite proxy → :8383)
 
 set -e
 
@@ -62,8 +61,9 @@ case $COMMAND in
 		;;
 	
 	run-front)
+		echo "Frontend dev: API via Vite proxy → http://127.0.0.1:8383 (unset VITE_API_BASE_URL)"
 		cd ./frontend/
-		npm run dev
+		env -u VITE_API_BASE_URL -u VITE_SITE_URL npm run dev
 		cd ..
 		;;
 
@@ -79,6 +79,8 @@ EOF
 		;;
 
 	deploy-front)
+		export VITE_API_BASE_URL="https://api.chigame.site"
+		export VITE_SITE_URL="https://chigame.site"
 		cd ./frontend/
 		npm run build
 		npx wrangler pages deploy ./dist

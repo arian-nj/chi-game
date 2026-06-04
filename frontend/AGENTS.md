@@ -1,17 +1,18 @@
 ## project
 this is chi game a website that lets users play diffrent games
-we are currently on phase 1 all games are single player by later they will have multiplayer option to but not now
-
+even if server is down offline games should be playable
 Wrtie the code simple as possible don't overdo things
 
 ## Backend API
 - Connect RPC to Go backend (`backend/`, port **8383**)
 - Generated clients: `src/gen/` (`buf generate` from repo root)
-- **TanStack Vue Query** + `@connectrpc/connect-query-core`; use `useConnectQuery` in `src/composables/use-connect-query.ts` for RPCs
+- **TanStack Vue Query** + `@connectrpc/connect`; use `createApiClient` in `src/libs/api-client.ts` with `useQuery` for reads
 - Shared transport: `src/libs/api-client.ts`; QueryClient: `src/libs/vue-query.ts`
 - Base URL: `src/libs/api-base-url.ts` and `VITE_API_BASE_URL`
 - Dev: Vite proxies `*.v1.*` RPC paths to `http://127.0.0.1:8383` when `VITE_API_BASE_URL` is unset
 - Run API: `./mash.sh run-back` from repo root
+- Guest auth: device ID + JWT via `useGuestAuth()` — see [`docs/auth.md`](../docs/auth.md)
+- Invite / online lobby: `/{locale}/room` — see [`docs/invite.md`](../docs/invite.md)
 
 ## Code Style and Structure
 - Write concise, maintainable, and technically accurate TypeScript code.

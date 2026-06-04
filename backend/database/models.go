@@ -8,6 +8,21 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+type InviteRoom struct {
+	ID           int64
+	InviteCode   string
+	GameKey      string
+	HostPersonID int64
+	CreatedAt    pgtype.Timestamp
+	ExpiresAt    pgtype.Timestamp
+}
+
+type InviteRoomPlayer struct {
+	RoomID   int64
+	PersonID int64
+	JoinedAt pgtype.Timestamp
+}
+
 type Person struct {
 	ID          int64
 	DisplayName string

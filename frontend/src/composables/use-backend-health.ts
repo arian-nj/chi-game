@@ -1,13 +1,15 @@
-import { healthCheck } from '@/gen/healthcheck/v1/healthcheck-HealthcheckService_connectquery';
-import { HealthType } from '@/gen/healthcheck/v1/healthcheck_pb';
+import { HealthcheckService, HealthType } from '@/gen/healthcheck/v1/healthcheck_pb';
+import { createApiClient } from '@/libs/api-client';
+import { useQuery } from '@tanstack/vue-query';
 import { computed } from 'vue';
-import { useConnectQuery } from './use-connect-query';
 
 export function useBackendHealth() {
-  const query = useConnectQuery(healthCheck, undefined, {
-    staleTime: 30_000,
-    refetchInterval: 60_000,
-    retry: 1,
+  const client = createApiClient(HealthcheckService);
+  
+  const query = useQuery({
+    queryKey: ['backend-health'],
+    queryFn: ({ signal }) => client.healthCheck({}, { signal }),
+    staleTime: 60_000,
   });
 
   const isBackendHealthy = computed(

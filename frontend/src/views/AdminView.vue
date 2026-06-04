@@ -1,16 +1,13 @@
 <script setup lang="ts">
-import { getOverview } from '@/gen/admin/v1/admin-AdminService_connectquery';
-import { GetOverviewRequestSchema, type GetOverviewResponse } from '@/gen/admin/v1/admin_pb';
+import { AdminService, type GetOverviewResponse } from '@/gen/admin/v1/admin_pb';
 import { getInitialLocale } from '@/i18n';
-import { getApiTransport } from '@/libs/api-client';
+import { createApiClient } from '@/libs/api-client';
 import {
   clearAdminSecret,
   readAdminSecret,
   saveAdminSecret,
 } from '@/libs/admin-secret-storage';
 import { Code, ConnectError } from '@connectrpc/connect';
-import { create } from '@bufbuild/protobuf';
-import { callUnaryMethod } from '@connectrpc/connect-query-core';
 import { computed, onMounted, ref } from 'vue';
 
 const homePath = computed(() => `/${getInitialLocale()}`);
@@ -43,11 +40,8 @@ async function loadOverview(secret: string) {
   overview.value = null;
 
   try {
-    overview.value = await callUnaryMethod(
-      getApiTransport(),
-      getOverview,
-      create(GetOverviewRequestSchema, { adminSecret: secret }),
-    );
+    const client = createApiClient(AdminService);
+    overview.value = await client.getOverview({ adminSecret: secret });
     savedSecret.value = secret;
     saveAdminSecret(secret);
   } catch (err) {

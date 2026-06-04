@@ -13,7 +13,9 @@ const locale = route.params.locale as string;
 
 onMounted(() => {
   import('../views/GameView.vue');
+  import('@/views/RoomView.vue');
 });
+
 </script>
 
 <template>
@@ -27,7 +29,7 @@ onMounted(() => {
     >
       {{ displayUsername }}
     </p>
-    <div v-else class="mb-8" aria-hidden="true" />
+    <div v-else class="mb-8" aria-hidden="true" ></div>
 
     <div
       class="grid w-full max-w-5xl gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center mx-auto px-4"
@@ -54,6 +56,12 @@ onMounted(() => {
     </div>
 
     <nav class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Site">
+      <RouterLink
+        :to="`/${locale}/room`"
+        class="text-blue-100 hover:text-white underline underline-offset-4 font-semibold"
+      >
+        {{ t('nav.room') }}
+      </RouterLink>
       <RouterLink
         :to="`/${locale}/about`"
         class="text-blue-100 hover:text-white underline underline-offset-4 font-semibold"
