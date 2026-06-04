@@ -25,7 +25,6 @@ Chi Game backend: Go API for chigame.ir. Phase 1: minimal surface (healthcheck, 
 - Errors: return `connect.NewError(connect.Code*, err)` from RPC handlers
 - CORS: keep frontend dev origins (`localhost:5173`, production domain) in `api/router.go`
 - Secrets: never commit; use environment variables
-- Scope: prefer the smallest change that matches the current product phase; avoid copying Telegram/room/game server code from `oldbackend/` unless explicitly requested
 
 ## Commands
 From `backend/`:
