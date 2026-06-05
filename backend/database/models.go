@@ -41,3 +41,16 @@ type PersonAuthMethod struct {
 	AuthValue string
 	CreatedAt pgtype.Timestamp
 }
+
+type Room struct {
+	ID        int64
+	CreatedAt pgtype.Timestamp
+	UpdatedAt pgtype.Timestamp
+}
+
+type RoomPlayer struct {
+	ID       int64
+	RoomID   int64
+	PersonID int64
+	JoinedAt pgtype.Timestamp
+}

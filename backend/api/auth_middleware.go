@@ -37,3 +37,23 @@ func (app *APIApplication) AuthenticateHeader(ctx context.Context, header http.H
 
 	return &person
 }
+
+func (app *APIApplication) AuthenticateQuery(ctx context.Context, header http.Header) *database.Person {
+	token := header.Get("auth_token")
+	if token == "" {
+		return nil
+	}
+
+	userID, err := app.ValidateToken(token)
+	if err != nil {
+		return nil
+	}
+
+	person, err := app.Queries.GetPersonByID(ctx, int64(userID))
+	if err != nil {
+		slog.Error("no user found for auth header", "err", err)
+		return nil
+	}
+
+	return &person
+}

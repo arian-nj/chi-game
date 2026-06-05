@@ -4,113 +4,13 @@
 
 import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import type { Account } from "../../account/v1/account_pb";
-import { file_account_v1_account } from "../../account/v1/account_pb";
-import type { XoGameMessage } from "../../xo_game/v1/xo_pb";
-import { file_xo_game_v1_xo } from "../../xo_game/v1/xo_pb";
-import type { Conn4GameMessage } from "../../conn4_game/v1/conn4_pb";
-import { file_conn4_game_v1_conn4 } from "../../conn4_game/v1/conn4_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file room/v1/room.proto.
  */
 export const file_room_v1_room: GenFile = /*@__PURE__*/
-  fileDesc("ChJyb29tL3YxL3Jvb20ucHJvdG8SB3Jvb20udjEiIgoSQ2hhdE1lc3NhZ2VSZXF1ZXN0EgwKBHRleHQYASABKAkiOgoLQ2hhdE1lc3NhZ2USEQoJcGxheWVyX2lkGAEgASgDEgwKBHRleHQYAiABKAkSCgoCaWQYAyABKAMicAoLR2FtZU1lc3NhZ2USJwoCeG8YASABKAsyGS54b19nYW1lLnYxLlhvR2FtZU1lc3NhZ2VIABIwCgVjb25uNBgCIAEoCzIfLmNvbm40X2dhbWUudjEuQ29ubjRHYW1lTWVzc2FnZUgAQgYKBGdhbWUiPQoVQ2hhbmdlR2FtZVR5cGVNZXNzYWdlEiQKCWdhbWVfdHlwZRgBIAEoDjIRLnJvb20udjEuR2FtZVR5cGUilwIKC1Jvb21NZXNzYWdlEiQKBGNoYXQYASABKAsyFC5yb29tLnYxLkNoYXRNZXNzYWdlSAASLwoIY2hhdF9yZXEYAiABKAsyGy5yb29tLnYxLkNoYXRNZXNzYWdlUmVxdWVzdEgAEiQKBGdhbWUYAyABKAsyFC5yb29tLnYxLkdhbWVNZXNzYWdlSAASJwoFZXJyb3IYBCABKA4yFi5yb29tLnYxLlJvb21FcnJvclR5cGVIABIzCglnYW1lX3R5cGUYBSABKAsyHi5yb29tLnYxLkNoYW5nZUdhbWVUeXBlTWVzc2FnZUgAEiIKCXN5bmNfdGltZRgGIAEoCzINLnJvb20udjEuVGltZUgAQgkKB2NvbnRlbnQiEgoQQ2xvc2VSb29tUmVxdWVzdCIiChFDbG9zZVJvb21SZXNwb25zZRINCgVpc19vaxgBIAEoCCIQCg5IYXNSb29tUmVxdWVzdCIjCg9IYXNSb29tUmVzcG9uc2USEAoIaGFzX3Jvb20YASABKAgiFwoVR2V0Q2hhdEhpc3RvcnlSZXF1ZXN0IkAKFkdldENoYXRIaXN0b3J5UmVzcG9uc2USJgoIbWVzc2FnZXMYASADKAsyFC5yb29tLnYxLkNoYXRNZXNzYWdlIhgKFkdldFJvb21PcHBvbmVudFJlcXVlc3QiQAoXR2V0Um9vbU9wcG9uZW50UmVzcG9uc2USJQoIb3Bwb25lbnQYASABKAsyEy5hY2NvdW50LnYxLkFjY291bnQiQQoEVGltZRIRCglwbGF5ZXJfaWQYASABKAMSEgoKc3BlbnRfdGltZRgCIAEoBRISCgp0b3RhbF90aW1lGAMgASgFKmQKCEdhbWVUeXBlEhkKFUdBTUVfVFlQRV9VTlNQRUNJRklFRBAAEhMKD0dBTUVfVFlQRV9YTzNYMxABEhMKD0dBTUVfVFlQRV9YTzVYNRACEhMKD0dBTUVfVFlQRV9DT05ONBADKmYKDVJvb21FcnJvclR5cGUSHwobUk9PTV9FUlJPUl9UWVBFX1VOU1BFQ0lGSUVEEAASGAoUUk9PTV9FUlJPUl9UWVBFX0FVVEgQARIaChZST09NX0VSUk9SX1RZUEVfTk9ST09NEAIywAIKC1Jvb21TZXJ2aWNlElMKDkdldENoYXRIaXN0b3J5Eh4ucm9vbS52MS5HZXRDaGF0SGlzdG9yeVJlcXVlc3QaHy5yb29tLnYxLkdldENoYXRIaXN0b3J5UmVzcG9uc2UiABJWCg9HZXRSb29tT3Bwb25lbnQSHy5yb29tLnYxLkdldFJvb21PcHBvbmVudFJlcXVlc3QaIC5yb29tLnYxLkdldFJvb21PcHBvbmVudFJlc3BvbnNlIgASPgoHSGFzUm9vbRIXLnJvb20udjEuSGFzUm9vbVJlcXVlc3QaGC5yb29tLnYxLkhhc1Jvb21SZXNwb25zZSIAEkQKCUNsb3NlUm9vbRIZLnJvb20udjEuQ2xvc2VSb29tUmVxdWVzdBoaLnJvb20udjEuQ2xvc2VSb29tUmVzcG9uc2UiAEKNAQoLY29tLnJvb20udjFCCVJvb21Qcm90b1ABWjZnaXRodWIuY29tL2FyaWFuLW5qL2NoaWdhbWUvYmFja2VuZC9nZW4vcm9vbS92MTtyb29tdjGiAgNSWFiqAgdSb29tLlYxygIHUm9vbVxWMeICE1Jvb21cVjFcR1BCTWV0YWRhdGHqAghSb29tOjpWMWIGcHJvdG8z", [file_account_v1_account, file_xo_game_v1_xo, file_conn4_game_v1_conn4]);
-
-/**
- * Chat
- *
- * @generated from message room.v1.ChatMessageRequest
- */
-export type ChatMessageRequest = Message<"room.v1.ChatMessageRequest"> & {
-  /**
-   * @generated from field: string text = 1;
-   */
-  text: string;
-};
-
-/**
- * Describes the message room.v1.ChatMessageRequest.
- * Use `create(ChatMessageRequestSchema)` to create a new message.
- */
-export const ChatMessageRequestSchema: GenMessage<ChatMessageRequest> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 0);
-
-/**
- * @generated from message room.v1.ChatMessage
- */
-export type ChatMessage = Message<"room.v1.ChatMessage"> & {
-  /**
-   * @generated from field: int64 player_id = 1;
-   */
-  playerId: bigint;
-
-  /**
-   * @generated from field: string text = 2;
-   */
-  text: string;
-
-  /**
-   * @generated from field: int64 id = 3;
-   */
-  id: bigint;
-};
-
-/**
- * Describes the message room.v1.ChatMessage.
- * Use `create(ChatMessageSchema)` to create a new message.
- */
-export const ChatMessageSchema: GenMessage<ChatMessage> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 1);
-
-/**
- * Game Room
- *
- * @generated from message room.v1.GameMessage
- */
-export type GameMessage = Message<"room.v1.GameMessage"> & {
-  /**
-   * @generated from oneof room.v1.GameMessage.game
-   */
-  game: {
-    /**
-     * @generated from field: xo_game.v1.XoGameMessage xo = 1;
-     */
-    value: XoGameMessage;
-    case: "xo";
-  } | {
-    /**
-     * @generated from field: conn4_game.v1.Conn4GameMessage conn4 = 2;
-     */
-    value: Conn4GameMessage;
-    case: "conn4";
-  } | { case: undefined; value?: undefined };
-};
-
-/**
- * Describes the message room.v1.GameMessage.
- * Use `create(GameMessageSchema)` to create a new message.
- */
-export const GameMessageSchema: GenMessage<GameMessage> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 2);
-
-/**
- * @generated from message room.v1.ChangeGameTypeMessage
- */
-export type ChangeGameTypeMessage = Message<"room.v1.ChangeGameTypeMessage"> & {
-  /**
-   * @generated from field: room.v1.GameType game_type = 1;
-   */
-  gameType: GameType;
-};
-
-/**
- * Describes the message room.v1.ChangeGameTypeMessage.
- * Use `create(ChangeGameTypeMessageSchema)` to create a new message.
- */
-export const ChangeGameTypeMessageSchema: GenMessage<ChangeGameTypeMessage> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 3);
+  fileDesc("ChJyb29tL3YxL3Jvb20ucHJvdG8SB3Jvb20udjEiQQoLUm9vbU1lc3NhZ2USJwoFZXJyb3IYBCABKA4yFi5yb29tLnYxLlJvb21FcnJvclR5cGVIAEIJCgdjb250ZW50KmYKDVJvb21FcnJvclR5cGUSHwobUk9PTV9FUlJPUl9UWVBFX1VOU1BFQ0lGSUVEEAASGAoUUk9PTV9FUlJPUl9UWVBFX0FVVEgQARIaChZST09NX0VSUk9SX1RZUEVfTk9ST09NEAIyDQoLUm9vbVNlcnZpY2VCjQEKC2NvbS5yb29tLnYxQglSb29tUHJvdG9QAVo2Z2l0aHViLmNvbS9hcmlhbi1uai9jaGlnYW1lL2JhY2tlbmQvZ2VuL3Jvb20vdjE7cm9vbXYxogIDUlhYqgIHUm9vbS5WMcoCB1Jvb21cVjHiAhNSb29tXFYxXEdQQk1ldGFkYXRh6gIIUm9vbTo6VjFiBnByb3RvMw");
 
 /**
  * / Room
@@ -123,40 +23,17 @@ export type RoomMessage = Message<"room.v1.RoomMessage"> & {
    */
   content: {
     /**
-     * @generated from field: room.v1.ChatMessage chat = 1;
-     */
-    value: ChatMessage;
-    case: "chat";
-  } | {
-    /**
-     * @generated from field: room.v1.ChatMessageRequest chat_req = 2;
-     */
-    value: ChatMessageRequest;
-    case: "chatReq";
-  } | {
-    /**
-     * @generated from field: room.v1.GameMessage game = 3;
-     */
-    value: GameMessage;
-    case: "game";
-  } | {
-    /**
+     * ChatMessage chat = 1;
+     * ChatMessageRequest chat_req = 2;
+     * GameMessage game = 3;
+     *
+     * ChangeGameTypeMessage game_type = 5;
+     * Time sync_time= 6;
+     *
      * @generated from field: room.v1.RoomErrorType error = 4;
      */
     value: RoomErrorType;
     case: "error";
-  } | {
-    /**
-     * @generated from field: room.v1.ChangeGameTypeMessage game_type = 5;
-     */
-    value: ChangeGameTypeMessage;
-    case: "gameType";
-  } | {
-    /**
-     * @generated from field: room.v1.Time sync_time = 6;
-     */
-    value: Time;
-    case: "syncTime";
   } | { case: undefined; value?: undefined };
 };
 
@@ -165,189 +42,7 @@ export type RoomMessage = Message<"room.v1.RoomMessage"> & {
  * Use `create(RoomMessageSchema)` to create a new message.
  */
 export const RoomMessageSchema: GenMessage<RoomMessage> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 4);
-
-/**
- * @generated from message room.v1.CloseRoomRequest
- */
-export type CloseRoomRequest = Message<"room.v1.CloseRoomRequest"> & {
-};
-
-/**
- * Describes the message room.v1.CloseRoomRequest.
- * Use `create(CloseRoomRequestSchema)` to create a new message.
- */
-export const CloseRoomRequestSchema: GenMessage<CloseRoomRequest> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 5);
-
-/**
- * @generated from message room.v1.CloseRoomResponse
- */
-export type CloseRoomResponse = Message<"room.v1.CloseRoomResponse"> & {
-  /**
-   * @generated from field: bool is_ok = 1;
-   */
-  isOk: boolean;
-};
-
-/**
- * Describes the message room.v1.CloseRoomResponse.
- * Use `create(CloseRoomResponseSchema)` to create a new message.
- */
-export const CloseRoomResponseSchema: GenMessage<CloseRoomResponse> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 6);
-
-/**
- * @generated from message room.v1.HasRoomRequest
- */
-export type HasRoomRequest = Message<"room.v1.HasRoomRequest"> & {
-};
-
-/**
- * Describes the message room.v1.HasRoomRequest.
- * Use `create(HasRoomRequestSchema)` to create a new message.
- */
-export const HasRoomRequestSchema: GenMessage<HasRoomRequest> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 7);
-
-/**
- * @generated from message room.v1.HasRoomResponse
- */
-export type HasRoomResponse = Message<"room.v1.HasRoomResponse"> & {
-  /**
-   * @generated from field: bool has_room = 1;
-   */
-  hasRoom: boolean;
-};
-
-/**
- * Describes the message room.v1.HasRoomResponse.
- * Use `create(HasRoomResponseSchema)` to create a new message.
- */
-export const HasRoomResponseSchema: GenMessage<HasRoomResponse> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 8);
-
-/**
- * @generated from message room.v1.GetChatHistoryRequest
- */
-export type GetChatHistoryRequest = Message<"room.v1.GetChatHistoryRequest"> & {
-};
-
-/**
- * Describes the message room.v1.GetChatHistoryRequest.
- * Use `create(GetChatHistoryRequestSchema)` to create a new message.
- */
-export const GetChatHistoryRequestSchema: GenMessage<GetChatHistoryRequest> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 9);
-
-/**
- * @generated from message room.v1.GetChatHistoryResponse
- */
-export type GetChatHistoryResponse = Message<"room.v1.GetChatHistoryResponse"> & {
-  /**
-   * @generated from field: repeated room.v1.ChatMessage messages = 1;
-   */
-  messages: ChatMessage[];
-};
-
-/**
- * Describes the message room.v1.GetChatHistoryResponse.
- * Use `create(GetChatHistoryResponseSchema)` to create a new message.
- */
-export const GetChatHistoryResponseSchema: GenMessage<GetChatHistoryResponse> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 10);
-
-/**
- * @generated from message room.v1.GetRoomOpponentRequest
- */
-export type GetRoomOpponentRequest = Message<"room.v1.GetRoomOpponentRequest"> & {
-};
-
-/**
- * Describes the message room.v1.GetRoomOpponentRequest.
- * Use `create(GetRoomOpponentRequestSchema)` to create a new message.
- */
-export const GetRoomOpponentRequestSchema: GenMessage<GetRoomOpponentRequest> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 11);
-
-/**
- * @generated from message room.v1.GetRoomOpponentResponse
- */
-export type GetRoomOpponentResponse = Message<"room.v1.GetRoomOpponentResponse"> & {
-  /**
-   * @generated from field: account.v1.Account opponent = 1;
-   */
-  opponent?: Account;
-};
-
-/**
- * Describes the message room.v1.GetRoomOpponentResponse.
- * Use `create(GetRoomOpponentResponseSchema)` to create a new message.
- */
-export const GetRoomOpponentResponseSchema: GenMessage<GetRoomOpponentResponse> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 12);
-
-/**
- * Time
- *
- * @generated from message room.v1.Time
- */
-export type Time = Message<"room.v1.Time"> & {
-  /**
-   * @generated from field: int64 player_id = 1;
-   */
-  playerId: bigint;
-
-  /**
-   * @generated from field: int32 spent_time = 2;
-   */
-  spentTime: number;
-
-  /**
-   * @generated from field: int32 total_time = 3;
-   */
-  totalTime: number;
-};
-
-/**
- * Describes the message room.v1.Time.
- * Use `create(TimeSchema)` to create a new message.
- */
-export const TimeSchema: GenMessage<Time> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 13);
-
-/**
- * GameType Message
- *
- * @generated from enum room.v1.GameType
- */
-export enum GameType {
-  /**
-   * @generated from enum value: GAME_TYPE_UNSPECIFIED = 0;
-   */
-  UNSPECIFIED = 0,
-
-  /**
-   * @generated from enum value: GAME_TYPE_XO3X3 = 1;
-   */
-  XO3X3 = 1,
-
-  /**
-   * @generated from enum value: GAME_TYPE_XO5X5 = 2;
-   */
-  XO5X5 = 2,
-
-  /**
-   * @generated from enum value: GAME_TYPE_CONN4 = 3;
-   */
-  CONN4 = 3,
-}
-
-/**
- * Describes the enum room.v1.GameType.
- */
-export const GameTypeSchema: GenEnum<GameType> = /*@__PURE__*/
-  enumDesc(file_room_v1_room, 0);
+  messageDesc(file_room_v1_room, 0);
 
 /**
  * @generated from enum room.v1.RoomErrorType
@@ -373,44 +68,17 @@ export enum RoomErrorType {
  * Describes the enum room.v1.RoomErrorType.
  */
 export const RoomErrorTypeSchema: GenEnum<RoomErrorType> = /*@__PURE__*/
-  enumDesc(file_room_v1_room, 1);
+  enumDesc(file_room_v1_room, 0);
 
 /**
+ *   rpc GetChatHistory(GetChatHistoryRequest) returns (GetChatHistoryResponse) {}
+ *   rpc GetRoomOpponent(GetRoomOpponentRequest) returns (GetRoomOpponentResponse) {}
+ *   rpc HasRoom(HasRoomRequest) returns (HasRoomResponse) {}
+ *   rpc CloseRoom(CloseRoomRequest) returns (CloseRoomResponse) {}
+ *
  * @generated from service room.v1.RoomService
  */
 export const RoomService: GenService<{
-  /**
-   * @generated from rpc room.v1.RoomService.GetChatHistory
-   */
-  getChatHistory: {
-    methodKind: "unary";
-    input: typeof GetChatHistoryRequestSchema;
-    output: typeof GetChatHistoryResponseSchema;
-  },
-  /**
-   * @generated from rpc room.v1.RoomService.GetRoomOpponent
-   */
-  getRoomOpponent: {
-    methodKind: "unary";
-    input: typeof GetRoomOpponentRequestSchema;
-    output: typeof GetRoomOpponentResponseSchema;
-  },
-  /**
-   * @generated from rpc room.v1.RoomService.HasRoom
-   */
-  hasRoom: {
-    methodKind: "unary";
-    input: typeof HasRoomRequestSchema;
-    output: typeof HasRoomResponseSchema;
-  },
-  /**
-   * @generated from rpc room.v1.RoomService.CloseRoom
-   */
-  closeRoom: {
-    methodKind: "unary";
-    input: typeof CloseRoomRequestSchema;
-    output: typeof CloseRoomResponseSchema;
-  },
 }> = /*@__PURE__*/
   serviceDesc(file_room_v1_room, 0);
 

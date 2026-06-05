@@ -17,7 +17,7 @@ import (
 
 const (
 	inviteCodeLength   = 6
-	inviteRoomLifetime = 24 * time.Hour
+	inviteRoomLifetime = 12 * time.Hour
 	maxPlayersPerRoom  = 2
 )
 

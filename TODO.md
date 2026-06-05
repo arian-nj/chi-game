@@ -38,22 +38,30 @@
 [X] health check
 [X] optional guest users
 [X] admin page
-[ ] setup vps
-[ ] ./release to vps
+[X] setup vps
+[X] ./release to vps
 
 # V 0.3.0 game backend frameworkish
-[-] rooms (invite create/join, player names only)
+[X] invite create/join
+[ ] rooms
+    [ ] rooms in backend
+    [ ] websocket
+    [ ] gameselector when no active game
+[ ] move invites from db to memory
 [ ] online xo
 [ ] online connect 4
 
 # Games
-[ ] dots and boxes
+# piority
+[ ] line and dots 
 [ ] go game
 [ ] snake and ladder
+[ ] Sea Battle
+
+[ ] pool 8-ball
+[ ] Poker
 [ ] mench
+
 [ ] Dominoes
 [ ] takhteh (Backgammon)
 [ ] Hokm
-[ ] pool 8-ball
-[ ] Poker
-[ ] Sea Battle

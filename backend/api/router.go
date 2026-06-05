@@ -12,7 +12,7 @@ import (
 	"github.com/rs/cors"
 )
 
-var corsOrigins = []string{
+var CorsPatterns = []string{
 	"http://localhost:8080",
 	"https://localhost:8080",
 	"http://localhost:5173",
@@ -40,6 +40,8 @@ func (app *APIApplication) createRouter() http.Handler {
 	invitePath, inviteHandler := invitev1connect.NewInviteServiceHandler(app)
 	mux.Handle(invitePath, inviteHandler)
 
+	mux.Handle("/room/websocket", http.HandlerFunc(app.roomWebsocket))
+
 	return withCORS(mux)
 }
 
@@ -48,7 +50,7 @@ func withCORS(next http.Handler) http.Handler {
 	allowedHeaders = append(allowedHeaders, connectcors.AllowedHeaders()...)
 
 	c := cors.New(cors.Options{
-		AllowedOrigins:   corsOrigins,
+		AllowedOrigins:   CorsPatterns,
 		AllowedMethods:   connectcors.AllowedMethods(),
 		AllowedHeaders:   allowedHeaders,
 		ExposedHeaders:   connectcors.ExposedHeaders(),
