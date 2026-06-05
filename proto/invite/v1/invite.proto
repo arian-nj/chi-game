@@ -17,16 +17,13 @@ message CreateInviteRoomRequest {
 
 message CreateInviteRoomResponse {
   string invite_code = 1;
-  int64 room_id = 2;
 }
 
 message JoinInviteRoomRequest {
   string invite_code = 1;
 }
 
-message JoinInviteRoomResponse {
-  int64 room_id = 1;
-}
+message JoinInviteRoomResponse {}
 
 message GetInviteRoomRequest {
   string invite_code = 1;
@@ -35,11 +32,12 @@ message GetInviteRoomRequest {
 message GetInviteRoomResponse {
   string invite_code = 1;
   string game_key = 2;
-  int64 room_id = 3;
-  repeated account.v1.Account players = 4;
+  repeated account.v1.Account players = 3;
 }
 
-message LeaveInviteRoomRequest {}
+message LeaveInviteRoomRequest {
+  string invite_code = 1;
+}
 
 message LeaveInviteRoomResponse {
   bool ok = 1;

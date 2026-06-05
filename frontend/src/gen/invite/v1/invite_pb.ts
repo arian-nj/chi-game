@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file invite/v1/invite.proto.
  */
 export const file_invite_v1_invite: GenFile = /*@__PURE__*/
-  fileDesc("ChZpbnZpdGUvdjEvaW52aXRlLnByb3RvEglpbnZpdGUudjEiKwoXQ3JlYXRlSW52aXRlUm9vbVJlcXVlc3QSEAoIZ2FtZV9rZXkYASABKAkiQAoYQ3JlYXRlSW52aXRlUm9vbVJlc3BvbnNlEhMKC2ludml0ZV9jb2RlGAEgASgJEg8KB3Jvb21faWQYAiABKAMiLAoVSm9pbkludml0ZVJvb21SZXF1ZXN0EhMKC2ludml0ZV9jb2RlGAEgASgJIikKFkpvaW5JbnZpdGVSb29tUmVzcG9uc2USDwoHcm9vbV9pZBgBIAEoAyIrChRHZXRJbnZpdGVSb29tUmVxdWVzdBITCgtpbnZpdGVfY29kZRgBIAEoCSJ1ChVHZXRJbnZpdGVSb29tUmVzcG9uc2USEwoLaW52aXRlX2NvZGUYASABKAkSEAoIZ2FtZV9rZXkYAiABKAkSDwoHcm9vbV9pZBgDIAEoAxIkCgdwbGF5ZXJzGAQgAygLMhMuYWNjb3VudC52MS5BY2NvdW50IhgKFkxlYXZlSW52aXRlUm9vbVJlcXVlc3QiJQoXTGVhdmVJbnZpdGVSb29tUmVzcG9uc2USCgoCb2sYASABKAgy8QIKDUludml0ZVNlcnZpY2USWwoQQ3JlYXRlSW52aXRlUm9vbRIiLmludml0ZS52MS5DcmVhdGVJbnZpdGVSb29tUmVxdWVzdBojLmludml0ZS52MS5DcmVhdGVJbnZpdGVSb29tUmVzcG9uc2USVQoOSm9pbkludml0ZVJvb20SIC5pbnZpdGUudjEuSm9pbkludml0ZVJvb21SZXF1ZXN0GiEuaW52aXRlLnYxLkpvaW5JbnZpdGVSb29tUmVzcG9uc2USUgoNR2V0SW52aXRlUm9vbRIfLmludml0ZS52MS5HZXRJbnZpdGVSb29tUmVxdWVzdBogLmludml0ZS52MS5HZXRJbnZpdGVSb29tUmVzcG9uc2USWAoPTGVhdmVJbnZpdGVSb29tEiEuaW52aXRlLnYxLkxlYXZlSW52aXRlUm9vbVJlcXVlc3QaIi5pbnZpdGUudjEuTGVhdmVJbnZpdGVSb29tUmVzcG9uc2VCnQEKDWNvbS5pbnZpdGUudjFCC0ludml0ZVByb3RvUAFaOmdpdGh1Yi5jb20vYXJpYW4tbmovY2hpZ2FtZS9iYWNrZW5kL2dlbi9pbnZpdGUvdjE7aW52aXRldjGiAgNJWFiqAglJbnZpdGUuVjHKAglJbnZpdGVcVjHiAhVJbnZpdGVcVjFcR1BCTWV0YWRhdGHqAgpJbnZpdGU6OlYxYgZwcm90bzM", [file_account_v1_account]);
+  fileDesc("ChZpbnZpdGUvdjEvaW52aXRlLnByb3RvEglpbnZpdGUudjEiKwoXQ3JlYXRlSW52aXRlUm9vbVJlcXVlc3QSEAoIZ2FtZV9rZXkYASABKAkiLwoYQ3JlYXRlSW52aXRlUm9vbVJlc3BvbnNlEhMKC2ludml0ZV9jb2RlGAEgASgJIiwKFUpvaW5JbnZpdGVSb29tUmVxdWVzdBITCgtpbnZpdGVfY29kZRgBIAEoCSIYChZKb2luSW52aXRlUm9vbVJlc3BvbnNlIisKFEdldEludml0ZVJvb21SZXF1ZXN0EhMKC2ludml0ZV9jb2RlGAEgASgJImQKFUdldEludml0ZVJvb21SZXNwb25zZRITCgtpbnZpdGVfY29kZRgBIAEoCRIQCghnYW1lX2tleRgCIAEoCRIkCgdwbGF5ZXJzGAMgAygLMhMuYWNjb3VudC52MS5BY2NvdW50Ii0KFkxlYXZlSW52aXRlUm9vbVJlcXVlc3QSEwoLaW52aXRlX2NvZGUYASABKAkiJQoXTGVhdmVJbnZpdGVSb29tUmVzcG9uc2USCgoCb2sYASABKAgy8QIKDUludml0ZVNlcnZpY2USWwoQQ3JlYXRlSW52aXRlUm9vbRIiLmludml0ZS52MS5DcmVhdGVJbnZpdGVSb29tUmVxdWVzdBojLmludml0ZS52MS5DcmVhdGVJbnZpdGVSb29tUmVzcG9uc2USVQoOSm9pbkludml0ZVJvb20SIC5pbnZpdGUudjEuSm9pbkludml0ZVJvb21SZXF1ZXN0GiEuaW52aXRlLnYxLkpvaW5JbnZpdGVSb29tUmVzcG9uc2USUgoNR2V0SW52aXRlUm9vbRIfLmludml0ZS52MS5HZXRJbnZpdGVSb29tUmVxdWVzdBogLmludml0ZS52MS5HZXRJbnZpdGVSb29tUmVzcG9uc2USWAoPTGVhdmVJbnZpdGVSb29tEiEuaW52aXRlLnYxLkxlYXZlSW52aXRlUm9vbVJlcXVlc3QaIi5pbnZpdGUudjEuTGVhdmVJbnZpdGVSb29tUmVzcG9uc2VCnQEKDWNvbS5pbnZpdGUudjFCC0ludml0ZVByb3RvUAFaOmdpdGh1Yi5jb20vYXJpYW4tbmovY2hpZ2FtZS9iYWNrZW5kL2dlbi9pbnZpdGUvdjE7aW52aXRldjGiAgNJWFiqAglJbnZpdGUuVjHKAglJbnZpdGVcVjHiAhVJbnZpdGVcVjFcR1BCTWV0YWRhdGHqAgpJbnZpdGU6OlYxYgZwcm90bzM", [file_account_v1_account]);
 
 /**
  * @generated from message invite.v1.CreateInviteRoomRequest
@@ -39,11 +39,6 @@ export type CreateInviteRoomResponse = Message<"invite.v1.CreateInviteRoomRespon
    * @generated from field: string invite_code = 1;
    */
   inviteCode: string;
-
-  /**
-   * @generated from field: int64 room_id = 2;
-   */
-  roomId: bigint;
 };
 
 /**
@@ -74,10 +69,6 @@ export const JoinInviteRoomRequestSchema: GenMessage<JoinInviteRoomRequest> = /*
  * @generated from message invite.v1.JoinInviteRoomResponse
  */
 export type JoinInviteRoomResponse = Message<"invite.v1.JoinInviteRoomResponse"> & {
-  /**
-   * @generated from field: int64 room_id = 1;
-   */
-  roomId: bigint;
 };
 
 /**
@@ -119,12 +110,7 @@ export type GetInviteRoomResponse = Message<"invite.v1.GetInviteRoomResponse"> &
   gameKey: string;
 
   /**
-   * @generated from field: int64 room_id = 3;
-   */
-  roomId: bigint;
-
-  /**
-   * @generated from field: repeated account.v1.Account players = 4;
+   * @generated from field: repeated account.v1.Account players = 3;
    */
   players: Account[];
 };
@@ -140,6 +126,10 @@ export const GetInviteRoomResponseSchema: GenMessage<GetInviteRoomResponse> = /*
  * @generated from message invite.v1.LeaveInviteRoomRequest
  */
 export type LeaveInviteRoomRequest = Message<"invite.v1.LeaveInviteRoomRequest"> & {
+  /**
+   * @generated from field: string invite_code = 1;
+   */
+  inviteCode: string;
 };
 
 /**

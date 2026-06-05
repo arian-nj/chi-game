@@ -69,7 +69,6 @@ func (x *CreateInviteRoomRequest) GetGameKey() string {
 type CreateInviteRoomResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	InviteCode    string                 `protobuf:"bytes,1,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
-	RoomId        int64                  `protobuf:"varint,2,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -109,13 +108,6 @@ func (x *CreateInviteRoomResponse) GetInviteCode() string {
 		return x.InviteCode
 	}
 	return ""
-}
-
-func (x *CreateInviteRoomResponse) GetRoomId() int64 {
-	if x != nil {
-		return x.RoomId
-	}
-	return 0
 }
 
 type JoinInviteRoomRequest struct {
@@ -164,7 +156,6 @@ func (x *JoinInviteRoomRequest) GetInviteCode() string {
 
 type JoinInviteRoomResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	RoomId        int64                  `protobuf:"varint,1,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -197,13 +188,6 @@ func (x *JoinInviteRoomResponse) ProtoReflect() protoreflect.Message {
 // Deprecated: Use JoinInviteRoomResponse.ProtoReflect.Descriptor instead.
 func (*JoinInviteRoomResponse) Descriptor() ([]byte, []int) {
 	return file_invite_v1_invite_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *JoinInviteRoomResponse) GetRoomId() int64 {
-	if x != nil {
-		return x.RoomId
-	}
-	return 0
 }
 
 type GetInviteRoomRequest struct {
@@ -254,8 +238,7 @@ type GetInviteRoomResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	InviteCode    string                 `protobuf:"bytes,1,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
 	GameKey       string                 `protobuf:"bytes,2,opt,name=game_key,json=gameKey,proto3" json:"game_key,omitempty"`
-	RoomId        int64                  `protobuf:"varint,3,opt,name=room_id,json=roomId,proto3" json:"room_id,omitempty"`
-	Players       []*v1.Account          `protobuf:"bytes,4,rep,name=players,proto3" json:"players,omitempty"`
+	Players       []*v1.Account          `protobuf:"bytes,3,rep,name=players,proto3" json:"players,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -304,13 +287,6 @@ func (x *GetInviteRoomResponse) GetGameKey() string {
 	return ""
 }
 
-func (x *GetInviteRoomResponse) GetRoomId() int64 {
-	if x != nil {
-		return x.RoomId
-	}
-	return 0
-}
-
 func (x *GetInviteRoomResponse) GetPlayers() []*v1.Account {
 	if x != nil {
 		return x.Players
@@ -320,6 +296,7 @@ func (x *GetInviteRoomResponse) GetPlayers() []*v1.Account {
 
 type LeaveInviteRoomRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	InviteCode    string                 `protobuf:"bytes,1,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -352,6 +329,13 @@ func (x *LeaveInviteRoomRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use LeaveInviteRoomRequest.ProtoReflect.Descriptor instead.
 func (*LeaveInviteRoomRequest) Descriptor() ([]byte, []int) {
 	return file_invite_v1_invite_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *LeaveInviteRoomRequest) GetInviteCode() string {
+	if x != nil {
+		return x.InviteCode
+	}
+	return ""
 }
 
 type LeaveInviteRoomResponse struct {
@@ -404,26 +388,25 @@ const file_invite_v1_invite_proto_rawDesc = "" +
 	"\n" +
 	"\x16invite/v1/invite.proto\x12\tinvite.v1\x1a\x18account/v1/account.proto\"4\n" +
 	"\x17CreateInviteRoomRequest\x12\x19\n" +
-	"\bgame_key\x18\x01 \x01(\tR\agameKey\"T\n" +
+	"\bgame_key\x18\x01 \x01(\tR\agameKey\";\n" +
 	"\x18CreateInviteRoomResponse\x12\x1f\n" +
 	"\vinvite_code\x18\x01 \x01(\tR\n" +
-	"inviteCode\x12\x17\n" +
-	"\aroom_id\x18\x02 \x01(\x03R\x06roomId\"8\n" +
+	"inviteCode\"8\n" +
 	"\x15JoinInviteRoomRequest\x12\x1f\n" +
 	"\vinvite_code\x18\x01 \x01(\tR\n" +
-	"inviteCode\"1\n" +
-	"\x16JoinInviteRoomResponse\x12\x17\n" +
-	"\aroom_id\x18\x01 \x01(\x03R\x06roomId\"7\n" +
+	"inviteCode\"\x18\n" +
+	"\x16JoinInviteRoomResponse\"7\n" +
 	"\x14GetInviteRoomRequest\x12\x1f\n" +
 	"\vinvite_code\x18\x01 \x01(\tR\n" +
-	"inviteCode\"\x9b\x01\n" +
+	"inviteCode\"\x82\x01\n" +
 	"\x15GetInviteRoomResponse\x12\x1f\n" +
 	"\vinvite_code\x18\x01 \x01(\tR\n" +
 	"inviteCode\x12\x19\n" +
-	"\bgame_key\x18\x02 \x01(\tR\agameKey\x12\x17\n" +
-	"\aroom_id\x18\x03 \x01(\x03R\x06roomId\x12-\n" +
-	"\aplayers\x18\x04 \x03(\v2\x13.account.v1.AccountR\aplayers\"\x18\n" +
-	"\x16LeaveInviteRoomRequest\")\n" +
+	"\bgame_key\x18\x02 \x01(\tR\agameKey\x12-\n" +
+	"\aplayers\x18\x03 \x03(\v2\x13.account.v1.AccountR\aplayers\"9\n" +
+	"\x16LeaveInviteRoomRequest\x12\x1f\n" +
+	"\vinvite_code\x18\x01 \x01(\tR\n" +
+	"inviteCode\")\n" +
 	"\x17LeaveInviteRoomResponse\x12\x0e\n" +
 	"\x02ok\x18\x01 \x01(\bR\x02ok2\xf1\x02\n" +
 	"\rInviteService\x12[\n" +

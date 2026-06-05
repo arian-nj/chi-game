@@ -15,14 +15,16 @@ import (
 )
 
 type APIApplication struct {
-	Config  *config.Config
-	Queries *database.Queries
+	Config     *config.Config
+	Queries    *database.Queries
+	InviteStore *InviteStore
 }
 
 func NewAPIApplication(cfg *config.Config, queries *database.Queries) *APIApplication {
 	return &APIApplication{
-		Config:  cfg,
-		Queries: queries,
+		Config:      cfg,
+		Queries:     queries,
+		InviteStore: NewInviteStore(),
 	}
 }
 

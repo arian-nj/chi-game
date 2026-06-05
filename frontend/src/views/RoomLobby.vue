@@ -136,7 +136,7 @@ watch(
 
 async function onLeave() {
   try {
-    await leaveCurrentRoom();
+    await leaveCurrentRoom(inviteCode.value);
   } catch {
     // still leave UI
   }
@@ -147,7 +147,7 @@ onBeforeRouteLeave((to) => {
   if (to.name === 'room' || to.name === 'room-code' || to.name === 'room-play') {
     return;
   }
-  void leaveCurrentRoom();
+  void leaveCurrentRoom(inviteCode.value);
 });
 </script>
 

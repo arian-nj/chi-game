@@ -47,7 +47,7 @@
     [ ] rooms in backend
     [ ] websocket
     [ ] gameselector when no active game
-[ ] move invites from db to memory
+[X] move invites from db to memory
 [ ] online xo
 [ ] online connect 4
 

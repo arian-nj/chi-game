@@ -14,7 +14,9 @@ export async function joinRoomWithCode(inviteCode: string): Promise<void> {
   });
 }
 
-export async function leaveCurrentRoom(): Promise<void> {
+export async function leaveCurrentRoom(inviteCode: string): Promise<void> {
   const client = createApiClient(InviteService);
-  await client.leaveInviteRoom({});
+  await client.leaveInviteRoom({
+    inviteCode: inviteCode.trim().toUpperCase(),
+  });
 }
