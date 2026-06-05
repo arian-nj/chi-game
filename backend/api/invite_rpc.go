@@ -97,7 +97,8 @@ func (app *APIApplication) GetInviteRoom(
 		return nil, connect.NewError(connect.CodePermissionDenied, errors.New("not in this room"))
 	}
 
-	accounts := make([]*accountv1.Account, 0, len(room.PlayerIDs))
+	var hostPerson *accountv1.Account
+	playersAccounts := make([]*accountv1.Account, 0, len(room.PlayerIDs))
 	for _, playerID := range room.PlayerIDs {
 		p, err := app.Queries.GetPersonByID(ctx, playerID)
 		if err != nil {
@@ -106,13 +107,18 @@ func (app *APIApplication) GetInviteRoom(
 			}
 			return nil, connect.NewError(connect.CodeInternal, err)
 		}
-		accounts = append(accounts, personToAccount(p))
+		personToAccount := personToAccount(&p)
+		if playerID == room.HostPersonID {
+			hostPerson = personToAccount
+		}
+		playersAccounts = append(playersAccounts, personToAccount)
 	}
 
 	return connect.NewResponse(&invitev1.GetInviteRoomResponse{
 		InviteCode: room.Code,
 		GameKey:    room.GameKey,
-		Players:    accounts,
+		Players:    playersAccounts,
+		HostPlayer: hostPerson,
 	}), nil
 }
 

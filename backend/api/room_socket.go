@@ -33,6 +33,8 @@ func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 	utils.RunBackgroundTask(func() {
 		socketClient.Listen(r)
 	})
+	// playersCurrentRoom :=
+	// var roomPlayer *RoomMember
 
 	for {
 		select {

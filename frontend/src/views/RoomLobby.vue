@@ -11,12 +11,14 @@ import { useQuery } from '@tanstack/vue-query';
 import { computed, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { useGuestProfile } from '@/composables/use-guest-profile';
 
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
 const { textDir } = useTextDirection();
 const { isGuest } = useGuestAuth();
+const toast = useToast();
 
 const locale = computed(() => route.params.locale as string);
 const inviteCode = computed(() => {
@@ -38,9 +40,11 @@ const { data, isError, error } = useQuery({
   refetchInterval: 2000,
   enabled: computed(() => Boolean(inviteCode.value)),
 });
+const {data:meData} = useGuestProfile();
 
 const players = computed(() => data.value?.players ?? []);
 const isReadyToPlay = computed(() => players.value.length >= 2);
+const isHost = computed(() => data.value?.hostPlayer?.id === meData.value?.account?.id);
 
 const inviteLink = computed(() => roomInviteUrl(locale.value, inviteCode.value));
 
@@ -120,19 +124,31 @@ watch(
   { immediate: true },
 );
 
-watch(
-  isReadyToPlay,
-  (ready) => {
-    if (!ready || route.name !== 'room-code') {
-      return;
-    }
-    void router.replace({
-      name: 'room-play',
-      params: { locale: locale.value, code: inviteCode.value },
-    });
-  },
-  { flush: 'post' },
-);
+// watch(
+//   isReadyToPlay,
+//   (ready) => {
+//     if (!ready || route.name !== 'room-code') {
+//       return;
+//     }
+//     void router.replace({
+//       name: 'room-play',
+//       params: { locale: locale.value, code: inviteCode.value },
+//     });
+//   },
+//   { flush: 'post' },
+// );
+
+async function onStartRoom() {
+  if (!isReadyToPlay.value) {
+    toast.toast.error(t('invite.notEnoughPlayers'));
+    return;
+  }
+  if (!isHost.value) {
+    toast.toast.error(t('invite.notHost'));
+    return;
+  }
+  await router.push({ name: 'room-play', params: { locale: locale.value, code: inviteCode.value } });
+}
 
 async function onLeave() {
   try {
@@ -220,6 +236,15 @@ onBeforeRouteLeave((to) => {
             </li>
           </ul>
         </div>
+
+        <button
+          type="button"
+          :class="['w-full rounded-lg border border-white/20 py-3 font-bold text-whit',
+           (isReadyToPlay && isHost) ? 'bg-green-500 hover:bg-green-400' : 'bg-white/10 hover:bg-white/20']"
+          @click="onStartRoom"
+        >
+          {{ t('invite.startRoom') }}
+        </button>
 
         <button
           type="button"

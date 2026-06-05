@@ -32,7 +32,9 @@ message GetInviteRoomRequest {
 message GetInviteRoomResponse {
   string invite_code = 1;
   string game_key = 2;
-  repeated account.v1.Account players = 3;
+  // host
+  account.v1.Account host_player = 3;
+  repeated account.v1.Account players = 4;
 }
 
 message LeaveInviteRoomRequest {

@@ -235,10 +235,12 @@ func (x *GetInviteRoomRequest) GetInviteCode() string {
 }
 
 type GetInviteRoomResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	InviteCode    string                 `protobuf:"bytes,1,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
-	GameKey       string                 `protobuf:"bytes,2,opt,name=game_key,json=gameKey,proto3" json:"game_key,omitempty"`
-	Players       []*v1.Account          `protobuf:"bytes,3,rep,name=players,proto3" json:"players,omitempty"`
+	state      protoimpl.MessageState `protogen:"open.v1"`
+	InviteCode string                 `protobuf:"bytes,1,opt,name=invite_code,json=inviteCode,proto3" json:"invite_code,omitempty"`
+	GameKey    string                 `protobuf:"bytes,2,opt,name=game_key,json=gameKey,proto3" json:"game_key,omitempty"`
+	// host
+	HostPlayer    *v1.Account   `protobuf:"bytes,3,opt,name=host_player,json=hostPlayer,proto3" json:"host_player,omitempty"`
+	Players       []*v1.Account `protobuf:"bytes,4,rep,name=players,proto3" json:"players,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -285,6 +287,13 @@ func (x *GetInviteRoomResponse) GetGameKey() string {
 		return x.GameKey
 	}
 	return ""
+}
+
+func (x *GetInviteRoomResponse) GetHostPlayer() *v1.Account {
+	if x != nil {
+		return x.HostPlayer
+	}
+	return nil
 }
 
 func (x *GetInviteRoomResponse) GetPlayers() []*v1.Account {
@@ -398,12 +407,14 @@ const file_invite_v1_invite_proto_rawDesc = "" +
 	"\x16JoinInviteRoomResponse\"7\n" +
 	"\x14GetInviteRoomRequest\x12\x1f\n" +
 	"\vinvite_code\x18\x01 \x01(\tR\n" +
-	"inviteCode\"\x82\x01\n" +
+	"inviteCode\"\xb8\x01\n" +
 	"\x15GetInviteRoomResponse\x12\x1f\n" +
 	"\vinvite_code\x18\x01 \x01(\tR\n" +
 	"inviteCode\x12\x19\n" +
-	"\bgame_key\x18\x02 \x01(\tR\agameKey\x12-\n" +
-	"\aplayers\x18\x03 \x03(\v2\x13.account.v1.AccountR\aplayers\"9\n" +
+	"\bgame_key\x18\x02 \x01(\tR\agameKey\x124\n" +
+	"\vhost_player\x18\x03 \x01(\v2\x13.account.v1.AccountR\n" +
+	"hostPlayer\x12-\n" +
+	"\aplayers\x18\x04 \x03(\v2\x13.account.v1.AccountR\aplayers\"9\n" +
 	"\x16LeaveInviteRoomRequest\x12\x1f\n" +
 	"\vinvite_code\x18\x01 \x01(\tR\n" +
 	"inviteCode\")\n" +
@@ -442,20 +453,21 @@ var file_invite_v1_invite_proto_goTypes = []any{
 	(*v1.Account)(nil),               // 8: account.v1.Account
 }
 var file_invite_v1_invite_proto_depIdxs = []int32{
-	8, // 0: invite.v1.GetInviteRoomResponse.players:type_name -> account.v1.Account
-	0, // 1: invite.v1.InviteService.CreateInviteRoom:input_type -> invite.v1.CreateInviteRoomRequest
-	2, // 2: invite.v1.InviteService.JoinInviteRoom:input_type -> invite.v1.JoinInviteRoomRequest
-	4, // 3: invite.v1.InviteService.GetInviteRoom:input_type -> invite.v1.GetInviteRoomRequest
-	6, // 4: invite.v1.InviteService.LeaveInviteRoom:input_type -> invite.v1.LeaveInviteRoomRequest
-	1, // 5: invite.v1.InviteService.CreateInviteRoom:output_type -> invite.v1.CreateInviteRoomResponse
-	3, // 6: invite.v1.InviteService.JoinInviteRoom:output_type -> invite.v1.JoinInviteRoomResponse
-	5, // 7: invite.v1.InviteService.GetInviteRoom:output_type -> invite.v1.GetInviteRoomResponse
-	7, // 8: invite.v1.InviteService.LeaveInviteRoom:output_type -> invite.v1.LeaveInviteRoomResponse
-	5, // [5:9] is the sub-list for method output_type
-	1, // [1:5] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	8, // 0: invite.v1.GetInviteRoomResponse.host_player:type_name -> account.v1.Account
+	8, // 1: invite.v1.GetInviteRoomResponse.players:type_name -> account.v1.Account
+	0, // 2: invite.v1.InviteService.CreateInviteRoom:input_type -> invite.v1.CreateInviteRoomRequest
+	2, // 3: invite.v1.InviteService.JoinInviteRoom:input_type -> invite.v1.JoinInviteRoomRequest
+	4, // 4: invite.v1.InviteService.GetInviteRoom:input_type -> invite.v1.GetInviteRoomRequest
+	6, // 5: invite.v1.InviteService.LeaveInviteRoom:input_type -> invite.v1.LeaveInviteRoomRequest
+	1, // 6: invite.v1.InviteService.CreateInviteRoom:output_type -> invite.v1.CreateInviteRoomResponse
+	3, // 7: invite.v1.InviteService.JoinInviteRoom:output_type -> invite.v1.JoinInviteRoomResponse
+	5, // 8: invite.v1.InviteService.GetInviteRoom:output_type -> invite.v1.GetInviteRoomResponse
+	7, // 9: invite.v1.InviteService.LeaveInviteRoom:output_type -> invite.v1.LeaveInviteRoomResponse
+	6, // [6:10] is the sub-list for method output_type
+	2, // [2:6] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_invite_v1_invite_proto_init() }

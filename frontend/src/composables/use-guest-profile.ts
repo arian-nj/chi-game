@@ -26,6 +26,7 @@ export function useGuestProfile() {
   );
 
   return {
+    ...query,
     username,
     displayUsername,
     isLoading: query.isLoading,

@@ -5,8 +5,8 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
 	"github.com/arian-nj/chigame/backend/database"
+	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -20,7 +20,7 @@ func (app *APIApplication) GetMe(
 	}
 
 	return connect.NewResponse(&accountv1.GetMeResponse{
-		Account: personToAccount(*person),
+		Account: personToAccount(person),
 	}), nil
 }
 
@@ -41,11 +41,11 @@ func (app *APIApplication) GetPerson(
 	}
 
 	return connect.NewResponse(&accountv1.GetPersonResponse{
-		Account: personToAccount(person),
+		Account: personToAccount(&person),
 	}), nil
 }
 
-func personToAccount(person database.Person) *accountv1.Account {
+func personToAccount(person *database.Person) *accountv1.Account {
 	return &accountv1.Account{
 		Id:          person.ID,
 		Username:    person.Username,

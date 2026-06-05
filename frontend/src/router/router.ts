@@ -53,14 +53,14 @@ const router = createRouter({
           component: () => import('@/views/NewRoomView.vue'),
         },
         {
-          path: 'room/:code',
-          name: 'room-code',
-          component: () => import('@/views/RoomLobby.vue'),
-        },
-        {
           path: 'room/:code/play',
           name: 'room-play',
           component: () => import('@/views/RoomView.vue'),
+        },
+        {
+          path: 'room/:code',
+          name: 'room-code',
+          component: () => import('@/views/RoomLobby.vue'),
         },
         {
           path: 'game/:game',

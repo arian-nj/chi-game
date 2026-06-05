@@ -1,12 +1,15 @@
 <script setup lang="ts">
+import { useToast } from '@/components/Toast.vue';
+import { useGuestAuth } from '@/composables/use-guest-auth';
 import { useTextDirection } from '@/composables/use-text-direction';
 import { InviteService } from '@/gen/invite/v1/invite_pb';
 import { createApiClient } from '@/libs/api-client';
 import { gamesData } from '@/libs/game';
-import { leaveCurrentRoom } from '@/libs/invite-room';
+import { joinRoomWithCode, leaveCurrentRoom } from '@/libs/invite-room';
 import { roomLobbyPath } from '@/libs/room-url';
+import { ConnectError } from '@connectrpc/connect';
 import { useQuery } from '@tanstack/vue-query';
-import { computed, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 
@@ -14,6 +17,7 @@ const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
 const { textDir } = useTextDirection();
+const { isGuest } = useGuestAuth();
 
 const locale = computed(() => route.params.locale as string);
 const inviteCode = computed(() => {
@@ -24,6 +28,9 @@ const inviteCode = computed(() => {
   return raw.trim().toUpperCase();
 });
 
+const joinAttempted = ref(false);
+const joinReady = ref(false);
+
 const enabledGames = computed(() => gamesData.filter(game => game.isEnable));
 
 const client = createApiClient(InviteService);
@@ -32,10 +39,26 @@ const { data, isError } = useQuery({
   queryKey: computed(() => ['invite-room', inviteCode.value]),
   queryFn: ({ signal }) => client.getInviteRoom({ inviteCode: inviteCode.value }, { signal }),
   refetchInterval: 2000,
-  enabled: computed(() => Boolean(inviteCode.value)),
+  enabled: computed(() => Boolean(inviteCode.value) && joinReady.value),
 });
 
 const players = computed(() => data.value?.players ?? []);
+
+function inviteErrorMessage(err: unknown): string {
+  if (err instanceof ConnectError) {
+    const msg = err.message.toLowerCase();
+    if (msg.includes('full')) {
+      return t('invite.roomFull');
+    }
+    if (msg.includes('invalid') || msg.includes('expired') || msg.includes('not found')) {
+      return t('invite.invalidCode');
+    }
+    if (err.code === 16) {
+      return t('invite.needAuth');
+    }
+  }
+  return '';
+}
 
 function playerLabel(displayName: string, username: string) {
   const name = displayName?.trim();
@@ -44,6 +67,39 @@ function playerLabel(displayName: string, username: string) {
   }
   return username ? `@${username}` : t('invite.unknownPlayer');
 }
+
+async function ensureJoined(code: string) {
+  try {
+    await joinRoomWithCode(code);
+    joinReady.value = true;
+  } catch (err) {
+    const toast = useToast();
+    const specific = inviteErrorMessage(err);
+    toast.toast.error(specific || t('invite.joinFailed'));
+    await router.replace({
+      name: 'room-code',
+      params: { locale: locale.value, code },
+    });
+  }
+}
+
+watch(
+  inviteCode,
+  async (code) => {
+    if (!code || joinAttempted.value) {
+      return;
+    }
+    joinAttempted.value = true;
+    if (!isGuest.value) {
+      const toast = useToast();
+      toast.toast.info(t('invite.needAuth'));
+      await router.replace({ name: 'room', params: { locale: locale.value } });
+      return;
+    }
+    await ensureJoined(code);
+  },
+  { immediate: true },
+);
 
 watch(
   players,
@@ -60,6 +116,10 @@ watch(
   },
   { flush: 'post' },
 );
+
+function chooseGame(gameKey: string) {
+  void router.push({ name: 'game', params: { locale: locale.value, game: gameKey } });
+}
 
 onBeforeRouteLeave((to) => {
   if (to.name === 'room' || to.name === 'room-code' || to.name === 'room-play') {
@@ -115,8 +175,9 @@ onBeforeRouteLeave((to) => {
           <button
             v-for="game in enabledGames"
             :key="game.key"
-            @click="(game.key)"
+            type="button"
             class="rounded-xl border border-white/20 bg-green-500/90 px-4 py-4 text-center text-lg font-bold text-white shadow-md transition hover:bg-green-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+            @click="chooseGame(game.key)"
           >
             {{ t(`games.${game.key}`) }}
           </button>
