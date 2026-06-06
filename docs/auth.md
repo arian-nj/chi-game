@@ -80,7 +80,7 @@ Implementation: [`backend/api/auth_middleware.go`](../backend/api/auth_middlewar
 | Service | RPCs |
 |---------|------|
 | `account.v1.AccountService` | `GetMe`, `GetPerson` |
-| `invite.v1.InviteService` | all |
+| `room.v1.RoomService` | all |
 
 `AuthService` and `HealthcheckService` do **not** require a token.
 
@@ -188,4 +188,4 @@ Must be set in production; tests use a fixed dev secret via helpers in `auth_tes
 3. **Token refresh** — call `ValidateGuest` again with the same `device_id` (frontend already does this on each healthy backend transition); optional dedicated refresh RPC if you need rotation without re-identifying the device.
 4. **Protected RPC** — call `AuthenticateHeader` in the handler; return `CodeUnauthenticated` when nil.
 
-Related: invite rooms depend on guest auth — see [`docs/invite.md`](invite.md).
+Related: rooms depend on guest auth — see [`docs/room.md`](room.md).

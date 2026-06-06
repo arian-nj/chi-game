@@ -5,21 +5,21 @@
 import { RoomService } from "./room_pb";
 
 /**
- * @generated from rpc room.v1.RoomService.GetChatHistory
+ * @generated from rpc room.v1.RoomService.CreateRoom
  */
-export const getChatHistory = RoomService.method.getChatHistory;
+export const createRoom = RoomService.method.createRoom;
 
 /**
- * @generated from rpc room.v1.RoomService.GetRoomOpponent
+ * @generated from rpc room.v1.RoomService.JoinRoom
  */
-export const getRoomOpponent = RoomService.method.getRoomOpponent;
+export const joinRoom = RoomService.method.joinRoom;
 
 /**
- * @generated from rpc room.v1.RoomService.HasRoom
+ * @generated from rpc room.v1.RoomService.GetRoom
  */
-export const hasRoom = RoomService.method.hasRoom;
+export const getRoom = RoomService.method.getRoom;
 
 /**
- * @generated from rpc room.v1.RoomService.CloseRoom
+ * @generated from rpc room.v1.RoomService.LeaveRoom
  */
-export const closeRoom = RoomService.method.closeRoom;
+export const leaveRoom = RoomService.method.leaveRoom;

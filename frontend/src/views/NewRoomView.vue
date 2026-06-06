@@ -2,11 +2,12 @@
 import { useToast } from '@/components/Toast.vue';
 import { useGuestAuth } from '@/composables/use-guest-auth';
 import { useTextDirection } from '@/composables/use-text-direction';
-import { createInviteRoom, joinRoomWithCode } from '@/libs/invite-room';
+import { createRoom, joinRoomWithCode } from '@/libs/room-api';
 import { ConnectError } from '@connectrpc/connect';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+
 
 const route = useRoute();
 const router = useRouter();
@@ -80,7 +81,7 @@ async function onCreateRoom() {
   joinCodeInput.value = '';
   isBusy.value = true;
   try {
-    const created = await createInviteRoom();
+    const created = await createRoom();
     await goToLobby(created);
   } catch (err) {
     const specific = inviteErrorMessage(err);
@@ -93,6 +94,8 @@ async function onCreateRoom() {
 async function onJoinWithInput() {
   await joinRoom(joinCodeInput.value);
 }
+
+
 </script>
 
 <template>

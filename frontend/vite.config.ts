@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => ({
   },
   server: {
     proxy: {
-      '^/(healthcheck|auth|account|admin|invite|chat|friends|finder|room|dummy_auth|conn4_game|xo_game)\\.': {
+      '^/(healthcheck|auth|account|admin|chat|friends|finder|room|dummy_auth|conn4_game|xo_game)\\.': {
         target: 'http://127.0.0.1:8383',
         changeOrigin: true,
       },

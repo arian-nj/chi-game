@@ -43,11 +43,17 @@
 
 # V 0.3.0 game backend frameworkish
 [X] invite create/join
-[ ] rooms
-    [ ] rooms in backend
+
+[] rooms
+    [X] rooms in backend
     [ ] websocket
+    [ ] chat
     [ ] gameselector when no active game
+    [ ] room lifecycel
+
+
 [X] move invites from db to memory
+[X] merge invites and rooms
 [ ] online xo
 [ ] online connect 4
 

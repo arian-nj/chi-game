@@ -2,9 +2,9 @@
 import { useToast } from '@/components/Toast.vue';
 import { useGuestAuth } from '@/composables/use-guest-auth';
 import { useTextDirection } from '@/composables/use-text-direction';
-import { InviteService } from '@/gen/invite/v1/invite_pb';
+import { RoomErrorType, RoomService } from '@/gen/room/v1/room_pb';
 import { createApiClient } from '@/libs/api-client';
-import { joinRoomWithCode, leaveCurrentRoom } from '@/libs/invite-room';
+import { joinRoomWithCode, leaveCurrentRoom } from '@/libs/room-api';
 import { roomInviteUrl } from '@/libs/room-url';
 import { ConnectError } from '@connectrpc/connect';
 import { useQuery } from '@tanstack/vue-query';
@@ -12,16 +12,17 @@ import { computed, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useGuestProfile } from '@/composables/use-guest-profile';
+import { useRoomSocket } from '@/libs/room-socket';
 
 const route = useRoute();
 const router = useRouter();
 const { t } = useI18n();
 const { textDir } = useTextDirection();
 const { isGuest } = useGuestAuth();
-const toast = useToast();
+const {toast} = useToast();
 
 const locale = computed(() => route.params.locale as string);
-const inviteCode = computed(() => {
+const roomCode = computed(() => {
   const raw = route.params.code;
   if (typeof raw !== 'string') {
     return '';
@@ -32,13 +33,13 @@ const inviteCode = computed(() => {
 const joinAttempted = ref(false);
 const isBusy = ref(false);
 
-const client = createApiClient(InviteService);
+const client = createApiClient(RoomService);
 
 const { data, isError, error } = useQuery({
-  queryKey: computed(() => ['invite-room', inviteCode.value]),
-  queryFn: ({ signal }) => client.getInviteRoom({ inviteCode: inviteCode.value }, { signal }),
+  queryKey: computed(() => ['room', roomCode.value]),
+  queryFn: ({ signal }) => client.getRoom({ code: roomCode.value }, { signal }),
   refetchInterval: 2000,
-  enabled: computed(() => Boolean(inviteCode.value)),
+  enabled: computed(() => Boolean(roomCode.value)),
 });
 const {data:meData} = useGuestProfile();
 
@@ -46,7 +47,7 @@ const players = computed(() => data.value?.players ?? []);
 const isReadyToPlay = computed(() => players.value.length >= 2);
 const isHost = computed(() => data.value?.hostPlayer?.id === meData.value?.account?.id);
 
-const inviteLink = computed(() => roomInviteUrl(locale.value, inviteCode.value));
+const roomLink = computed(() => roomInviteUrl(locale.value, roomCode.value));
 
 function inviteErrorMessage(err: unknown): string {
   if (err instanceof ConnectError) {
@@ -113,7 +114,7 @@ async function joinRoom(code: string) {
 }
 
 watch(
-  inviteCode,
+  roomCode,
   async (code) => {
     if (!code || joinAttempted.value) {
       return;
@@ -140,19 +141,19 @@ watch(
 
 async function onStartRoom() {
   if (!isReadyToPlay.value) {
-    toast.toast.error(t('invite.notEnoughPlayers'));
+    toast.error(t('invite.notEnoughPlayers'));
     return;
   }
   if (!isHost.value) {
-    toast.toast.error(t('invite.notHost'));
+    toast.error(t('invite.notHost'));
     return;
   }
-  await router.push({ name: 'room-play', params: { locale: locale.value, code: inviteCode.value } });
+  await router.push({ name: 'room-play', params: { locale: locale.value, code: roomCode.value } });
 }
 
 async function onLeave() {
   try {
-    await leaveCurrentRoom(inviteCode.value);
+    await leaveCurrentRoom(roomCode.value);
   } catch {
     // still leave UI
   }
@@ -163,8 +164,18 @@ onBeforeRouteLeave((to) => {
   if (to.name === 'room' || to.name === 'room-code' || to.name === 'room-play') {
     return;
   }
-  void leaveCurrentRoom(inviteCode.value);
+  void leaveCurrentRoom(roomCode.value);
 });
+
+const { socket } = useRoomSocket(roomCode.value);
+socket.HandleSessionErrorMessage = (errType: RoomErrorType) => {
+  toast.error(`${errType}`);
+}
+// send after 10 seconds
+setTimeout(() => {
+  socket.SendChatReqMessage('Hello, world!');
+}, 12_000);
+
 </script>
 
 <template>
@@ -194,12 +205,12 @@ onBeforeRouteLeave((to) => {
           <span class="text-sm font-semibold uppercase tracking-wide text-blue-100/90">{{ t('invite.codeLabel') }}</span>
           <div class="flex items-center gap-2">
             <code class="flex-1 rounded-xl bg-custom-deep-blue/80 px-4 py-3 text-2xl font-bold tracking-widest text-white">
-              {{ inviteCode }}
+              {{ roomCode }}
             </code>
             <button
               type="button"
               class="rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm font-bold text-white hover:bg-white/20"
-              @click="copyText(inviteCode)"
+              @click="copyText(roomCode)"
             >
               {{ t('invite.copy') }}
             </button>
@@ -211,9 +222,9 @@ onBeforeRouteLeave((to) => {
           <button
             type="button"
             class="rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-left text-sm text-blue-100 break-all hover:bg-white/20"
-            @click="copyText(inviteLink)"
+            @click="copyText(roomLink)"
           >
-            {{ inviteLink }}
+            {{ roomLink }}
           </button>
         </div>
 

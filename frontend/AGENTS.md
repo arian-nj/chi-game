@@ -12,7 +12,7 @@ Wrtie the code simple as possible don't overdo things
 - Dev: Vite proxies `*.v1.*` RPC paths to `http://127.0.0.1:8383` when `VITE_API_BASE_URL` is unset
 - Run API: `./mash.sh run-back` from repo root
 - Guest auth: device ID + JWT via `useGuestAuth()` — see [`docs/auth.md`](../docs/auth.md)
-- Invite / online lobby: `/{locale}/room` — see [`docs/invite.md`](../docs/invite.md)
+- Online rooms: `/{locale}/room` — see [`docs/room.md`](../docs/room.md)
 
 ## Code Style and Structure
 - Write concise, maintainable, and technically accurate TypeScript code.

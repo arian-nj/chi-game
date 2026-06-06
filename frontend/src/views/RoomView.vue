@@ -2,10 +2,10 @@
 import { useToast } from '@/components/Toast.vue';
 import { useGuestAuth } from '@/composables/use-guest-auth';
 import { useTextDirection } from '@/composables/use-text-direction';
-import { InviteService } from '@/gen/invite/v1/invite_pb';
+import { RoomService } from '@/gen/room/v1/room_pb';
 import { createApiClient } from '@/libs/api-client';
 import { gamesData } from '@/libs/game';
-import { joinRoomWithCode, leaveCurrentRoom } from '@/libs/invite-room';
+import { joinRoomWithCode, leaveCurrentRoom } from '@/libs/room-api';
 import { roomLobbyPath } from '@/libs/room-url';
 import { ConnectError } from '@connectrpc/connect';
 import { useQuery } from '@tanstack/vue-query';
@@ -20,7 +20,7 @@ const { textDir } = useTextDirection();
 const { isGuest } = useGuestAuth();
 
 const locale = computed(() => route.params.locale as string);
-const inviteCode = computed(() => {
+const roomCode = computed(() => {
   const raw = route.params.code;
   if (typeof raw !== 'string') {
     return '';
@@ -33,13 +33,13 @@ const joinReady = ref(false);
 
 const enabledGames = computed(() => gamesData.filter(game => game.isEnable));
 
-const client = createApiClient(InviteService);
+const client = createApiClient(RoomService);
 
 const { data, isError } = useQuery({
-  queryKey: computed(() => ['invite-room', inviteCode.value]),
-  queryFn: ({ signal }) => client.getInviteRoom({ inviteCode: inviteCode.value }, { signal }),
+  queryKey: computed(() => ['room', roomCode.value]),
+  queryFn: ({ signal }) => client.getRoom({ code: roomCode.value }, { signal }),
   refetchInterval: 2000,
-  enabled: computed(() => Boolean(inviteCode.value) && joinReady.value),
+  enabled: computed(() => Boolean(roomCode.value) && joinReady.value),
 });
 
 const players = computed(() => data.value?.players ?? []);
@@ -84,7 +84,7 @@ async function ensureJoined(code: string) {
 }
 
 watch(
-  inviteCode,
+  roomCode,
   async (code) => {
     if (!code || joinAttempted.value) {
       return;
@@ -104,13 +104,13 @@ watch(
 watch(
   players,
   (list) => {
-    if (!inviteCode.value) {
+    if (!roomCode.value) {
       return;
     }
     if (list.length < 2 && route.name === 'room-play') {
       void router.replace({
         name: 'room-code',
-        params: { locale: locale.value, code: inviteCode.value },
+        params: { locale: locale.value, code: roomCode.value },
       });
     }
   },
@@ -125,8 +125,9 @@ onBeforeRouteLeave((to) => {
   if (to.name === 'room' || to.name === 'room-code' || to.name === 'room-play') {
     return;
   }
-  void leaveCurrentRoom(inviteCode.value);
+  void leaveCurrentRoom(roomCode.value);
 });
+
 </script>
 
 <template>
@@ -186,7 +187,7 @@ onBeforeRouteLeave((to) => {
 
       <!-- Back to Lobby -->
       <RouterLink
-        :to="roomLobbyPath(locale, inviteCode)"
+        :to="roomLobbyPath(locale, roomCode)"
         class="text-center text-sm font-semibold text-blue-100 underline underline-offset-4 hover:text-white"
       >
         {{ t('invite.backToLobby') }}

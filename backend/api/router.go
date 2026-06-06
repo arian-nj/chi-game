@@ -8,7 +8,7 @@ import (
 	"github.com/arian-nj/chigame/backend/gen/admin/v1/adminv1connect"
 	"github.com/arian-nj/chigame/backend/gen/auth/v1/authv1connect"
 	"github.com/arian-nj/chigame/backend/gen/healthcheck/v1/healthcheckv1connect"
-	"github.com/arian-nj/chigame/backend/gen/invite/v1/invitev1connect"
+	"github.com/arian-nj/chigame/backend/gen/room/v1/roomv1connect"
 	"github.com/rs/cors"
 )
 
@@ -37,8 +37,8 @@ func (app *APIApplication) createRouter() http.Handler {
 	adminPath, adminHandler := adminv1connect.NewAdminServiceHandler(app)
 	mux.Handle(adminPath, adminHandler)
 
-	invitePath, inviteHandler := invitev1connect.NewInviteServiceHandler(app)
-	mux.Handle(invitePath, inviteHandler)
+	roomPath, roomHandler := roomv1connect.NewRoomServiceHandler(app)
+	mux.Handle(roomPath, roomHandler)
 
 	mux.Handle("/room/websocket", http.HandlerFunc(app.roomWebsocket))
 

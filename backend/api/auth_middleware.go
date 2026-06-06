@@ -38,8 +38,8 @@ func (app *APIApplication) AuthenticateHeader(ctx context.Context, header http.H
 	return &person
 }
 
-func (app *APIApplication) AuthenticateQuery(ctx context.Context, header http.Header) *database.Person {
-	token := header.Get("auth_token")
+func (app *APIApplication) AuthenticateQuery(ctx context.Context, r http.Request) *database.Person {
+	token := r.URL.Query().Get("auth_token")
 	if token == "" {
 		return nil
 	}

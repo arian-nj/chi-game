@@ -19,22 +19,36 @@ func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 		slog.Error("failed to accept websocket", "error", err)
 		return
 	}
-	defer conn.Close(websocket.StatusNormalClosure, "bye websocket")
+	defer func() {
+		conn.Close(websocket.StatusNormalClosure, "bye websocket")
+		slog.Info("websocket closed", "remote addr", r.RemoteAddr)
+	}()
 
 	socketClient := socket.NewSocketClient(conn)
 
-	person := app.AuthenticateQuery(r.Context(), r.Header)
+	person := app.AuthenticateQuery(r.Context(), *r)
 	if person == nil {
 		sendRoomSocketError(socketClient, roomv1.RoomErrorType_ROOM_ERROR_TYPE_AUTH)
 		return
 	}
+	code := r.URL.Query().Get("code")
+	if code == "" {
+		sendRoomSocketError(socketClient, roomv1.RoomErrorType_ROOM_ERROR_TYPE_INVALID_CODE)
+		return
+	}
+	currentRoom, ok := app.RoomsStore.GetByCode(code)
+	if !ok {
+		sendRoomSocketError(socketClient, roomv1.RoomErrorType_ROOM_ERROR_TYPE_INVALID_CODE)
+		return
+	}
+
+	roomMember := NewRoomMember(person.ID, socketClient)
+	currentRoom.Members[person.ID] = roomMember
 
 	// listen
 	utils.RunBackgroundTask(func() {
 		socketClient.Listen(r)
 	})
-	// playersCurrentRoom :=
-	// var roomPlayer *RoomMember
 
 	for {
 		select {

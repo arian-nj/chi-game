@@ -1,5 +1,5 @@
 ## Project
-Chi Game backend: Go API for chigame.ir.See [`docs/auth.md`](../docs/auth.md). **Invite rooms** (`invite.v1.InviteService`): create/join by code, list players in room (no in-room game logic yet). See [`docs/invite.md`](../docs/invite.md). Matchmaking/finder and chat are deferred.
+Chi Game backend: Go API for chigame.ir.See [`docs/auth.md`](../docs/auth.md). **Rooms** (`room.v1.RoomService`): create/join by code, list players in room (no in-room game logic yet). See [`docs/room.md`](../docs/room.md). Matchmaking/finder and chat are deferred.
 
 ## Stack
 - **Connect RPC** (`connectrpc.com/connect`) over HTTP/2 (h2c) on port **8383**

@@ -6,8 +6,11 @@ package roomv1connect
 
 import (
 	connect "connectrpc.com/connect"
-	_ "github.com/arian-nj/chigame/backend/gen/room/v1"
+	context "context"
+	errors "errors"
+	v1 "github.com/arian-nj/chigame/backend/gen/room/v1"
 	http "net/http"
+	strings "strings"
 )
 
 // This is a compile-time assertion to ensure that this generated file and the connect package are
@@ -22,8 +25,30 @@ const (
 	RoomServiceName = "room.v1.RoomService"
 )
 
+// These constants are the fully-qualified names of the RPCs defined in this package. They're
+// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
+//
+// Note that these are different from the fully-qualified method names used by
+// google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
+// reflection-formatted method names, remove the leading slash and convert the remaining slash to a
+// period.
+const (
+	// RoomServiceCreateRoomProcedure is the fully-qualified name of the RoomService's CreateRoom RPC.
+	RoomServiceCreateRoomProcedure = "/room.v1.RoomService/CreateRoom"
+	// RoomServiceJoinRoomProcedure is the fully-qualified name of the RoomService's JoinRoom RPC.
+	RoomServiceJoinRoomProcedure = "/room.v1.RoomService/JoinRoom"
+	// RoomServiceGetRoomProcedure is the fully-qualified name of the RoomService's GetRoom RPC.
+	RoomServiceGetRoomProcedure = "/room.v1.RoomService/GetRoom"
+	// RoomServiceLeaveRoomProcedure is the fully-qualified name of the RoomService's LeaveRoom RPC.
+	RoomServiceLeaveRoomProcedure = "/room.v1.RoomService/LeaveRoom"
+)
+
 // RoomServiceClient is a client for the room.v1.RoomService service.
 type RoomServiceClient interface {
+	CreateRoom(context.Context, *connect.Request[v1.CreateRoomRequest]) (*connect.Response[v1.CreateRoomResponse], error)
+	JoinRoom(context.Context, *connect.Request[v1.JoinRoomRequest]) (*connect.Response[v1.JoinRoomResponse], error)
+	GetRoom(context.Context, *connect.Request[v1.GetRoomRequest]) (*connect.Response[v1.GetRoomResponse], error)
+	LeaveRoom(context.Context, *connect.Request[v1.LeaveRoomRequest]) (*connect.Response[v1.LeaveRoomResponse], error)
 }
 
 // NewRoomServiceClient constructs a client for the room.v1.RoomService service. By default, it uses
@@ -34,15 +59,70 @@ type RoomServiceClient interface {
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
 func NewRoomServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) RoomServiceClient {
-	return &roomServiceClient{}
+	baseURL = strings.TrimRight(baseURL, "/")
+	roomServiceMethods := v1.File_room_v1_room_proto.Services().ByName("RoomService").Methods()
+	return &roomServiceClient{
+		createRoom: connect.NewClient[v1.CreateRoomRequest, v1.CreateRoomResponse](
+			httpClient,
+			baseURL+RoomServiceCreateRoomProcedure,
+			connect.WithSchema(roomServiceMethods.ByName("CreateRoom")),
+			connect.WithClientOptions(opts...),
+		),
+		joinRoom: connect.NewClient[v1.JoinRoomRequest, v1.JoinRoomResponse](
+			httpClient,
+			baseURL+RoomServiceJoinRoomProcedure,
+			connect.WithSchema(roomServiceMethods.ByName("JoinRoom")),
+			connect.WithClientOptions(opts...),
+		),
+		getRoom: connect.NewClient[v1.GetRoomRequest, v1.GetRoomResponse](
+			httpClient,
+			baseURL+RoomServiceGetRoomProcedure,
+			connect.WithSchema(roomServiceMethods.ByName("GetRoom")),
+			connect.WithClientOptions(opts...),
+		),
+		leaveRoom: connect.NewClient[v1.LeaveRoomRequest, v1.LeaveRoomResponse](
+			httpClient,
+			baseURL+RoomServiceLeaveRoomProcedure,
+			connect.WithSchema(roomServiceMethods.ByName("LeaveRoom")),
+			connect.WithClientOptions(opts...),
+		),
+	}
 }
 
 // roomServiceClient implements RoomServiceClient.
 type roomServiceClient struct {
+	createRoom *connect.Client[v1.CreateRoomRequest, v1.CreateRoomResponse]
+	joinRoom   *connect.Client[v1.JoinRoomRequest, v1.JoinRoomResponse]
+	getRoom    *connect.Client[v1.GetRoomRequest, v1.GetRoomResponse]
+	leaveRoom  *connect.Client[v1.LeaveRoomRequest, v1.LeaveRoomResponse]
+}
+
+// CreateRoom calls room.v1.RoomService.CreateRoom.
+func (c *roomServiceClient) CreateRoom(ctx context.Context, req *connect.Request[v1.CreateRoomRequest]) (*connect.Response[v1.CreateRoomResponse], error) {
+	return c.createRoom.CallUnary(ctx, req)
+}
+
+// JoinRoom calls room.v1.RoomService.JoinRoom.
+func (c *roomServiceClient) JoinRoom(ctx context.Context, req *connect.Request[v1.JoinRoomRequest]) (*connect.Response[v1.JoinRoomResponse], error) {
+	return c.joinRoom.CallUnary(ctx, req)
+}
+
+// GetRoom calls room.v1.RoomService.GetRoom.
+func (c *roomServiceClient) GetRoom(ctx context.Context, req *connect.Request[v1.GetRoomRequest]) (*connect.Response[v1.GetRoomResponse], error) {
+	return c.getRoom.CallUnary(ctx, req)
+}
+
+// LeaveRoom calls room.v1.RoomService.LeaveRoom.
+func (c *roomServiceClient) LeaveRoom(ctx context.Context, req *connect.Request[v1.LeaveRoomRequest]) (*connect.Response[v1.LeaveRoomResponse], error) {
+	return c.leaveRoom.CallUnary(ctx, req)
 }
 
 // RoomServiceHandler is an implementation of the room.v1.RoomService service.
 type RoomServiceHandler interface {
+	CreateRoom(context.Context, *connect.Request[v1.CreateRoomRequest]) (*connect.Response[v1.CreateRoomResponse], error)
+	JoinRoom(context.Context, *connect.Request[v1.JoinRoomRequest]) (*connect.Response[v1.JoinRoomResponse], error)
+	GetRoom(context.Context, *connect.Request[v1.GetRoomRequest]) (*connect.Response[v1.GetRoomResponse], error)
+	LeaveRoom(context.Context, *connect.Request[v1.LeaveRoomRequest]) (*connect.Response[v1.LeaveRoomResponse], error)
 }
 
 // NewRoomServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -51,8 +131,41 @@ type RoomServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewRoomServiceHandler(svc RoomServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	roomServiceMethods := v1.File_room_v1_room_proto.Services().ByName("RoomService").Methods()
+	roomServiceCreateRoomHandler := connect.NewUnaryHandler(
+		RoomServiceCreateRoomProcedure,
+		svc.CreateRoom,
+		connect.WithSchema(roomServiceMethods.ByName("CreateRoom")),
+		connect.WithHandlerOptions(opts...),
+	)
+	roomServiceJoinRoomHandler := connect.NewUnaryHandler(
+		RoomServiceJoinRoomProcedure,
+		svc.JoinRoom,
+		connect.WithSchema(roomServiceMethods.ByName("JoinRoom")),
+		connect.WithHandlerOptions(opts...),
+	)
+	roomServiceGetRoomHandler := connect.NewUnaryHandler(
+		RoomServiceGetRoomProcedure,
+		svc.GetRoom,
+		connect.WithSchema(roomServiceMethods.ByName("GetRoom")),
+		connect.WithHandlerOptions(opts...),
+	)
+	roomServiceLeaveRoomHandler := connect.NewUnaryHandler(
+		RoomServiceLeaveRoomProcedure,
+		svc.LeaveRoom,
+		connect.WithSchema(roomServiceMethods.ByName("LeaveRoom")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/room.v1.RoomService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case RoomServiceCreateRoomProcedure:
+			roomServiceCreateRoomHandler.ServeHTTP(w, r)
+		case RoomServiceJoinRoomProcedure:
+			roomServiceJoinRoomHandler.ServeHTTP(w, r)
+		case RoomServiceGetRoomProcedure:
+			roomServiceGetRoomHandler.ServeHTTP(w, r)
+		case RoomServiceLeaveRoomProcedure:
+			roomServiceLeaveRoomHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -61,3 +174,19 @@ func NewRoomServiceHandler(svc RoomServiceHandler, opts ...connect.HandlerOption
 
 // UnimplementedRoomServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedRoomServiceHandler struct{}
+
+func (UnimplementedRoomServiceHandler) CreateRoom(context.Context, *connect.Request[v1.CreateRoomRequest]) (*connect.Response[v1.CreateRoomResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("room.v1.RoomService.CreateRoom is not implemented"))
+}
+
+func (UnimplementedRoomServiceHandler) JoinRoom(context.Context, *connect.Request[v1.JoinRoomRequest]) (*connect.Response[v1.JoinRoomResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("room.v1.RoomService.JoinRoom is not implemented"))
+}
+
+func (UnimplementedRoomServiceHandler) GetRoom(context.Context, *connect.Request[v1.GetRoomRequest]) (*connect.Response[v1.GetRoomResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("room.v1.RoomService.GetRoom is not implemented"))
+}
+
+func (UnimplementedRoomServiceHandler) LeaveRoom(context.Context, *connect.Request[v1.LeaveRoomRequest]) (*connect.Response[v1.LeaveRoomResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("room.v1.RoomService.LeaveRoom is not implemented"))
+}

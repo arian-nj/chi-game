@@ -2,82 +2,70 @@ syntax = "proto3";
 
 package room.v1;
 
-// import "account/v1/account.proto";
-// import "xo_game/v1/xo.proto";
-// import "conn4_game/v1/conn4.proto";
-
-// // Chat
-// message ChatMessageRequest {
-//   string text = 1;
-// }
-// message ChatMessage {
-//   int64 player_id = 1;
-//   string text = 2;
-//   int64 id = 3;
-// }
-
-// Game Room
-// message GameMessage {
-//   oneof game {
-//     xo_game.v1.XoGameMessage xo = 1;
-//     conn4_game.v1.Conn4GameMessage conn4 = 2;
-//   }
-// }
-
-// // GameType Message
-// enum GameType {
-//   GAME_TYPE_UNSPECIFIED = 0;
-//   GAME_TYPE_XO3X3 = 1;
-//   GAME_TYPE_XO5X5 = 2;
-//   GAME_TYPE_CONN4 = 3;
-// }
-
-// message ChangeGameTypeMessage {
-//   GameType game_type = 1;
-// }
-
-/// Room
-message RoomMessage {
-  oneof content {
-    // ChatMessage chat = 1;
-    // ChatMessageRequest chat_req = 2;
-    // GameMessage game = 3;
-    RoomErrorType error = 4;
-    // ChangeGameTypeMessage game_type = 5;
-    // Time sync_time= 6;
-  }
-}
+import "account/v1/account.proto";
 
 service RoomService {
-//   rpc GetChatHistory(GetChatHistoryRequest) returns (GetChatHistoryResponse) {}
-//   rpc GetRoomOpponent(GetRoomOpponentRequest) returns (GetRoomOpponentResponse) {}
-//   rpc HasRoom(HasRoomRequest) returns (HasRoomResponse) {}
-//   rpc CloseRoom(CloseRoomRequest) returns (CloseRoomResponse) {}
+  rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse);
+  rpc JoinRoom(JoinRoomRequest) returns (JoinRoomResponse);
+  rpc GetRoom(GetRoomRequest) returns (GetRoomResponse);
+  rpc LeaveRoom(LeaveRoomRequest) returns (LeaveRoomResponse);
 }
 
-// message CloseRoomRequest {}
-// message CloseRoomResponse {
-//   bool is_ok= 1;
-// }
+message CreateRoomRequest {
+  string game_key = 1;
+}
 
-// message HasRoomRequest {}
-// message HasRoomResponse {
-//   bool has_room= 1;
-// }
+message CreateRoomResponse {
+  string code = 1;
+}
 
-// message GetChatHistoryRequest {}
-// message GetChatHistoryResponse {
-//   repeated ChatMessage messages = 1;
-// }
+message JoinRoomRequest {
+  string code = 1;
+}
 
-// message GetRoomOpponentRequest {}
-// message GetRoomOpponentResponse {
-//   account.v1.Account opponent = 1;
-// }
+message JoinRoomResponse {}
+
+message GetRoomRequest {
+  string code = 1;
+}
+
+message GetRoomResponse {
+  string code = 1;
+  string game_key = 2;
+  account.v1.Account host_player = 3;
+  repeated account.v1.Account players = 4;
+}
+
+message LeaveRoomRequest {
+  string code = 1;
+}
+
+message LeaveRoomResponse {
+  bool ok = 1;
+}
+
+
+message ChatMessageRequest {
+  string text = 1;
+}
+message ChatMessageResponse {
+  int64 player_id = 1;
+  string text = 2;
+  int64 id = 3;
+}
+
+
+message RoomMessage {
+  oneof content {
+    ChatMessageResponse chat = 1;
+    ChatMessageRequest chat_req = 2;
+    RoomErrorType error = 4;
+  }
+}
 
 enum RoomErrorType {
   ROOM_ERROR_TYPE_UNSPECIFIED = 0;
   ROOM_ERROR_TYPE_AUTH = 1;
   ROOM_ERROR_TYPE_NOROOM = 2;
+  ROOM_ERROR_TYPE_INVALID_CODE = 3;
 }
-
