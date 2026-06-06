@@ -2,13 +2,16 @@ package api
 
 import (
 	"errors"
+	"log/slog"
 	"slices"
 	"sync"
 	"time"
 
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
+	"github.com/arian-nj/chigame/backend/internals/commander"
 	"github.com/arian-nj/chigame/backend/internals/random"
 	"github.com/arian-nj/chigame/backend/internals/socket"
+	"github.com/arian-nj/chigame/backend/internals/utils"
 )
 
 const (
@@ -37,7 +40,10 @@ type Room struct {
 	CreatedAt    time.Time
 	ExpiresAt    time.Time
 
-	MsgChnl chan *RoomEvent
+	Commander *commander.Commander
+
+	MsgChnl  chan *RoomEvent
+	TaskSync sync.Mutex
 }
 
 func NewRoom(code string, hostPersonID int64, gameKey string) *Room {
@@ -51,20 +57,52 @@ func NewRoom(code string, hostPersonID int64, gameKey string) *Room {
 		Members:      make(map[int64]*RoomMember),
 		CreatedAt:    now,
 		ExpiresAt:    expiresAt,
-		MsgChnl:      make(chan *RoomEvent, 10),
+
+		MsgChnl: make(chan *RoomEvent, 10),
+
+		Commander: commander.NewCommander(),
 	}
 }
 
-func (r *Room) Handler() {
-	for {
-		newRoomEvent := <-r.MsgChnl
-		switch newRoomEvent.Event.Content.(type) {
-		case *roomv1.RoomMessage_ChatReq:
-			r.SocketRequestSendMsg(newRoomEvent.Player, newRoomEvent.Event.GetChatReq())
-			// r.handleChatMessageRequest(newEvent.Player, newEvent.Event.ChatMessageRequest)
-		}
+func (r *Room) Run() {
+	utils.RunBackgroundTask(func() {
+		for {
+			select {
+			case roomEvent := <-r.MsgChnl:
+				func() {
+					r.TaskSync.Lock()
+					defer r.TaskSync.Unlock()
 
-	}
+					switch msg := roomEvent.Event.Content.(type) {
+					case *roomv1.RoomMessage_ChatReq:
+						r.Commander.PushCommand(NewRoomMessageCommand(r, roomEvent.Player, msg.ChatReq))
+					default:
+						slog.Error("unhandled room event", "event", roomEvent.Event)
+						_ = msg // Avoid unused variable warning if not handling other cases
+					}
+				}()
+			case <-r.Commander.CommandNotifire:
+				if len(r.Commander.Commands) > 0 {
+					com := r.Commander.PopCommand()
+					r.Commander.ApplyCommand(com)
+				}
+			}
+		}
+	})
+}
+
+func (r *Room) AddMember(member *RoomMember) {
+	r.TaskSync.Lock()
+	defer r.TaskSync.Unlock()
+
+	r.Members[member.PersonID] = member
+}
+
+func (r *Room) RemoveMember(personID int64) {
+	r.TaskSync.Lock()
+	defer r.TaskSync.Unlock()
+
+	delete(r.Members, personID)
 }
 
 // Room Store
@@ -83,7 +121,7 @@ func NewRoomsStore() *RoomsStore {
 func (s *RoomsStore) CreateRoom(hostPersonID int64, gameKey string) (*Room, error) {
 	for range 8 {
 		code := random.GenerateInviteCode(roomCodeLength)
-		if _, exists := s.byCode[code]; exists {
+		if _, exists := s.GetByCode(code); exists {
 			continue
 		}
 		newRoom := NewRoom(code, hostPersonID, gameKey)

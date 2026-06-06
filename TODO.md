@@ -49,7 +49,7 @@
     [ ] websocket
     [ ] chat
     [ ] gameselector when no active game
-    [ ] room lifecycel
+    [ ] room run lifecycel
 
 
 

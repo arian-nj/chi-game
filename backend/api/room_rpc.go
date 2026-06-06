@@ -38,6 +38,7 @@ func (app *APIApplication) CreateRoom(
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 	app.RoomsStore.AddRoom(newRoom)
+	newRoom.Run()
 
 	return connect.NewResponse(&roomv1.CreateRoomResponse{
 		Code: newRoom.Code,

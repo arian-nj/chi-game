@@ -31,11 +31,14 @@ func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 		sendRoomSocketError(socketClient, roomv1.RoomErrorType_ROOM_ERROR_TYPE_AUTH)
 		return
 	}
+	// check room code
 	code := r.URL.Query().Get("code")
 	if code == "" {
 		sendRoomSocketError(socketClient, roomv1.RoomErrorType_ROOM_ERROR_TYPE_INVALID_CODE)
 		return
 	}
+	code = normalizeRoomCode(code)
+
 	currentRoom, ok := app.RoomsStore.GetByCode(code)
 	if !ok {
 		sendRoomSocketError(socketClient, roomv1.RoomErrorType_ROOM_ERROR_TYPE_INVALID_CODE)
@@ -43,7 +46,7 @@ func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 	}
 
 	roomMember := NewRoomMember(person.ID, socketClient)
-	currentRoom.Members[person.ID] = roomMember
+	currentRoom.AddMember(roomMember)
 
 	// listen
 	utils.RunBackgroundTask(func() {
@@ -62,6 +65,7 @@ func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 				slog.Error("failed to unmarshal message", "error", err)
 				continue
 			}
+			currentRoom.MsgChnl <- NewRoomEvent(roomMember, newRoomMsg)
 		}
 	}
 }
