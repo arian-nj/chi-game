@@ -52,10 +52,12 @@
     [ ] room lifecycel
 
 
+
 [X] move invites from db to memory
 [X] merge invites and rooms
 [ ] online xo
 [ ] online connect 4
+[ ] check file sizes
 
 # Games
 # piority

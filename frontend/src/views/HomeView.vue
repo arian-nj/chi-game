@@ -13,7 +13,7 @@ const locale = route.params.locale as string;
 
 onMounted(() => {
   import('../views/GameView.vue');
-  import('@/views/RoomView.vue');
+  import('@/views/RoomShell.vue');
 });
 
 </script>
