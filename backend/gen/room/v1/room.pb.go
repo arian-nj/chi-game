@@ -8,6 +8,7 @@ package roomv1
 
 import (
 	v1 "github.com/arian-nj/chigame/backend/gen/account/v1"
+	v11 "github.com/arian-nj/chigame/backend/gen/tictac/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -21,6 +22,59 @@ const (
 	// Verify that runtime/protoimpl is sufficiently up-to-date.
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
+
+// GameType Message
+type GameType int32
+
+const (
+	GameType_GAME_TYPE_UNSPECIFIED GameType = 0
+	GameType_GAME_TYPE_XO3X3       GameType = 1
+	GameType_GAME_TYPE_XO5X5       GameType = 2
+	GameType_GAME_TYPE_CONN4       GameType = 3
+)
+
+// Enum value maps for GameType.
+var (
+	GameType_name = map[int32]string{
+		0: "GAME_TYPE_UNSPECIFIED",
+		1: "GAME_TYPE_XO3X3",
+		2: "GAME_TYPE_XO5X5",
+		3: "GAME_TYPE_CONN4",
+	}
+	GameType_value = map[string]int32{
+		"GAME_TYPE_UNSPECIFIED": 0,
+		"GAME_TYPE_XO3X3":       1,
+		"GAME_TYPE_XO5X5":       2,
+		"GAME_TYPE_CONN4":       3,
+	}
+)
+
+func (x GameType) Enum() *GameType {
+	p := new(GameType)
+	*p = x
+	return p
+}
+
+func (x GameType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GameType) Descriptor() protoreflect.EnumDescriptor {
+	return file_room_v1_room_proto_enumTypes[0].Descriptor()
+}
+
+func (GameType) Type() protoreflect.EnumType {
+	return &file_room_v1_room_proto_enumTypes[0]
+}
+
+func (x GameType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GameType.Descriptor instead.
+func (GameType) EnumDescriptor() ([]byte, []int) {
+	return file_room_v1_room_proto_rawDescGZIP(), []int{0}
+}
 
 type RoomErrorType int32
 
@@ -58,11 +112,11 @@ func (x RoomErrorType) String() string {
 }
 
 func (RoomErrorType) Descriptor() protoreflect.EnumDescriptor {
-	return file_room_v1_room_proto_enumTypes[0].Descriptor()
+	return file_room_v1_room_proto_enumTypes[1].Descriptor()
 }
 
 func (RoomErrorType) Type() protoreflect.EnumType {
-	return &file_room_v1_room_proto_enumTypes[0]
+	return &file_room_v1_room_proto_enumTypes[1]
 }
 
 func (x RoomErrorType) Number() protoreflect.EnumNumber {
@@ -71,7 +125,7 @@ func (x RoomErrorType) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use RoomErrorType.Descriptor instead.
 func (RoomErrorType) EnumDescriptor() ([]byte, []int) {
-	return file_room_v1_room_proto_rawDescGZIP(), []int{0}
+	return file_room_v1_room_proto_rawDescGZIP(), []int{1}
 }
 
 type CreateRoomRequest struct {
@@ -470,6 +524,7 @@ type RoomMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Content:
 	//
+	//	*RoomMessage_Game
 	//	*RoomMessage_Chat
 	//	*RoomMessage_ChatReq
 	//	*RoomMessage_Error
@@ -513,6 +568,15 @@ func (*RoomMessage) Descriptor() ([]byte, []int) {
 func (x *RoomMessage) GetContent() isRoomMessage_Content {
 	if x != nil {
 		return x.Content
+	}
+	return nil
+}
+
+func (x *RoomMessage) GetGame() *GameMessage {
+	if x != nil {
+		if x, ok := x.Content.(*RoomMessage_Game); ok {
+			return x.Game
+		}
 	}
 	return nil
 }
@@ -566,25 +630,31 @@ type isRoomMessage_Content interface {
 	isRoomMessage_Content()
 }
 
+type RoomMessage_Game struct {
+	Game *GameMessage `protobuf:"bytes,1,opt,name=game,proto3,oneof"`
+}
+
 type RoomMessage_Chat struct {
-	Chat *ChatMessageResponse `protobuf:"bytes,1,opt,name=chat,proto3,oneof"`
+	Chat *ChatMessageResponse `protobuf:"bytes,2,opt,name=chat,proto3,oneof"`
 }
 
 type RoomMessage_ChatReq struct {
-	ChatReq *ChatMessageRequest `protobuf:"bytes,2,opt,name=chat_req,json=chatReq,proto3,oneof"`
+	ChatReq *ChatMessageRequest `protobuf:"bytes,3,opt,name=chat_req,json=chatReq,proto3,oneof"`
 }
 
 type RoomMessage_Error struct {
-	Error RoomErrorType `protobuf:"varint,3,opt,name=error,proto3,enum=room.v1.RoomErrorType,oneof"`
+	Error RoomErrorType `protobuf:"varint,4,opt,name=error,proto3,enum=room.v1.RoomErrorType,oneof"`
 }
 
 type RoomMessage_MemberJoined struct {
-	MemberJoined *RoomMemberJoined `protobuf:"bytes,4,opt,name=member_joined,json=memberJoined,proto3,oneof"`
+	MemberJoined *RoomMemberJoined `protobuf:"bytes,5,opt,name=member_joined,json=memberJoined,proto3,oneof"`
 }
 
 type RoomMessage_MemberLeft struct {
-	MemberLeft *RoomMemberLeft `protobuf:"bytes,5,opt,name=member_left,json=memberLeft,proto3,oneof"`
+	MemberLeft *RoomMemberLeft `protobuf:"bytes,6,opt,name=member_left,json=memberLeft,proto3,oneof"`
 }
+
+func (*RoomMessage_Game) isRoomMessage_Content() {}
 
 func (*RoomMessage_Chat) isRoomMessage_Content() {}
 
@@ -596,11 +666,78 @@ func (*RoomMessage_MemberJoined) isRoomMessage_Content() {}
 
 func (*RoomMessage_MemberLeft) isRoomMessage_Content() {}
 
+// Game Room
+type GameMessage struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Types that are valid to be assigned to Game:
+	//
+	//	*GameMessage_Tictactoe
+	Game          isGameMessage_Game `protobuf_oneof:"game"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GameMessage) Reset() {
+	*x = GameMessage{}
+	mi := &file_room_v1_room_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GameMessage) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GameMessage) ProtoMessage() {}
+
+func (x *GameMessage) ProtoReflect() protoreflect.Message {
+	mi := &file_room_v1_room_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GameMessage.ProtoReflect.Descriptor instead.
+func (*GameMessage) Descriptor() ([]byte, []int) {
+	return file_room_v1_room_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GameMessage) GetGame() isGameMessage_Game {
+	if x != nil {
+		return x.Game
+	}
+	return nil
+}
+
+func (x *GameMessage) GetTictactoe() *v11.TicTacToeGameMessage {
+	if x != nil {
+		if x, ok := x.Game.(*GameMessage_Tictactoe); ok {
+			return x.Tictactoe
+		}
+	}
+	return nil
+}
+
+type isGameMessage_Game interface {
+	isGameMessage_Game()
+}
+
+type GameMessage_Tictactoe struct {
+	Tictactoe *v11.TicTacToeGameMessage `protobuf:"bytes,1,opt,name=tictactoe,proto3,oneof"` // conn4_game.v1.Conn4GameMessage conn4 = 2;
+}
+
+func (*GameMessage_Tictactoe) isGameMessage_Game() {}
+
 var File_room_v1_room_proto protoreflect.FileDescriptor
 
 const file_room_v1_room_proto_rawDesc = "" +
 	"\n" +
-	"\x12room/v1/room.proto\x12\aroom.v1\x1a\x18account/v1/account.proto\".\n" +
+	"\x12room/v1/room.proto\x12\aroom.v1\x1a\x18account/v1/account.proto\x1a\x16tictac/v1/tictac.proto\".\n" +
 	"\x11CreateRoomRequest\x12\x19\n" +
 	"\bgame_key\x18\x01 \x01(\tR\agameKey\"(\n" +
 	"\x12CreateRoomResponse\x12\x12\n" +
@@ -622,15 +759,24 @@ const file_room_v1_room_proto_rawDesc = "" +
 	"\x10RoomMemberJoined\x12+\n" +
 	"\x06player\x18\x01 \x01(\v2\x13.account.v1.AccountR\x06player\"=\n" +
 	"\x0eRoomMemberLeft\x12+\n" +
-	"\x06player\x18\x01 \x01(\v2\x13.account.v1.AccountR\x06player\"\xb4\x02\n" +
-	"\vRoomMessage\x122\n" +
-	"\x04chat\x18\x01 \x01(\v2\x1c.room.v1.ChatMessageResponseH\x00R\x04chat\x128\n" +
-	"\bchat_req\x18\x02 \x01(\v2\x1b.room.v1.ChatMessageRequestH\x00R\achatReq\x12.\n" +
-	"\x05error\x18\x03 \x01(\x0e2\x16.room.v1.RoomErrorTypeH\x00R\x05error\x12@\n" +
-	"\rmember_joined\x18\x04 \x01(\v2\x19.room.v1.RoomMemberJoinedH\x00R\fmemberJoined\x12:\n" +
-	"\vmember_left\x18\x05 \x01(\v2\x17.room.v1.RoomMemberLeftH\x00R\n" +
+	"\x06player\x18\x01 \x01(\v2\x13.account.v1.AccountR\x06player\"\xe0\x02\n" +
+	"\vRoomMessage\x12*\n" +
+	"\x04game\x18\x01 \x01(\v2\x14.room.v1.GameMessageH\x00R\x04game\x122\n" +
+	"\x04chat\x18\x02 \x01(\v2\x1c.room.v1.ChatMessageResponseH\x00R\x04chat\x128\n" +
+	"\bchat_req\x18\x03 \x01(\v2\x1b.room.v1.ChatMessageRequestH\x00R\achatReq\x12.\n" +
+	"\x05error\x18\x04 \x01(\x0e2\x16.room.v1.RoomErrorTypeH\x00R\x05error\x12@\n" +
+	"\rmember_joined\x18\x05 \x01(\v2\x19.room.v1.RoomMemberJoinedH\x00R\fmemberJoined\x12:\n" +
+	"\vmember_left\x18\x06 \x01(\v2\x17.room.v1.RoomMemberLeftH\x00R\n" +
 	"memberLeftB\t\n" +
-	"\acontent*\x88\x01\n" +
+	"\acontent\"V\n" +
+	"\vGameMessage\x12?\n" +
+	"\ttictactoe\x18\x01 \x01(\v2\x1f.tictac.v1.TicTacToeGameMessageH\x00R\ttictactoeB\x06\n" +
+	"\x04game*d\n" +
+	"\bGameType\x12\x19\n" +
+	"\x15GAME_TYPE_UNSPECIFIED\x10\x00\x12\x13\n" +
+	"\x0fGAME_TYPE_XO3X3\x10\x01\x12\x13\n" +
+	"\x0fGAME_TYPE_XO5X5\x10\x02\x12\x13\n" +
+	"\x0fGAME_TYPE_CONN4\x10\x03*\x88\x01\n" +
 	"\rRoomErrorType\x12\x1f\n" +
 	"\x1bROOM_ERROR_TYPE_UNSPECIFIED\x10\x00\x12\x18\n" +
 	"\x14ROOM_ERROR_TYPE_AUTH\x10\x01\x12\x1a\n" +
@@ -654,40 +800,45 @@ func file_room_v1_room_proto_rawDescGZIP() []byte {
 	return file_room_v1_room_proto_rawDescData
 }
 
-var file_room_v1_room_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_room_v1_room_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_room_v1_room_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_room_v1_room_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
 var file_room_v1_room_proto_goTypes = []any{
-	(RoomErrorType)(0),          // 0: room.v1.RoomErrorType
-	(*CreateRoomRequest)(nil),   // 1: room.v1.CreateRoomRequest
-	(*CreateRoomResponse)(nil),  // 2: room.v1.CreateRoomResponse
-	(*GetRoomRequest)(nil),      // 3: room.v1.GetRoomRequest
-	(*GetRoomResponse)(nil),     // 4: room.v1.GetRoomResponse
-	(*ChatMessageRequest)(nil),  // 5: room.v1.ChatMessageRequest
-	(*ChatMessageResponse)(nil), // 6: room.v1.ChatMessageResponse
-	(*RoomMemberJoined)(nil),    // 7: room.v1.RoomMemberJoined
-	(*RoomMemberLeft)(nil),      // 8: room.v1.RoomMemberLeft
-	(*RoomMessage)(nil),         // 9: room.v1.RoomMessage
-	(*v1.Account)(nil),          // 10: account.v1.Account
+	(GameType)(0),                    // 0: room.v1.GameType
+	(RoomErrorType)(0),               // 1: room.v1.RoomErrorType
+	(*CreateRoomRequest)(nil),        // 2: room.v1.CreateRoomRequest
+	(*CreateRoomResponse)(nil),       // 3: room.v1.CreateRoomResponse
+	(*GetRoomRequest)(nil),           // 4: room.v1.GetRoomRequest
+	(*GetRoomResponse)(nil),          // 5: room.v1.GetRoomResponse
+	(*ChatMessageRequest)(nil),       // 6: room.v1.ChatMessageRequest
+	(*ChatMessageResponse)(nil),      // 7: room.v1.ChatMessageResponse
+	(*RoomMemberJoined)(nil),         // 8: room.v1.RoomMemberJoined
+	(*RoomMemberLeft)(nil),           // 9: room.v1.RoomMemberLeft
+	(*RoomMessage)(nil),              // 10: room.v1.RoomMessage
+	(*GameMessage)(nil),              // 11: room.v1.GameMessage
+	(*v1.Account)(nil),               // 12: account.v1.Account
+	(*v11.TicTacToeGameMessage)(nil), // 13: tictac.v1.TicTacToeGameMessage
 }
 var file_room_v1_room_proto_depIdxs = []int32{
-	10, // 0: room.v1.GetRoomResponse.host_player:type_name -> account.v1.Account
-	10, // 1: room.v1.GetRoomResponse.players:type_name -> account.v1.Account
-	10, // 2: room.v1.RoomMemberJoined.player:type_name -> account.v1.Account
-	10, // 3: room.v1.RoomMemberLeft.player:type_name -> account.v1.Account
-	6,  // 4: room.v1.RoomMessage.chat:type_name -> room.v1.ChatMessageResponse
-	5,  // 5: room.v1.RoomMessage.chat_req:type_name -> room.v1.ChatMessageRequest
-	0,  // 6: room.v1.RoomMessage.error:type_name -> room.v1.RoomErrorType
-	7,  // 7: room.v1.RoomMessage.member_joined:type_name -> room.v1.RoomMemberJoined
-	8,  // 8: room.v1.RoomMessage.member_left:type_name -> room.v1.RoomMemberLeft
-	1,  // 9: room.v1.RoomService.CreateRoom:input_type -> room.v1.CreateRoomRequest
-	3,  // 10: room.v1.RoomService.GetRoom:input_type -> room.v1.GetRoomRequest
-	2,  // 11: room.v1.RoomService.CreateRoom:output_type -> room.v1.CreateRoomResponse
-	4,  // 12: room.v1.RoomService.GetRoom:output_type -> room.v1.GetRoomResponse
-	11, // [11:13] is the sub-list for method output_type
-	9,  // [9:11] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	12, // 0: room.v1.GetRoomResponse.host_player:type_name -> account.v1.Account
+	12, // 1: room.v1.GetRoomResponse.players:type_name -> account.v1.Account
+	12, // 2: room.v1.RoomMemberJoined.player:type_name -> account.v1.Account
+	12, // 3: room.v1.RoomMemberLeft.player:type_name -> account.v1.Account
+	11, // 4: room.v1.RoomMessage.game:type_name -> room.v1.GameMessage
+	7,  // 5: room.v1.RoomMessage.chat:type_name -> room.v1.ChatMessageResponse
+	6,  // 6: room.v1.RoomMessage.chat_req:type_name -> room.v1.ChatMessageRequest
+	1,  // 7: room.v1.RoomMessage.error:type_name -> room.v1.RoomErrorType
+	8,  // 8: room.v1.RoomMessage.member_joined:type_name -> room.v1.RoomMemberJoined
+	9,  // 9: room.v1.RoomMessage.member_left:type_name -> room.v1.RoomMemberLeft
+	13, // 10: room.v1.GameMessage.tictactoe:type_name -> tictac.v1.TicTacToeGameMessage
+	2,  // 11: room.v1.RoomService.CreateRoom:input_type -> room.v1.CreateRoomRequest
+	4,  // 12: room.v1.RoomService.GetRoom:input_type -> room.v1.GetRoomRequest
+	3,  // 13: room.v1.RoomService.CreateRoom:output_type -> room.v1.CreateRoomResponse
+	5,  // 14: room.v1.RoomService.GetRoom:output_type -> room.v1.GetRoomResponse
+	13, // [13:15] is the sub-list for method output_type
+	11, // [11:13] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_room_v1_room_proto_init() }
@@ -696,19 +847,23 @@ func file_room_v1_room_proto_init() {
 		return
 	}
 	file_room_v1_room_proto_msgTypes[8].OneofWrappers = []any{
+		(*RoomMessage_Game)(nil),
 		(*RoomMessage_Chat)(nil),
 		(*RoomMessage_ChatReq)(nil),
 		(*RoomMessage_Error)(nil),
 		(*RoomMessage_MemberJoined)(nil),
 		(*RoomMessage_MemberLeft)(nil),
 	}
+	file_room_v1_room_proto_msgTypes[9].OneofWrappers = []any{
+		(*GameMessage_Tictactoe)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_room_v1_room_proto_rawDesc), len(file_room_v1_room_proto_rawDesc)),
-			NumEnums:      1,
-			NumMessages:   9,
+			NumEnums:      2,
+			NumMessages:   10,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

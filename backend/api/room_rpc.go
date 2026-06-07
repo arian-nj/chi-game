@@ -7,9 +7,10 @@ import (
 	"strings"
 
 	"connectrpc.com/connect"
-	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
 	"github.com/arian-nj/chigame/backend/database"
+	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
+	"github.com/arian-nj/chigame/backend/internals/utils"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 )
@@ -50,7 +51,7 @@ func (app *APIApplication) CreateRoom(
 	}
 	newRoom.ID = roomRow.ID
 	app.RoomsStore.AddRoom(newRoom)
-	app.RunRoom(newRoom)
+	RunRoom(newRoom)
 
 	return connect.NewResponse(&roomv1.CreateRoomResponse{
 		Code: newRoom.Code,
@@ -88,7 +89,7 @@ func (app *APIApplication) GetRoom(
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
-	hostAccount := personToAccount(&hostRow)
+	hostAccount := utils.PersonToAccount(&hostRow)
 	players := roomConnectedPlayers(room)
 	if !playersIncludeID(players, room.HostPersonID) {
 		players = append(players, hostAccount)
@@ -108,7 +109,7 @@ func roomConnectedPlayers(room *Room) []*accountv1.Account {
 
 	players := make([]*accountv1.Account, 0, len(room.Members))
 	for _, member := range room.Members {
-		players = append(players, personToAccount(member.Person))
+		players = append(players, utils.PersonToAccount(member.Person))
 	}
 	return players
 }

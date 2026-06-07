@@ -1,4 +1,4 @@
-package api
+package room
 
 import (
 	"errors"
@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/arian-nj/chigame/backend/database"
+	"github.com/arian-nj/chigame/backend/games"
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
 	"github.com/arian-nj/chigame/backend/internals/commander"
 	"github.com/arian-nj/chigame/backend/internals/random"
@@ -36,6 +37,7 @@ type Room struct {
 	Members      map[int64]*RoomMember
 
 	GameKey string
+	Game    games.GameEngine
 
 	CreatedAt time.Time
 	ExpiresAt time.Time
@@ -51,7 +53,7 @@ type Room struct {
 func NewRoom(code string, hostPersonID int64, gameKey string, queries *database.Queries) *Room {
 	now := time.Now()
 	expiresAt := now.Add(roomLifetime)
-	return &Room{
+	room := &Room{
 		Code:         code,
 		GameKey:      gameKey,
 		HostPersonID: hostPersonID,
@@ -65,9 +67,10 @@ func NewRoom(code string, hostPersonID int64, gameKey string, queries *database.
 
 		Queries: queries,
 	}
+	return room
 }
 
-func (app *APIApplication) RunRoom(r *Room) {
+func RunRoom(r *Room) {
 	utils.RunBackgroundTask(func() {
 		for {
 			select {
@@ -79,6 +82,8 @@ func (app *APIApplication) RunRoom(r *Room) {
 					switch msg := roomEvent.Event.Content.(type) {
 					case *roomv1.RoomMessage_ChatReq:
 						r.Commander.PushCommand(NewRoomMessageCommand(r, roomEvent.Player, msg.ChatReq))
+					case *roomv1.RoomMessage_Game:
+						r.Game.SocketRouter(roomEvent.Event.GetGame(), roomEvent.Player.Person.ID)
 					default:
 						slog.Error("unhandled room event", "event", roomEvent.Event)
 						_ = msg // Avoid unused variable warning if not handling other cases

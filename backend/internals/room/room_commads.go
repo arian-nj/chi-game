@@ -1,4 +1,4 @@
-package api
+package room
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/arian-nj/chigame/backend/database"
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
+	"github.com/arian-nj/chigame/backend/internals/utils"
 )
 
 type RoomMessageCommand struct {
@@ -72,7 +73,7 @@ func (c *RoomMemberJoinedCommand) Execute() {
 			slog.Error("failed to get person by id", "error", err)
 			continue
 		}
-		account := personToAccount(&person)
+		account := utils.PersonToAccount(&person)
 		chatResponse := &roomv1.RoomMessage{
 			Content: &roomv1.RoomMessage_MemberJoined{
 				MemberJoined: &roomv1.RoomMemberJoined{
@@ -98,7 +99,7 @@ func NewRoomMemberLeftCommand(room *Room, member *RoomMember) *RoomMemberLeftCom
 	}
 }
 func (c *RoomMemberLeftCommand) Execute() {
-	account := personToAccount(c.oldMember.Person)
+	account := utils.PersonToAccount(c.oldMember.Person)
 	for _, member := range c.room.Members {
 		if member.Person.ID == c.oldMember.Person.ID {
 			continue

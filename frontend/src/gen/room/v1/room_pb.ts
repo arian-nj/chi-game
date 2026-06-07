@@ -6,13 +6,15 @@ import type { GenEnum, GenFile, GenMessage, GenService } from "@bufbuild/protobu
 import { enumDesc, fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Account } from "../../account/v1/account_pb";
 import { file_account_v1_account } from "../../account/v1/account_pb";
+import type { TicTacToeGameMessage } from "../../tictac/v1/tictac_pb";
+import { file_tictac_v1_tictac } from "../../tictac/v1/tictac_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file room/v1/room.proto.
  */
 export const file_room_v1_room: GenFile = /*@__PURE__*/
-  fileDesc("ChJyb29tL3YxL3Jvb20ucHJvdG8SB3Jvb20udjEiJQoRQ3JlYXRlUm9vbVJlcXVlc3QSEAoIZ2FtZV9rZXkYASABKAkiIgoSQ3JlYXRlUm9vbVJlc3BvbnNlEgwKBGNvZGUYASABKAkiHgoOR2V0Um9vbVJlcXVlc3QSDAoEY29kZRgBIAEoCSKBAQoPR2V0Um9vbVJlc3BvbnNlEgwKBGNvZGUYASABKAkSEAoIZ2FtZV9rZXkYAiABKAkSKAoLaG9zdF9wbGF5ZXIYAyABKAsyEy5hY2NvdW50LnYxLkFjY291bnQSJAoHcGxheWVycxgEIAMoCzITLmFjY291bnQudjEuQWNjb3VudCIiChJDaGF0TWVzc2FnZVJlcXVlc3QSDAoEdGV4dBgBIAEoCSJCChNDaGF0TWVzc2FnZVJlc3BvbnNlEhEKCXBsYXllcl9pZBgBIAEoAxIMCgR0ZXh0GAIgASgJEgoKAmlkGAMgASgDIjcKEFJvb21NZW1iZXJKb2luZWQSIwoGcGxheWVyGAEgASgLMhMuYWNjb3VudC52MS5BY2NvdW50IjUKDlJvb21NZW1iZXJMZWZ0EiMKBnBsYXllchgBIAEoCzITLmFjY291bnQudjEuQWNjb3VudCKEAgoLUm9vbU1lc3NhZ2USLAoEY2hhdBgBIAEoCzIcLnJvb20udjEuQ2hhdE1lc3NhZ2VSZXNwb25zZUgAEi8KCGNoYXRfcmVxGAIgASgLMhsucm9vbS52MS5DaGF0TWVzc2FnZVJlcXVlc3RIABInCgVlcnJvchgDIAEoDjIWLnJvb20udjEuUm9vbUVycm9yVHlwZUgAEjIKDW1lbWJlcl9qb2luZWQYBCABKAsyGS5yb29tLnYxLlJvb21NZW1iZXJKb2luZWRIABIuCgttZW1iZXJfbGVmdBgFIAEoCzIXLnJvb20udjEuUm9vbU1lbWJlckxlZnRIAEIJCgdjb250ZW50KogBCg1Sb29tRXJyb3JUeXBlEh8KG1JPT01fRVJST1JfVFlQRV9VTlNQRUNJRklFRBAAEhgKFFJPT01fRVJST1JfVFlQRV9BVVRIEAESGgoWUk9PTV9FUlJPUl9UWVBFX05PUk9PTRACEiAKHFJPT01fRVJST1JfVFlQRV9JTlZBTElEX0NPREUQAzKSAQoLUm9vbVNlcnZpY2USRQoKQ3JlYXRlUm9vbRIaLnJvb20udjEuQ3JlYXRlUm9vbVJlcXVlc3QaGy5yb29tLnYxLkNyZWF0ZVJvb21SZXNwb25zZRI8CgdHZXRSb29tEhcucm9vbS52MS5HZXRSb29tUmVxdWVzdBoYLnJvb20udjEuR2V0Um9vbVJlc3BvbnNlQo0BCgtjb20ucm9vbS52MUIJUm9vbVByb3RvUAFaNmdpdGh1Yi5jb20vYXJpYW4tbmovY2hpZ2FtZS9iYWNrZW5kL2dlbi9yb29tL3YxO3Jvb212MaICA1JYWKoCB1Jvb20uVjHKAgdSb29tXFYx4gITUm9vbVxWMVxHUEJNZXRhZGF0YeoCCFJvb206OlYxYgZwcm90bzM", [file_account_v1_account]);
+  fileDesc("ChJyb29tL3YxL3Jvb20ucHJvdG8SB3Jvb20udjEiJQoRQ3JlYXRlUm9vbVJlcXVlc3QSEAoIZ2FtZV9rZXkYASABKAkiIgoSQ3JlYXRlUm9vbVJlc3BvbnNlEgwKBGNvZGUYASABKAkiHgoOR2V0Um9vbVJlcXVlc3QSDAoEY29kZRgBIAEoCSKBAQoPR2V0Um9vbVJlc3BvbnNlEgwKBGNvZGUYASABKAkSEAoIZ2FtZV9rZXkYAiABKAkSKAoLaG9zdF9wbGF5ZXIYAyABKAsyEy5hY2NvdW50LnYxLkFjY291bnQSJAoHcGxheWVycxgEIAMoCzITLmFjY291bnQudjEuQWNjb3VudCIiChJDaGF0TWVzc2FnZVJlcXVlc3QSDAoEdGV4dBgBIAEoCSJCChNDaGF0TWVzc2FnZVJlc3BvbnNlEhEKCXBsYXllcl9pZBgBIAEoAxIMCgR0ZXh0GAIgASgJEgoKAmlkGAMgASgDIjcKEFJvb21NZW1iZXJKb2luZWQSIwoGcGxheWVyGAEgASgLMhMuYWNjb3VudC52MS5BY2NvdW50IjUKDlJvb21NZW1iZXJMZWZ0EiMKBnBsYXllchgBIAEoCzITLmFjY291bnQudjEuQWNjb3VudCKqAgoLUm9vbU1lc3NhZ2USJAoEZ2FtZRgBIAEoCzIULnJvb20udjEuR2FtZU1lc3NhZ2VIABIsCgRjaGF0GAIgASgLMhwucm9vbS52MS5DaGF0TWVzc2FnZVJlc3BvbnNlSAASLwoIY2hhdF9yZXEYAyABKAsyGy5yb29tLnYxLkNoYXRNZXNzYWdlUmVxdWVzdEgAEicKBWVycm9yGAQgASgOMhYucm9vbS52MS5Sb29tRXJyb3JUeXBlSAASMgoNbWVtYmVyX2pvaW5lZBgFIAEoCzIZLnJvb20udjEuUm9vbU1lbWJlckpvaW5lZEgAEi4KC21lbWJlcl9sZWZ0GAYgASgLMhcucm9vbS52MS5Sb29tTWVtYmVyTGVmdEgAQgkKB2NvbnRlbnQiSwoLR2FtZU1lc3NhZ2USNAoJdGljdGFjdG9lGAEgASgLMh8udGljdGFjLnYxLlRpY1RhY1RvZUdhbWVNZXNzYWdlSABCBgoEZ2FtZSpkCghHYW1lVHlwZRIZChVHQU1FX1RZUEVfVU5TUEVDSUZJRUQQABITCg9HQU1FX1RZUEVfWE8zWDMQARITCg9HQU1FX1RZUEVfWE81WDUQAhITCg9HQU1FX1RZUEVfQ09OTjQQAyqIAQoNUm9vbUVycm9yVHlwZRIfChtST09NX0VSUk9SX1RZUEVfVU5TUEVDSUZJRUQQABIYChRST09NX0VSUk9SX1RZUEVfQVVUSBABEhoKFlJPT01fRVJST1JfVFlQRV9OT1JPT00QAhIgChxST09NX0VSUk9SX1RZUEVfSU5WQUxJRF9DT0RFEAMykgEKC1Jvb21TZXJ2aWNlEkUKCkNyZWF0ZVJvb20SGi5yb29tLnYxLkNyZWF0ZVJvb21SZXF1ZXN0Ghsucm9vbS52MS5DcmVhdGVSb29tUmVzcG9uc2USPAoHR2V0Um9vbRIXLnJvb20udjEuR2V0Um9vbVJlcXVlc3QaGC5yb29tLnYxLkdldFJvb21SZXNwb25zZUKNAQoLY29tLnJvb20udjFCCVJvb21Qcm90b1ABWjZnaXRodWIuY29tL2FyaWFuLW5qL2NoaWdhbWUvYmFja2VuZC9nZW4vcm9vbS92MTtyb29tdjGiAgNSWFiqAgdSb29tLlYxygIHUm9vbVxWMeICE1Jvb21cVjFcR1BCTWV0YWRhdGHqAghSb29tOjpWMWIGcHJvdG8z", [file_account_v1_account, file_tictac_v1_tictac]);
 
 /**
  * @generated from message room.v1.CreateRoomRequest
@@ -184,31 +186,37 @@ export type RoomMessage = Message<"room.v1.RoomMessage"> & {
    */
   content: {
     /**
-     * @generated from field: room.v1.ChatMessageResponse chat = 1;
+     * @generated from field: room.v1.GameMessage game = 1;
+     */
+    value: GameMessage;
+    case: "game";
+  } | {
+    /**
+     * @generated from field: room.v1.ChatMessageResponse chat = 2;
      */
     value: ChatMessageResponse;
     case: "chat";
   } | {
     /**
-     * @generated from field: room.v1.ChatMessageRequest chat_req = 2;
+     * @generated from field: room.v1.ChatMessageRequest chat_req = 3;
      */
     value: ChatMessageRequest;
     case: "chatReq";
   } | {
     /**
-     * @generated from field: room.v1.RoomErrorType error = 3;
+     * @generated from field: room.v1.RoomErrorType error = 4;
      */
     value: RoomErrorType;
     case: "error";
   } | {
     /**
-     * @generated from field: room.v1.RoomMemberJoined member_joined = 4;
+     * @generated from field: room.v1.RoomMemberJoined member_joined = 5;
      */
     value: RoomMemberJoined;
     case: "memberJoined";
   } | {
     /**
-     * @generated from field: room.v1.RoomMemberLeft member_left = 5;
+     * @generated from field: room.v1.RoomMemberLeft member_left = 6;
      */
     value: RoomMemberLeft;
     case: "memberLeft";
@@ -221,6 +229,66 @@ export type RoomMessage = Message<"room.v1.RoomMessage"> & {
  */
 export const RoomMessageSchema: GenMessage<RoomMessage> = /*@__PURE__*/
   messageDesc(file_room_v1_room, 8);
+
+/**
+ * Game Room
+ *
+ * @generated from message room.v1.GameMessage
+ */
+export type GameMessage = Message<"room.v1.GameMessage"> & {
+  /**
+   * @generated from oneof room.v1.GameMessage.game
+   */
+  game: {
+    /**
+     * conn4_game.v1.Conn4GameMessage conn4 = 2;
+     *
+     * @generated from field: tictac.v1.TicTacToeGameMessage tictactoe = 1;
+     */
+    value: TicTacToeGameMessage;
+    case: "tictactoe";
+  } | { case: undefined; value?: undefined };
+};
+
+/**
+ * Describes the message room.v1.GameMessage.
+ * Use `create(GameMessageSchema)` to create a new message.
+ */
+export const GameMessageSchema: GenMessage<GameMessage> = /*@__PURE__*/
+  messageDesc(file_room_v1_room, 9);
+
+/**
+ * GameType Message
+ *
+ * @generated from enum room.v1.GameType
+ */
+export enum GameType {
+  /**
+   * @generated from enum value: GAME_TYPE_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: GAME_TYPE_XO3X3 = 1;
+   */
+  XO3X3 = 1,
+
+  /**
+   * @generated from enum value: GAME_TYPE_XO5X5 = 2;
+   */
+  XO5X5 = 2,
+
+  /**
+   * @generated from enum value: GAME_TYPE_CONN4 = 3;
+   */
+  CONN4 = 3,
+}
+
+/**
+ * Describes the enum room.v1.GameType.
+ */
+export const GameTypeSchema: GenEnum<GameType> = /*@__PURE__*/
+  enumDesc(file_room_v1_room, 0);
 
 /**
  * @generated from enum room.v1.RoomErrorType
@@ -251,7 +319,7 @@ export enum RoomErrorType {
  * Describes the enum room.v1.RoomErrorType.
  */
 export const RoomErrorTypeSchema: GenEnum<RoomErrorType> = /*@__PURE__*/
-  enumDesc(file_room_v1_room, 0);
+  enumDesc(file_room_v1_room, 1);
 
 /**
  * @generated from service room.v1.RoomService

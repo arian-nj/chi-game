@@ -1,9 +1,18 @@
 package games
 
+import (
+	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
+	"github.com/arian-nj/chigame/backend/internals/commander"
+)
+
 type GameEngine interface {
+	Init(commaner *commander.Commander)
+
 	Key() string
 	MinPlayers() int
 	MaxPlayers() int
+
+	SocketRouter(gameMessage *roomv1.GameMessage, playerId int64)
 }
 
 // type GameEngineFactory func(room *api.Room) GameEngine
