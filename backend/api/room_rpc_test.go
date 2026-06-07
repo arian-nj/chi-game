@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"connectrpc.com/connect"
+	"github.com/arian-nj/chigame/backend/database"
 	authv1 "github.com/arian-nj/chigame/backend/gen/auth/v1"
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
-	"github.com/arian-nj/chigame/backend/database"
 )
 
 func authRequest[T any](t *testing.T, msg *T, token string) *connect.Request[T] {
@@ -88,34 +88,6 @@ func TestGetRoomExpired(t *testing.T) {
 		t.Fatal("expected room in store")
 	}
 	room.ExpiresAt = time.Now().Add(-time.Minute)
-
-	_, err = app.GetRoom(context.Background(), authRequest(t, &roomv1.GetRoomRequest{Code: code}, host.GetToken()))
-	assertConnectCode(t, err, connect.CodeNotFound)
-}
-
-func TestHostLeaveDeletesRoom(t *testing.T) {
-	app := setupTestApp(t)
-	host := mustValidateGuest(t, app, "room-leave-host")
-
-	createResp, err := app.CreateRoom(context.Background(), authRequest(t, &roomv1.CreateRoomRequest{GameKey: ""}, host.GetToken()))
-	if err != nil {
-		t.Fatalf("CreateRoom: %v", err)
-	}
-	code := createResp.Msg.GetCode()
-
-	room, ok := app.RoomsStore.GetByCode(code)
-	if !ok {
-		t.Fatal("expected room in store")
-	}
-
-	hostPerson := guestPerson(t, app, host)
-	roomMember := NewRoomMember(hostPerson, nil)
-	if err := room.AddMember(roomMember); err != nil {
-		t.Fatalf("AddMember: %v", err)
-	}
-
-	room.RemoveMember(roomMember)
-	app.RoomsStore.MaybeDeleteRoom(code, hostPerson.ID)
 
 	_, err = app.GetRoom(context.Background(), authRequest(t, &roomv1.GetRoomRequest{Code: code}, host.GetToken()))
 	assertConnectCode(t, err, connect.CodeNotFound)

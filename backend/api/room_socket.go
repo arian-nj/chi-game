@@ -64,7 +64,6 @@ func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 		case <-socketClient.Ctx.Done():
 			slog.Info("socket context cancelled", "addr", r.RemoteAddr)
 			currentRoom.RemoveMember(roomMember)
-			app.RoomsStore.MaybeDeleteRoom(code, person.ID)
 			return
 		case newMsgBytes := <-socketClient.EventChan:
 			newRoomMsg := &roomv1.RoomMessage{}

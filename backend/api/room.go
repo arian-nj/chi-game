@@ -169,30 +169,13 @@ func (s *RoomsStore) GetByCode(code string) (*Room, bool) {
 	return s.getByCodeLocked(code)
 }
 
-func (s *RoomsStore) MaybeDeleteRoom(code string, leftPersonID int64) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	room, ok := s.getByCodeLocked(code)
-	if !ok {
-		return
-	}
-	if len(room.Members) == 0 || room.HostPersonID == leftPersonID {
-		s.deleteLocked(code)
-	}
-}
-
-func (s *RoomsStore) deleteLocked(code string) {
-	delete(s.byCode, code)
-}
-
 func (s *RoomsStore) getByCodeLocked(code string) (*Room, bool) {
 	room, ok := s.byCode[code]
 	if !ok {
 		return nil, false
 	}
 	if time.Now().After(room.ExpiresAt) {
-		s.deleteLocked(code)
+		delete(s.byCode, code)
 		return nil, false
 	}
 	return room, true
