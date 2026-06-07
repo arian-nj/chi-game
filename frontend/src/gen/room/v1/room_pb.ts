@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file room/v1/room.proto.
  */
 export const file_room_v1_room: GenFile = /*@__PURE__*/
-  fileDesc("ChJyb29tL3YxL3Jvb20ucHJvdG8SB3Jvb20udjEiJQoRQ3JlYXRlUm9vbVJlcXVlc3QSEAoIZ2FtZV9rZXkYASABKAkiIgoSQ3JlYXRlUm9vbVJlc3BvbnNlEgwKBGNvZGUYASABKAkiHwoPSm9pblJvb21SZXF1ZXN0EgwKBGNvZGUYASABKAkiEgoQSm9pblJvb21SZXNwb25zZSIeCg5HZXRSb29tUmVxdWVzdBIMCgRjb2RlGAEgASgJIlsKD0dldFJvb21SZXNwb25zZRIMCgRjb2RlGAEgASgJEhAKCGdhbWVfa2V5GAIgASgJEigKC2hvc3RfcGxheWVyGAMgASgLMhMuYWNjb3VudC52MS5BY2NvdW50IiAKEExlYXZlUm9vbVJlcXVlc3QSDAoEY29kZRgBIAEoCSIfChFMZWF2ZVJvb21SZXNwb25zZRIKCgJvaxgBIAEoCCIiChJDaGF0TWVzc2FnZVJlcXVlc3QSDAoEdGV4dBgBIAEoCSJCChNDaGF0TWVzc2FnZVJlc3BvbnNlEhEKCXBsYXllcl9pZBgBIAEoAxIMCgR0ZXh0GAIgASgJEgoKAmlkGAMgASgDIjcKEFJvb21NZW1iZXJKb2luZWQSIwoGcGxheWVyGAEgASgLMhMuYWNjb3VudC52MS5BY2NvdW50IjUKDlJvb21NZW1iZXJMZWZ0EiMKBnBsYXllchgBIAEoCzITLmFjY291bnQudjEuQWNjb3VudCKEAgoLUm9vbU1lc3NhZ2USLAoEY2hhdBgBIAEoCzIcLnJvb20udjEuQ2hhdE1lc3NhZ2VSZXNwb25zZUgAEi8KCGNoYXRfcmVxGAIgASgLMhsucm9vbS52MS5DaGF0TWVzc2FnZVJlcXVlc3RIABInCgVlcnJvchgDIAEoDjIWLnJvb20udjEuUm9vbUVycm9yVHlwZUgAEjIKDW1lbWJlcl9qb2luZWQYBCABKAsyGS5yb29tLnYxLlJvb21NZW1iZXJKb2luZWRIABIuCgttZW1iZXJfbGVmdBgFIAEoCzIXLnJvb20udjEuUm9vbU1lbWJlckxlZnRIAEIJCgdjb250ZW50KogBCg1Sb29tRXJyb3JUeXBlEh8KG1JPT01fRVJST1JfVFlQRV9VTlNQRUNJRklFRBAAEhgKFFJPT01fRVJST1JfVFlQRV9BVVRIEAESGgoWUk9PTV9FUlJPUl9UWVBFX05PUk9PTRACEiAKHFJPT01fRVJST1JfVFlQRV9JTlZBTElEX0NPREUQAzKXAgoLUm9vbVNlcnZpY2USRQoKQ3JlYXRlUm9vbRIaLnJvb20udjEuQ3JlYXRlUm9vbVJlcXVlc3QaGy5yb29tLnYxLkNyZWF0ZVJvb21SZXNwb25zZRI/CghKb2luUm9vbRIYLnJvb20udjEuSm9pblJvb21SZXF1ZXN0Ghkucm9vbS52MS5Kb2luUm9vbVJlc3BvbnNlEjwKB0dldFJvb20SFy5yb29tLnYxLkdldFJvb21SZXF1ZXN0Ghgucm9vbS52MS5HZXRSb29tUmVzcG9uc2USQgoJTGVhdmVSb29tEhkucm9vbS52MS5MZWF2ZVJvb21SZXF1ZXN0Ghoucm9vbS52MS5MZWF2ZVJvb21SZXNwb25zZUKNAQoLY29tLnJvb20udjFCCVJvb21Qcm90b1ABWjZnaXRodWIuY29tL2FyaWFuLW5qL2NoaWdhbWUvYmFja2VuZC9nZW4vcm9vbS92MTtyb29tdjGiAgNSWFiqAgdSb29tLlYxygIHUm9vbVxWMeICE1Jvb21cVjFcR1BCTWV0YWRhdGHqAghSb29tOjpWMWIGcHJvdG8z", [file_account_v1_account]);
+  fileDesc("ChJyb29tL3YxL3Jvb20ucHJvdG8SB3Jvb20udjEiJQoRQ3JlYXRlUm9vbVJlcXVlc3QSEAoIZ2FtZV9rZXkYASABKAkiIgoSQ3JlYXRlUm9vbVJlc3BvbnNlEgwKBGNvZGUYASABKAkiHgoOR2V0Um9vbVJlcXVlc3QSDAoEY29kZRgBIAEoCSKBAQoPR2V0Um9vbVJlc3BvbnNlEgwKBGNvZGUYASABKAkSEAoIZ2FtZV9rZXkYAiABKAkSKAoLaG9zdF9wbGF5ZXIYAyABKAsyEy5hY2NvdW50LnYxLkFjY291bnQSJAoHcGxheWVycxgEIAMoCzITLmFjY291bnQudjEuQWNjb3VudCIiChJDaGF0TWVzc2FnZVJlcXVlc3QSDAoEdGV4dBgBIAEoCSJCChNDaGF0TWVzc2FnZVJlc3BvbnNlEhEKCXBsYXllcl9pZBgBIAEoAxIMCgR0ZXh0GAIgASgJEgoKAmlkGAMgASgDIjcKEFJvb21NZW1iZXJKb2luZWQSIwoGcGxheWVyGAEgASgLMhMuYWNjb3VudC52MS5BY2NvdW50IjUKDlJvb21NZW1iZXJMZWZ0EiMKBnBsYXllchgBIAEoCzITLmFjY291bnQudjEuQWNjb3VudCKEAgoLUm9vbU1lc3NhZ2USLAoEY2hhdBgBIAEoCzIcLnJvb20udjEuQ2hhdE1lc3NhZ2VSZXNwb25zZUgAEi8KCGNoYXRfcmVxGAIgASgLMhsucm9vbS52MS5DaGF0TWVzc2FnZVJlcXVlc3RIABInCgVlcnJvchgDIAEoDjIWLnJvb20udjEuUm9vbUVycm9yVHlwZUgAEjIKDW1lbWJlcl9qb2luZWQYBCABKAsyGS5yb29tLnYxLlJvb21NZW1iZXJKb2luZWRIABIuCgttZW1iZXJfbGVmdBgFIAEoCzIXLnJvb20udjEuUm9vbU1lbWJlckxlZnRIAEIJCgdjb250ZW50KogBCg1Sb29tRXJyb3JUeXBlEh8KG1JPT01fRVJST1JfVFlQRV9VTlNQRUNJRklFRBAAEhgKFFJPT01fRVJST1JfVFlQRV9BVVRIEAESGgoWUk9PTV9FUlJPUl9UWVBFX05PUk9PTRACEiAKHFJPT01fRVJST1JfVFlQRV9JTlZBTElEX0NPREUQAzKSAQoLUm9vbVNlcnZpY2USRQoKQ3JlYXRlUm9vbRIaLnJvb20udjEuQ3JlYXRlUm9vbVJlcXVlc3QaGy5yb29tLnYxLkNyZWF0ZVJvb21SZXNwb25zZRI8CgdHZXRSb29tEhcucm9vbS52MS5HZXRSb29tUmVxdWVzdBoYLnJvb20udjEuR2V0Um9vbVJlc3BvbnNlQo0BCgtjb20ucm9vbS52MUIJUm9vbVByb3RvUAFaNmdpdGh1Yi5jb20vYXJpYW4tbmovY2hpZ2FtZS9iYWNrZW5kL2dlbi9yb29tL3YxO3Jvb212MaICA1JYWKoCB1Jvb20uVjHKAgdSb29tXFYx4gITUm9vbVxWMVxHUEJNZXRhZGF0YeoCCFJvb206OlYxYgZwcm90bzM", [file_account_v1_account]);
 
 /**
  * @generated from message room.v1.CreateRoomRequest
@@ -49,36 +49,6 @@ export const CreateRoomResponseSchema: GenMessage<CreateRoomResponse> = /*@__PUR
   messageDesc(file_room_v1_room, 1);
 
 /**
- * @generated from message room.v1.JoinRoomRequest
- */
-export type JoinRoomRequest = Message<"room.v1.JoinRoomRequest"> & {
-  /**
-   * @generated from field: string code = 1;
-   */
-  code: string;
-};
-
-/**
- * Describes the message room.v1.JoinRoomRequest.
- * Use `create(JoinRoomRequestSchema)` to create a new message.
- */
-export const JoinRoomRequestSchema: GenMessage<JoinRoomRequest> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 2);
-
-/**
- * @generated from message room.v1.JoinRoomResponse
- */
-export type JoinRoomResponse = Message<"room.v1.JoinRoomResponse"> & {
-};
-
-/**
- * Describes the message room.v1.JoinRoomResponse.
- * Use `create(JoinRoomResponseSchema)` to create a new message.
- */
-export const JoinRoomResponseSchema: GenMessage<JoinRoomResponse> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 3);
-
-/**
  * @generated from message room.v1.GetRoomRequest
  */
 export type GetRoomRequest = Message<"room.v1.GetRoomRequest"> & {
@@ -93,7 +63,7 @@ export type GetRoomRequest = Message<"room.v1.GetRoomRequest"> & {
  * Use `create(GetRoomRequestSchema)` to create a new message.
  */
 export const GetRoomRequestSchema: GenMessage<GetRoomRequest> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 4);
+  messageDesc(file_room_v1_room, 2);
 
 /**
  * @generated from message room.v1.GetRoomResponse
@@ -110,11 +80,14 @@ export type GetRoomResponse = Message<"room.v1.GetRoomResponse"> & {
   gameKey: string;
 
   /**
-   * repeated account.v1.Account players = 4;
-   *
    * @generated from field: account.v1.Account host_player = 3;
    */
   hostPlayer?: Account;
+
+  /**
+   * @generated from field: repeated account.v1.Account players = 4;
+   */
+  players: Account[];
 };
 
 /**
@@ -122,41 +95,7 @@ export type GetRoomResponse = Message<"room.v1.GetRoomResponse"> & {
  * Use `create(GetRoomResponseSchema)` to create a new message.
  */
 export const GetRoomResponseSchema: GenMessage<GetRoomResponse> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 5);
-
-/**
- * @generated from message room.v1.LeaveRoomRequest
- */
-export type LeaveRoomRequest = Message<"room.v1.LeaveRoomRequest"> & {
-  /**
-   * @generated from field: string code = 1;
-   */
-  code: string;
-};
-
-/**
- * Describes the message room.v1.LeaveRoomRequest.
- * Use `create(LeaveRoomRequestSchema)` to create a new message.
- */
-export const LeaveRoomRequestSchema: GenMessage<LeaveRoomRequest> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 6);
-
-/**
- * @generated from message room.v1.LeaveRoomResponse
- */
-export type LeaveRoomResponse = Message<"room.v1.LeaveRoomResponse"> & {
-  /**
-   * @generated from field: bool ok = 1;
-   */
-  ok: boolean;
-};
-
-/**
- * Describes the message room.v1.LeaveRoomResponse.
- * Use `create(LeaveRoomResponseSchema)` to create a new message.
- */
-export const LeaveRoomResponseSchema: GenMessage<LeaveRoomResponse> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 7);
+  messageDesc(file_room_v1_room, 3);
 
 /**
  * @generated from message room.v1.ChatMessageRequest
@@ -173,7 +112,7 @@ export type ChatMessageRequest = Message<"room.v1.ChatMessageRequest"> & {
  * Use `create(ChatMessageRequestSchema)` to create a new message.
  */
 export const ChatMessageRequestSchema: GenMessage<ChatMessageRequest> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 8);
+  messageDesc(file_room_v1_room, 4);
 
 /**
  * @generated from message room.v1.ChatMessageResponse
@@ -200,7 +139,7 @@ export type ChatMessageResponse = Message<"room.v1.ChatMessageResponse"> & {
  * Use `create(ChatMessageResponseSchema)` to create a new message.
  */
 export const ChatMessageResponseSchema: GenMessage<ChatMessageResponse> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 9);
+  messageDesc(file_room_v1_room, 5);
 
 /**
  * @generated from message room.v1.RoomMemberJoined
@@ -217,7 +156,7 @@ export type RoomMemberJoined = Message<"room.v1.RoomMemberJoined"> & {
  * Use `create(RoomMemberJoinedSchema)` to create a new message.
  */
 export const RoomMemberJoinedSchema: GenMessage<RoomMemberJoined> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 10);
+  messageDesc(file_room_v1_room, 6);
 
 /**
  * @generated from message room.v1.RoomMemberLeft
@@ -234,7 +173,7 @@ export type RoomMemberLeft = Message<"room.v1.RoomMemberLeft"> & {
  * Use `create(RoomMemberLeftSchema)` to create a new message.
  */
 export const RoomMemberLeftSchema: GenMessage<RoomMemberLeft> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 11);
+  messageDesc(file_room_v1_room, 7);
 
 /**
  * @generated from message room.v1.RoomMessage
@@ -281,7 +220,7 @@ export type RoomMessage = Message<"room.v1.RoomMessage"> & {
  * Use `create(RoomMessageSchema)` to create a new message.
  */
 export const RoomMessageSchema: GenMessage<RoomMessage> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 12);
+  messageDesc(file_room_v1_room, 8);
 
 /**
  * @generated from enum room.v1.RoomErrorType
@@ -327,28 +266,12 @@ export const RoomService: GenService<{
     output: typeof CreateRoomResponseSchema;
   },
   /**
-   * @generated from rpc room.v1.RoomService.JoinRoom
-   */
-  joinRoom: {
-    methodKind: "unary";
-    input: typeof JoinRoomRequestSchema;
-    output: typeof JoinRoomResponseSchema;
-  },
-  /**
    * @generated from rpc room.v1.RoomService.GetRoom
    */
   getRoom: {
     methodKind: "unary";
     input: typeof GetRoomRequestSchema;
     output: typeof GetRoomResponseSchema;
-  },
-  /**
-   * @generated from rpc room.v1.RoomService.LeaveRoom
-   */
-  leaveRoom: {
-    methodKind: "unary";
-    input: typeof LeaveRoomRequestSchema;
-    output: typeof LeaveRoomResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_room_v1_room, 0);

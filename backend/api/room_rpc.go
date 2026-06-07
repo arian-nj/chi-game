@@ -7,15 +7,14 @@ import (
 	"strings"
 
 	"connectrpc.com/connect"
-	"github.com/arian-nj/chigame/backend/database"
 	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
+	"github.com/arian-nj/chigame/backend/database"
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 var (
-	errRoomFullRPC     = connect.NewError(connect.CodeFailedPrecondition, errors.New("room is full"))
 	errRoomCodeInvalid = connect.NewError(connect.CodeNotFound, errors.New("invalid or expired room code"))
 	errInvalidGameKey  = connect.NewError(connect.CodeInvalidArgument, errors.New("invalid game key"))
 )
@@ -58,37 +57,6 @@ func (app *APIApplication) CreateRoom(
 	}), nil
 }
 
-func (app *APIApplication) JoinRoom(
-	ctx context.Context,
-	req *connect.Request[roomv1.JoinRoomRequest],
-) (*connect.Response[roomv1.JoinRoomResponse], error) {
-	person := app.AuthenticateHeader(ctx, req.Header())
-	if person == nil {
-		return nil, connect.NewError(connect.CodeUnauthenticated, ErrCantAuthenticateUser)
-	}
-
-	code := normalizeRoomCode(req.Msg.GetCode())
-	if code == "" {
-		return nil, errRoomCodeInvalid
-	}
-
-	if _, ok := app.RoomsStore.GetByCode(code); !ok {
-		return nil, errRoomCodeInvalid
-	}
-
-	if err := app.RoomsStore.AddPlayer(code, person.ID); err != nil {
-		if errors.Is(err, errRoomFull) {
-			return nil, errRoomFullRPC
-		}
-		if errors.Is(err, errRoomNotFound) {
-			return nil, errRoomCodeInvalid
-		}
-		return nil, connect.NewError(connect.CodeInternal, err)
-	}
-
-	return connect.NewResponse(&roomv1.JoinRoomResponse{}), nil
-}
-
 func (app *APIApplication) GetRoom(
 	ctx context.Context,
 	req *connect.Request[roomv1.GetRoomRequest],
@@ -108,62 +76,50 @@ func (app *APIApplication) GetRoom(
 		return nil, errRoomCodeInvalid
 	}
 
-	if !app.RoomsStore.HasPlayer(code, person.ID) {
+	if !room.HasMember(person.ID) && person.ID != room.HostPersonID {
 		return nil, connect.NewError(connect.CodePermissionDenied, errors.New("not in this room"))
 	}
 
-	var hostPerson *accountv1.Account
-	playersAccounts := make([]*accountv1.Account, 0, len(room.PlayerIDs))
-	for _, playerID := range room.PlayerIDs {
-		p, err := app.Queries.GetPersonByID(ctx, playerID)
-		if err != nil {
-			if errors.Is(err, pgx.ErrNoRows) {
-				continue
-			}
-			return nil, connect.NewError(connect.CodeInternal, err)
+	hostRow, err := app.Queries.GetPersonByID(ctx, room.HostPersonID)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, errRoomCodeInvalid
 		}
-		personToAccount := personToAccount(&p)
-		if playerID == room.HostPersonID {
-			hostPerson = personToAccount
-		}
-		playersAccounts = append(playersAccounts, personToAccount)
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	hostAccount := personToAccount(&hostRow)
+	players := roomConnectedPlayers(room)
+	if !playersIncludeID(players, room.HostPersonID) {
+		players = append(players, hostAccount)
 	}
 
 	return connect.NewResponse(&roomv1.GetRoomResponse{
 		Code:       room.Code,
 		GameKey:    room.GameKey,
-		HostPlayer: hostPerson,
+		HostPlayer: hostAccount,
+		Players:    players,
 	}), nil
 }
 
-func (app *APIApplication) LeaveRoom(
-	ctx context.Context,
-	req *connect.Request[roomv1.LeaveRoomRequest],
-) (*connect.Response[roomv1.LeaveRoomResponse], error) {
-	person := app.AuthenticateHeader(ctx, req.Header())
-	if person == nil {
-		return nil, connect.NewError(connect.CodeUnauthenticated, ErrCantAuthenticateUser)
-	}
+func roomConnectedPlayers(room *Room) []*accountv1.Account {
+	room.TaskSync.Lock()
+	defer room.TaskSync.Unlock()
 
-	code := normalizeRoomCode(req.Msg.GetCode())
-	if code == "" {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("room code required"))
+	players := make([]*accountv1.Account, 0, len(room.Members))
+	for _, member := range room.Members {
+		players = append(players, personToAccount(member.Person))
 	}
+	return players
+}
 
-	if room, ok := app.RoomsStore.GetByCode(code); ok {
-		if member, exists := room.Members[person.ID]; exists {
-			room.RemoveMember(member)
+func playersIncludeID(players []*accountv1.Account, id int64) bool {
+	for _, player := range players {
+		if player.GetId() == id {
+			return true
 		}
 	}
-
-	if err := app.RoomsStore.RemovePlayer(code, person.ID); err != nil {
-		if errors.Is(err, errNotInRoom) || errors.Is(err, errRoomNotFound) {
-			return connect.NewResponse(&roomv1.LeaveRoomResponse{Ok: true}), nil
-		}
-		return nil, connect.NewError(connect.CodeInternal, err)
-	}
-
-	return connect.NewResponse(&roomv1.LeaveRoomResponse{Ok: true}), nil
+	return false
 }
 
 func normalizeRoomCode(code string) string {

@@ -10,16 +10,6 @@ import { RoomService } from "./room_pb";
 export const createRoom = RoomService.method.createRoom;
 
 /**
- * @generated from rpc room.v1.RoomService.JoinRoom
- */
-export const joinRoom = RoomService.method.joinRoom;
-
-/**
  * @generated from rpc room.v1.RoomService.GetRoom
  */
 export const getRoom = RoomService.method.getRoom;
-
-/**
- * @generated from rpc room.v1.RoomService.LeaveRoom
- */
-export const leaveRoom = RoomService.method.leaveRoom;

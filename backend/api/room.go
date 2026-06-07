@@ -3,7 +3,6 @@ package api
 import (
 	"errors"
 	"log/slog"
-	"slices"
 	"sync"
 	"time"
 
@@ -27,20 +26,19 @@ var AllowedRoomGameKeys = map[string]struct{}{
 }
 
 var (
-	errNotInRoom    = errors.New("not in room")
-	errRoomFull     = errors.New("room is full")
-	errRoomNotFound = errors.New("room not found")
+	errRoomFull = errors.New("room is full")
 )
 
 type Room struct {
 	ID           int64
 	Code         string
-	GameKey      string
 	HostPersonID int64
-	PlayerIDs    []int64
 	Members      map[int64]*RoomMember
-	CreatedAt    time.Time
-	ExpiresAt    time.Time
+
+	GameKey string
+
+	CreatedAt time.Time
+	ExpiresAt time.Time
 
 	Commander *commander.Commander
 
@@ -57,7 +55,6 @@ func NewRoom(code string, hostPersonID int64, gameKey string, queries *database.
 		Code:         code,
 		GameKey:      gameKey,
 		HostPersonID: hostPersonID,
-		PlayerIDs:    []int64{hostPersonID},
 		Members:      make(map[int64]*RoomMember),
 		CreatedAt:    now,
 		ExpiresAt:    expiresAt,
@@ -97,12 +94,20 @@ func (app *APIApplication) RunRoom(r *Room) {
 	})
 }
 
-func (r *Room) AddMember(member *RoomMember) {
+func (r *Room) AddMember(member *RoomMember) error {
 	r.TaskSync.Lock()
 	defer r.TaskSync.Unlock()
 
+	if _, exists := r.Members[member.Person.ID]; exists {
+		return nil
+	}
+	if len(r.Members) >= maxPlayersPerRoom {
+		return errRoomFull
+	}
+
 	r.Members[member.Person.ID] = member
 	r.Commander.PushCommand(NewRoomMemberJoinedCommand(r, member))
+	return nil
 }
 
 func (r *Room) RemoveMember(member *RoomMember) {
@@ -114,6 +119,16 @@ func (r *Room) RemoveMember(member *RoomMember) {
 	}
 	r.Commander.PushCommand(NewRoomMemberLeftCommand(r, member))
 	delete(r.Members, member.Person.ID)
+	if member.Socket != nil {
+		member.Socket.Cancel()
+	}
+}
+
+func (r *Room) HasMember(personID int64) bool {
+	r.TaskSync.Lock()
+	defer r.TaskSync.Unlock()
+	_, ok := r.Members[personID]
+	return ok
 }
 
 // Room Store
@@ -154,54 +169,17 @@ func (s *RoomsStore) GetByCode(code string) (*Room, bool) {
 	return s.getByCodeLocked(code)
 }
 
-func (s *RoomsStore) HasPlayer(code string, personID int64) bool {
+func (s *RoomsStore) MaybeDeleteRoom(code string, leftPersonID int64) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	room, ok := s.getByCodeLocked(code)
 	if !ok {
-		return false
+		return
 	}
-	return slices.Contains(room.PlayerIDs, personID)
-}
-
-func (s *RoomsStore) AddPlayer(code string, personID int64) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	room, ok := s.getByCodeLocked(code)
-	if !ok {
-		return errRoomNotFound
-	}
-
-	if slices.Contains(room.PlayerIDs, personID) {
-		return nil
-	}
-	if len(room.PlayerIDs) >= maxPlayersPerRoom {
-		return errRoomFull
-	}
-
-	room.PlayerIDs = append(room.PlayerIDs, personID)
-	return nil
-}
-
-func (s *RoomsStore) RemovePlayer(code string, personID int64) error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	room, ok := s.getByCodeLocked(code)
-	if !ok {
-		return errRoomNotFound
-	}
-	if !slices.Contains(room.PlayerIDs, personID) {
-		return errNotInRoom
-	}
-
-	room.PlayerIDs = removePlayerID(room.PlayerIDs, personID)
-	if len(room.PlayerIDs) == 0 || room.HostPersonID == personID {
+	if len(room.Members) == 0 || room.HostPersonID == leftPersonID {
 		s.deleteLocked(code)
 	}
-	return nil
 }
 
 func (s *RoomsStore) deleteLocked(code string) {
@@ -218,16 +196,6 @@ func (s *RoomsStore) getByCodeLocked(code string) (*Room, bool) {
 		return nil, false
 	}
 	return room, true
-}
-
-func removePlayerID(ids []int64, personID int64) []int64 {
-	out := ids[:0]
-	for _, id := range ids {
-		if id != personID {
-			out = append(out, id)
-		}
-	}
-	return out
 }
 
 // Room Member

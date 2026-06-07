@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"log/slog"
 	"net/http"
 
@@ -46,7 +47,12 @@ func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 	}
 
 	roomMember := NewRoomMember(person, socketClient)
-	currentRoom.AddMember(roomMember)
+	if err := currentRoom.AddMember(roomMember); err != nil {
+		if errors.Is(err, errRoomFull) {
+			sendRoomSocketError(socketClient, roomv1.RoomErrorType_ROOM_ERROR_TYPE_INVALID_CODE)
+		}
+		return
+	}
 
 	// listen
 	utils.RunBackgroundTask(func() {
@@ -58,7 +64,7 @@ func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 		case <-socketClient.Ctx.Done():
 			slog.Info("socket context cancelled", "addr", r.RemoteAddr)
 			currentRoom.RemoveMember(roomMember)
-			_ = app.RoomsStore.RemovePlayer(code, person.ID)
+			app.RoomsStore.MaybeDeleteRoom(code, person.ID)
 			return
 		case newMsgBytes := <-socketClient.EventChan:
 			newRoomMsg := &roomv1.RoomMessage{}

@@ -5,15 +5,13 @@ import { useTextDirection } from '@/composables/use-text-direction';
 import type { Account } from '@/gen/account/v1/account_pb';
 import { RoomErrorType, RoomService } from '@/gen/room/v1/room_pb';
 import { createApiClient } from '@/libs/api-client';
-import { joinRoomWithCode, leaveCurrentRoom } from '@/libs/room-api';
 import type { SessionSocket } from '@/libs/room-socket';
 import { useRoomSocket } from '@/libs/room-socket';
 import { roomInviteUrl } from '@/libs/room-url';
-import { ConnectError } from '@connectrpc/connect';
 import { useQuery } from '@tanstack/vue-query';
 import type { ComputedRef, InjectionKey, Ref } from 'vue';
 import { computed, inject, onBeforeUnmount, ref, watch } from 'vue';
-import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useRoomChat, type RoomChatMessage } from '@/composables/use-room-chat';
 
@@ -48,22 +46,6 @@ export function useRoomSession(): RoomSessionContext {
     throw new Error('useRoomSession must be used within RoomShell');
   }
   return session;
-}
-
-function inviteErrorMessage(err: unknown, t: (key: string) => string): string {
-  if (err instanceof ConnectError) {
-    const msg = err.message.toLowerCase();
-    if (msg.includes('full')) {
-      return t('invite.roomFull');
-    }
-    if (msg.includes('invalid') || msg.includes('expired') || msg.includes('not found')) {
-      return t('invite.invalidCode');
-    }
-    if (err.code === 16) {
-      return t('invite.needAuth');
-    }
-  }
-  return '';
 }
 
 export function provideRoomSession(): RoomSessionContext {
@@ -111,10 +93,17 @@ export function provideRoomSession(): RoomSessionContext {
   }
 
   watch(
-    () => data.value?.hostPlayer,
-    (hostPlayer) => {
-      if (hostPlayer) {
-        addPlayer(hostPlayer);
+    () => data.value,
+    (room) => {
+      if (!room) {
+        return;
+      }
+      if (room.players.length > 0) {
+        playersList.value = [...room.players];
+        return;
+      }
+      if (room.hostPlayer) {
+        playersList.value = [room.hostPlayer];
       }
     },
     { immediate: true },
@@ -153,22 +142,14 @@ export function provideRoomSession(): RoomSessionContext {
     }
 
     isBusy.value = true;
-    try {
-      await joinRoomWithCode(normalized);
-      joinReady.value = true;
-      if (route.params.code !== normalized) {
-        await router.replace({
-          name: 'room-code',
-          params: { locale: locale.value, code: normalized },
-        });
-      }
-    } catch (err) {
-      const specific = inviteErrorMessage(err, t);
-      toast.error(specific || t('invite.joinFailed'));
-      await router.push({ name: 'room', params: { locale: locale.value } });
-    } finally {
-      isBusy.value = false;
+    joinReady.value = true;
+    if (route.params.code !== normalized) {
+      await router.replace({
+        name: 'room-code',
+        params: { locale: locale.value, code: normalized },
+      });
     }
+    isBusy.value = false;
   }
 
   watch(
@@ -200,20 +181,8 @@ export function provideRoomSession(): RoomSessionContext {
   );
 
   async function leave() {
-    try {
-      await leaveCurrentRoom(roomCode.value);
-    } catch {
-      // still leave UI
-    }
     await router.push({ name: 'room', params: { locale: locale.value } });
   }
-
-  onBeforeRouteLeave((to) => {
-    if (to.name === 'room' || to.name === 'room-code' || to.name === 'room-play') {
-      return;
-    }
-    void leaveCurrentRoom(roomCode.value);
-  });
 
   const { socket } = useRoomSocket(roomCode.value);
   socket.HandleSessionErrorMessage = (errType: RoomErrorType) => {

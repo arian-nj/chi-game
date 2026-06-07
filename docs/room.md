@@ -29,9 +29,7 @@ Proto: [`proto/room/v1/room.proto`](../proto/room/v1/room.proto)
 | RPC | Description |
 |-----|-------------|
 | `CreateRoom` | Host creates a room; returns `code`. Does not affect other rooms the caller is in. |
-| `JoinRoom` | Joins by code (max 2 players). Idempotent if already in that room. |
-| `GetRoom` | Returns room metadata and `players`. Caller must be a member. Lobby polls every 2s. |
-| `LeaveRoom` | Removes caller from the room; may delete that room (see lifecycle). |
+| `GetRoom` | Returns room metadata and connected players. Caller must be the host or connected via websocket. |
 
 ### Request notes
 
@@ -50,15 +48,15 @@ Proto: [`proto/room/v1/room.proto`](../proto/room/v1/room.proto)
 
 ## Room lifecycle
 
-**Membership rules**
+**Membership**
 
-- A person may be in **multiple rooms** at once.
-- At most **two players** per room.
+- A person is in a room when connected via **websocket** (or is the host before first connect).
+- At most **two players** per room (enforced on websocket connect).
 - **TTL**: 12 hours from create. Expired rooms are removed on next lookup.
 
 **Deletion**
 
-On leave, the room is deleted if no players remain or the leaver is the **host**.
+On websocket disconnect, the room is deleted if no members remain or the disconnecting player is the **host**.
 
 ## In-memory store
 
@@ -69,7 +67,7 @@ Room state lives in `RoomsStore` on [`APIApplication`](../backend/api/api.go) ([
 | `Code` | 6-char room code (public identifier) |
 | `GameKey` | Optional label |
 | `HostPersonID` | Creator |
-| `PlayerIDs` | Join order for lobby UI |
+| `Members` | Connected websocket clients |
 | `CreatedAt` / `ExpiresAt` | TTL enforcement |
 | `MsgChnl` | Event channel for websocket (future) |
 

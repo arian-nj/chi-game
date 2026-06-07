@@ -3,11 +3,14 @@ package api
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"testing"
 	"time"
 
 	"connectrpc.com/connect"
+	authv1 "github.com/arian-nj/chigame/backend/gen/auth/v1"
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
+	"github.com/arian-nj/chigame/backend/database"
 )
 
 func authRequest[T any](t *testing.T, msg *T, token string) *connect.Request[T] {
@@ -15,6 +18,20 @@ func authRequest[T any](t *testing.T, msg *T, token string) *connect.Request[T] 
 	req := connect.NewRequest(msg)
 	req.Header().Set("Authorization", fmt.Sprintf("Bearer %s", token))
 	return req
+}
+
+func guestPerson(t *testing.T, app *APIApplication, guest *authv1.ValidateGuestResponse) *database.Person {
+	t.Helper()
+	claims := parseGuestClaims(t, []byte(testJWTSecret), guest.GetToken())
+	personID, err := strconv.ParseInt(claims.Subject, 10, 64)
+	if err != nil {
+		t.Fatalf("parse person id: %v", err)
+	}
+	person, err := app.Queries.GetPersonByID(context.Background(), personID)
+	if err != nil {
+		t.Fatalf("GetPersonByID: %v", err)
+	}
+	return &person
 }
 
 func TestCreateRoomWhenNotInRoom(t *testing.T) {
@@ -56,31 +73,9 @@ func TestCreateMultipleRoomsSameHost(t *testing.T) {
 	}
 }
 
-func TestJoinRoomFull(t *testing.T) {
-	app := setupTestApp(t)
-	host := mustValidateGuest(t, app, "room-full-host")
-	guest1 := mustValidateGuest(t, app, "room-full-guest1")
-	guest2 := mustValidateGuest(t, app, "room-full-guest2")
-
-	createResp, err := app.CreateRoom(context.Background(), authRequest(t, &roomv1.CreateRoomRequest{GameKey: ""}, host.GetToken()))
-	if err != nil {
-		t.Fatalf("CreateRoom: %v", err)
-	}
-	code := createResp.Msg.GetCode()
-
-	_, err = app.JoinRoom(context.Background(), authRequest(t, &roomv1.JoinRoomRequest{Code: code}, guest1.GetToken()))
-	if err != nil {
-		t.Fatalf("JoinRoom guest1: %v", err)
-	}
-
-	_, err = app.JoinRoom(context.Background(), authRequest(t, &roomv1.JoinRoomRequest{Code: code}, guest2.GetToken()))
-	assertConnectCode(t, err, connect.CodeFailedPrecondition)
-}
-
-func TestJoinRoomExpired(t *testing.T) {
+func TestGetRoomExpired(t *testing.T) {
 	app := setupTestApp(t)
 	host := mustValidateGuest(t, app, "room-expired-host")
-	guest := mustValidateGuest(t, app, "room-expired-guest")
 
 	createResp, err := app.CreateRoom(context.Background(), authRequest(t, &roomv1.CreateRoomRequest{GameKey: ""}, host.GetToken()))
 	if err != nil {
@@ -94,14 +89,13 @@ func TestJoinRoomExpired(t *testing.T) {
 	}
 	room.ExpiresAt = time.Now().Add(-time.Minute)
 
-	_, err = app.JoinRoom(context.Background(), authRequest(t, &roomv1.JoinRoomRequest{Code: code}, guest.GetToken()))
+	_, err = app.GetRoom(context.Background(), authRequest(t, &roomv1.GetRoomRequest{Code: code}, host.GetToken()))
 	assertConnectCode(t, err, connect.CodeNotFound)
 }
 
 func TestHostLeaveDeletesRoom(t *testing.T) {
 	app := setupTestApp(t)
 	host := mustValidateGuest(t, app, "room-leave-host")
-	guest := mustValidateGuest(t, app, "room-leave-guest")
 
 	createResp, err := app.CreateRoom(context.Background(), authRequest(t, &roomv1.CreateRoomRequest{GameKey: ""}, host.GetToken()))
 	if err != nil {
@@ -109,24 +103,29 @@ func TestHostLeaveDeletesRoom(t *testing.T) {
 	}
 	code := createResp.Msg.GetCode()
 
-	_, err = app.JoinRoom(context.Background(), authRequest(t, &roomv1.JoinRoomRequest{Code: code}, guest.GetToken()))
-	if err != nil {
-		t.Fatalf("JoinRoom: %v", err)
+	room, ok := app.RoomsStore.GetByCode(code)
+	if !ok {
+		t.Fatal("expected room in store")
 	}
 
-	_, err = app.LeaveRoom(context.Background(), authRequest(t, &roomv1.LeaveRoomRequest{Code: code}, host.GetToken()))
-	if err != nil {
-		t.Fatalf("LeaveRoom: %v", err)
+	hostPerson := guestPerson(t, app, host)
+	roomMember := NewRoomMember(hostPerson, nil)
+	if err := room.AddMember(roomMember); err != nil {
+		t.Fatalf("AddMember: %v", err)
 	}
 
-	_, err = app.GetRoom(context.Background(), authRequest(t, &roomv1.GetRoomRequest{Code: code}, guest.GetToken()))
+	room.RemoveMember(roomMember)
+	app.RoomsStore.MaybeDeleteRoom(code, hostPerson.ID)
+
+	_, err = app.GetRoom(context.Background(), authRequest(t, &roomv1.GetRoomRequest{Code: code}, host.GetToken()))
 	assertConnectCode(t, err, connect.CodeNotFound)
 }
 
-func TestJoinRoomIdempotent(t *testing.T) {
+func TestAddMemberFull(t *testing.T) {
 	app := setupTestApp(t)
-	host := mustValidateGuest(t, app, "room-idem-host")
-	guest := mustValidateGuest(t, app, "room-idem-guest")
+	host := mustValidateGuest(t, app, "room-full-host")
+	guest1 := mustValidateGuest(t, app, "room-full-guest1")
+	guest2 := mustValidateGuest(t, app, "room-full-guest2")
 
 	createResp, err := app.CreateRoom(context.Background(), authRequest(t, &roomv1.CreateRoomRequest{GameKey: ""}, host.GetToken()))
 	if err != nil {
@@ -134,14 +133,77 @@ func TestJoinRoomIdempotent(t *testing.T) {
 	}
 	code := createResp.Msg.GetCode()
 
-	joinReq := authRequest(t, &roomv1.JoinRoomRequest{Code: code}, guest.GetToken())
-	_, err = app.JoinRoom(context.Background(), joinReq)
-	if err != nil {
-		t.Fatalf("JoinRoom first: %v", err)
+	room, ok := app.RoomsStore.GetByCode(code)
+	if !ok {
+		t.Fatal("expected room in store")
 	}
 
-	_, err = app.JoinRoom(context.Background(), joinReq)
+	if err := room.AddMember(NewRoomMember(guestPerson(t, app, host), nil)); err != nil {
+		t.Fatalf("AddMember host: %v", err)
+	}
+	if err := room.AddMember(NewRoomMember(guestPerson(t, app, guest1), nil)); err != nil {
+		t.Fatalf("AddMember guest1: %v", err)
+	}
+	err = room.AddMember(NewRoomMember(guestPerson(t, app, guest2), nil))
+	if err != errRoomFull {
+		t.Fatalf("expected room full, got: %v", err)
+	}
+}
+
+func TestGetRoomReturnsConnectedPlayers(t *testing.T) {
+	app := setupTestApp(t)
+	host := mustValidateGuest(t, app, "room-get-players-host")
+	guest := mustValidateGuest(t, app, "room-get-players-guest")
+
+	createResp, err := app.CreateRoom(context.Background(), authRequest(t, &roomv1.CreateRoomRequest{GameKey: ""}, host.GetToken()))
 	if err != nil {
-		t.Fatalf("JoinRoom idempotent: %v", err)
+		t.Fatalf("CreateRoom: %v", err)
+	}
+	code := createResp.Msg.GetCode()
+
+	room, ok := app.RoomsStore.GetByCode(code)
+	if !ok {
+		t.Fatal("expected room in store")
+	}
+
+	hostPerson := guestPerson(t, app, host)
+	guestPersonRow := guestPerson(t, app, guest)
+	if err := room.AddMember(NewRoomMember(hostPerson, nil)); err != nil {
+		t.Fatalf("AddMember host: %v", err)
+	}
+	if err := room.AddMember(NewRoomMember(guestPersonRow, nil)); err != nil {
+		t.Fatalf("AddMember guest: %v", err)
+	}
+
+	resp, err := app.GetRoom(context.Background(), authRequest(t, &roomv1.GetRoomRequest{Code: code}, host.GetToken()))
+	if err != nil {
+		t.Fatalf("GetRoom: %v", err)
+	}
+	if len(resp.Msg.GetPlayers()) != 2 {
+		t.Fatalf("expected 2 players, got %d", len(resp.Msg.GetPlayers()))
+	}
+}
+
+func TestAddMemberIdempotent(t *testing.T) {
+	app := setupTestApp(t)
+	host := mustValidateGuest(t, app, "room-idem-host")
+
+	createResp, err := app.CreateRoom(context.Background(), authRequest(t, &roomv1.CreateRoomRequest{GameKey: ""}, host.GetToken()))
+	if err != nil {
+		t.Fatalf("CreateRoom: %v", err)
+	}
+	code := createResp.Msg.GetCode()
+
+	room, ok := app.RoomsStore.GetByCode(code)
+	if !ok {
+		t.Fatal("expected room in store")
+	}
+
+	member := NewRoomMember(guestPerson(t, app, host), nil)
+	if err := room.AddMember(member); err != nil {
+		t.Fatalf("AddMember first: %v", err)
+	}
+	if err := room.AddMember(member); err != nil {
+		t.Fatalf("AddMember idempotent: %v", err)
 	}
 }

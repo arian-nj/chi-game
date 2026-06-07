@@ -101,7 +101,7 @@ function submitMessage() {
           {{ chatPlayerName(message.playerId) }}
         </span>
         <p
-          class="max-w-[88%] break-words rounded-2xl px-3 py-2 text-sm leading-relaxed text-white sm:max-w-[80%] sm:text-base"
+          class="max-w-[88%] wrap-break-word rounded-2xl px-3 py-2 text-sm leading-relaxed text-white sm:max-w-[80%] sm:text-base"
           :class="isOwnChatMessage(message.playerId)
             ? 'rounded-br-md bg-green-500/90'
             : 'rounded-bl-md bg-custom-deep-blue/80'"

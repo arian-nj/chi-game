@@ -52,6 +52,7 @@
     [ ] gameselector when no active game
     [ ] room run lifecycel
 
+[X] remove playersid from room
 
 
 [X] move invites from db to memory

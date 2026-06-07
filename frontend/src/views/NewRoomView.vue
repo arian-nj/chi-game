@@ -2,7 +2,7 @@
 import { useToast } from '@/components/Toast.vue';
 import { useGuestAuth } from '@/composables/use-guest-auth';
 import { useTextDirection } from '@/composables/use-text-direction';
-import { createRoom, joinRoomWithCode } from '@/libs/room-api';
+import { createRoom } from '@/libs/room-api';
 import { ConnectError } from '@connectrpc/connect';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -61,7 +61,6 @@ async function joinRoom(code: string) {
 
   isBusy.value = true;
   try {
-    await joinRoomWithCode(normalized);
     await goToLobby(normalized);
   } catch (err) {
     const specific = inviteErrorMessage(err);

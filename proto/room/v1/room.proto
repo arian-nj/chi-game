@@ -6,9 +6,7 @@ import "account/v1/account.proto";
 
 service RoomService {
   rpc CreateRoom(CreateRoomRequest) returns (CreateRoomResponse);
-  rpc JoinRoom(JoinRoomRequest) returns (JoinRoomResponse);
   rpc GetRoom(GetRoomRequest) returns (GetRoomResponse);
-  rpc LeaveRoom(LeaveRoomRequest) returns (LeaveRoomResponse);
 }
 
 message CreateRoomRequest {
@@ -19,12 +17,6 @@ message CreateRoomResponse {
   string code = 1;
 }
 
-message JoinRoomRequest {
-  string code = 1;
-}
-
-message JoinRoomResponse {}
-
 message GetRoomRequest {
   string code = 1;
 }
@@ -33,17 +25,8 @@ message GetRoomResponse {
   string code = 1;
   string game_key = 2;
   account.v1.Account host_player = 3;
-  // repeated account.v1.Account players = 4;
+  repeated account.v1.Account players = 4;
 }
-
-message LeaveRoomRequest {
-  string code = 1;
-}
-
-message LeaveRoomResponse {
-  bool ok = 1;
-}
-
 
 message ChatMessageRequest {
   string text = 1;
