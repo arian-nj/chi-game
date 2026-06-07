@@ -12,7 +12,7 @@ provide(roomSessionKey, session);
 <template>
   <div class="relative min-h-screen bg-custom-blue text-white">
     <RouterLink
-      :to="`/${session.locale}`"
+      :to="`/${session.locale.value}`"
       class="absolute left-4 top-4 z-30 flex items-center gap-2 rounded-xl border border-white/10 bg-custom-lite-blue/70 px-4 py-2 text-sm font-bold text-blue-100 shadow-md transition hover:bg-white/20 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
       :aria-label="t('nav.backToHome')"
     >

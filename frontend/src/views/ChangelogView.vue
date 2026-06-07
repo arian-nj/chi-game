@@ -15,6 +15,32 @@ const { textDir } = useTextDirection();
 
 const entries: ChangelogEntry[] = [
   {
+    date: '2026-06-07',
+    new: [
+      'chat ui added.',
+    ],
+  },
+  {
+    date: '2026-06-06',
+    new: [
+      'merge invite and room.',
+      'chat base added.'
+    ],
+  },
+  {
+    date: '2026-06-05',
+    new: [
+      'basic room added.',
+      'room lobby page added.'
+    ],
+  },
+  {
+    date: '2026-06-04',
+    new: [
+      'merger game and rules ',
+    ],
+  },
+  {
     date: '2026-06-03',
     new: [
       'We are online 🎉 (now we have backend)',
@@ -31,7 +57,7 @@ const entries: ChangelogEntry[] = [
       'Added robots.txt.',
       'Added sitemap.xml.',
     ],
-    changed: ['Tic Tac Toe: medium bot is a little easier (occasionally misses blocks / center).'],
+    changed: ['Offline Tic Tac Toe: medium bot is a little easier (occasionally misses blocks / center).'],
   },
 ];
 </script>

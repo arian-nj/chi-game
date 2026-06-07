@@ -46,8 +46,9 @@
 
 [] rooms
     [X] rooms in backend
-    [ ] websocket
-    [ ] chat
+    [X] websocket
+    [X] chat
+    
     [ ] gameselector when no active game
     [ ] room run lifecycel
 
