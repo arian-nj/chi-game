@@ -48,7 +48,7 @@
     [X] rooms in backend
     [X] websocket
     [X] chat
-    [ ] new room member should be notified by websocket
+    [X] new room member join/left event
     [ ] gameselector when no active game
     [ ] room run lifecycel
 
