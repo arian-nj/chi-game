@@ -26,11 +26,11 @@ function chooseGame(gameKey: string) {
 </script>
 
 <template>
-  <h1 class="text-4xl font-bold text-white mb-4 mt-2 animate-pop select-none drop-shadow-sm uppercase">
+  <h1 class="mb-4 mt-2 animate-pop select-none text-4xl font-bold uppercase drop-shadow-sm">
     {{ t('invite.playTitle') }}
   </h1>
 
-  <div class="w-full max-w-3xl px-4 flex-1 pb-10 flex flex-col gap-6">
+  <div class="flex w-full flex-col gap-6 pb-24 lg:pb-0">
     <div
       class="bg-custom-lite-blue/40 rounded-2xl border border-white/10 shadow-md flex flex-col gap-4 p-5"
       :dir="textDir"

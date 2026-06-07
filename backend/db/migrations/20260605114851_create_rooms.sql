@@ -1,7 +1,10 @@
 -- +goose Up
 CREATE TABLE rooms (
     id BIGSERIAL PRIMARY KEY,
+    code VARCHAR(6) NOT NULL UNIQUE,
+    host_person_id BIGINT NOT NULL REFERENCES persons(id) ON DELETE CASCADE,
     created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+    expires_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 

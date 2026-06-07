@@ -28,9 +28,20 @@ type PersonAuthMethod struct {
 }
 
 type Room struct {
+	ID           int64
+	Code         string
+	HostPersonID int64
+	CreatedAt    pgtype.Timestamp
+	ExpiresAt    pgtype.Timestamp
+	UpdatedAt    pgtype.Timestamp
+}
+
+type RoomMessage struct {
 	ID        int64
+	RoomID    int64
+	PersonID  int64
+	Message   string
 	CreatedAt pgtype.Timestamp
-	UpdatedAt pgtype.Timestamp
 }
 
 type RoomPlayer struct {

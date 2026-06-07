@@ -3,12 +3,15 @@ package api
 import (
 	"context"
 	"errors"
+	"log/slog"
 	"strings"
 
 	"connectrpc.com/connect"
+	"github.com/arian-nj/chigame/backend/database"
 	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 var (
@@ -37,8 +40,18 @@ func (app *APIApplication) CreateRoom(
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
+	roomRow, err := app.Queries.InsertRoom(ctx, database.InsertRoomParams{
+		Code:         newRoom.Code,
+		HostPersonID: newRoom.HostPersonID,
+		ExpiresAt:    pgtype.Timestamp{Time: newRoom.ExpiresAt, Valid: true},
+	})
+	if err != nil {
+		slog.Error("failed to insert room", "error", err)
+		return nil, connect.NewError(connect.CodeFailedPrecondition, errors.New("failed to create room"))
+	}
+	newRoom.ID = roomRow.ID
 	app.RoomsStore.AddRoom(newRoom)
-	newRoom.Run()
+	app.RunRoom(newRoom)
 
 	return connect.NewResponse(&roomv1.CreateRoomResponse{
 		Code: newRoom.Code,

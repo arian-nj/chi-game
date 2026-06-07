@@ -7,6 +7,8 @@ package database
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const deleteRoomPlayer = `-- name: DeleteRoomPlayer :exec
@@ -24,15 +26,28 @@ func (q *Queries) DeleteRoomPlayer(ctx context.Context, arg DeleteRoomPlayerPara
 }
 
 const insertRoom = `-- name: InsertRoom :one
-INSERT INTO rooms
-DEFAULT VALUES
-RETURNING id, created_at, updated_at
+INSERT INTO rooms (code, host_person_id, expires_at)
+VALUES ($1, $2, $3)
+RETURNING id, code, host_person_id, created_at, expires_at, updated_at
 `
 
-func (q *Queries) InsertRoom(ctx context.Context) (Room, error) {
-	row := q.db.QueryRow(ctx, insertRoom)
+type InsertRoomParams struct {
+	Code         string
+	HostPersonID int64
+	ExpiresAt    pgtype.Timestamp
+}
+
+func (q *Queries) InsertRoom(ctx context.Context, arg InsertRoomParams) (Room, error) {
+	row := q.db.QueryRow(ctx, insertRoom, arg.Code, arg.HostPersonID, arg.ExpiresAt)
 	var i Room
-	err := row.Scan(&i.ID, &i.CreatedAt, &i.UpdatedAt)
+	err := row.Scan(
+		&i.ID,
+		&i.Code,
+		&i.HostPersonID,
+		&i.CreatedAt,
+		&i.ExpiresAt,
+		&i.UpdatedAt,
+	)
 	return i, err
 }
 

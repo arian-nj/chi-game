@@ -32,6 +32,7 @@ var (
 )
 
 type Room struct {
+	ID           int64
 	Code         string
 	GameKey      string
 	HostPersonID int64
@@ -64,7 +65,7 @@ func NewRoom(code string, hostPersonID int64, gameKey string) *Room {
 	}
 }
 
-func (r *Room) Run() {
+func (app *APIApplication) RunRoom(r *Room) {
 	utils.RunBackgroundTask(func() {
 		for {
 			select {
@@ -75,7 +76,7 @@ func (r *Room) Run() {
 
 					switch msg := roomEvent.Event.Content.(type) {
 					case *roomv1.RoomMessage_ChatReq:
-						r.Commander.PushCommand(NewRoomMessageCommand(r, roomEvent.Player, msg.ChatReq))
+						r.Commander.PushCommand(NewRoomMessageCommand(r, roomEvent.Player, msg.ChatReq, app.Queries))
 					default:
 						slog.Error("unhandled room event", "event", roomEvent.Event)
 						_ = msg // Avoid unused variable warning if not handling other cases

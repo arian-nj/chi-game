@@ -15,6 +15,7 @@ import type { ComputedRef, InjectionKey, Ref } from 'vue';
 import { computed, inject, onBeforeUnmount, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { useRoomChat, type RoomChatMessage } from '@/composables/use-room-chat';
 
 export type RoomSessionContext = {
   locale: ComputedRef<string>;
@@ -28,6 +29,12 @@ export type RoomSessionContext = {
   roomLink: ComputedRef<string>;
   textDir: ComputedRef<'ltr' | 'rtl'>;
   socket: SessionSocket;
+  chatMessages: Ref<RoomChatMessage[]>;
+  chatConnected: Ref<boolean>;
+  chatHasMessages: ComputedRef<boolean>;
+  sendChatMessage: (text: string) => boolean;
+  chatPlayerName: (playerId: bigint) => string;
+  isOwnChatMessage: (playerId: bigint) => boolean;
   leave: () => Promise<void>;
   playerLabel: (displayName: string, username: string) => string;
   copyText: (text: string) => Promise<void>;
@@ -192,6 +199,16 @@ export function provideRoomSession(): RoomSessionContext {
     toast.error(`${errType}`);
   };
 
+  const myId = computed(() => meData.value?.account?.id);
+  const {
+    messages: chatMessages,
+    isConnected: chatConnected,
+    hasMessages: chatHasMessages,
+    sendMessage: sendChatMessage,
+    playerNameFor: chatPlayerName,
+    isOwnMessage: isOwnChatMessage,
+  } = useRoomChat(socket, players, myId, playerLabel);
+
   onBeforeUnmount(() => {
     socket.close();
   });
@@ -208,6 +225,12 @@ export function provideRoomSession(): RoomSessionContext {
     roomLink,
     textDir,
     socket,
+    chatMessages,
+    chatConnected,
+    chatHasMessages,
+    sendChatMessage,
+    chatPlayerName,
+    isOwnChatMessage,
     leave,
     playerLabel,
     copyText,

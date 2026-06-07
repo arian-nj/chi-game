@@ -38,11 +38,9 @@ async function onStartRoom() {
 </script>
 
 <template>
-  <h1 class="text-4xl font-bold text-white mb-8 mt-2 animate-pop select-none drop-shadow-sm uppercase">
-    {{ t('invite.roomTitle') }}
-  </h1>
 
-  <div class="w-full max-w-3xl px-4 flex-1 pb-10">
+
+  <div class="w-full pb-24 lg:pb-0 lg:p-0">
     <p v-if="isBusy" class="text-center text-blue-100/80">{{ t('invite.joining') }}</p>
 
     <div

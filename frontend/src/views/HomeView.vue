@@ -5,6 +5,7 @@ import { RouterLink } from 'vue-router';
 import { useRoute } from 'vue-router';
 import { useGuestProfile } from '@/composables/use-guest-profile';
 import { useI18n } from 'vue-i18n';
+import LocaleSwitcher from '@/components/LocaleSwitcher.vue';
 
 const { t } = useI18n();
 const { displayUsername } = useGuestProfile();
@@ -20,6 +21,9 @@ onMounted(() => {
 
 <template>
   <div class="bg-custom-blue min-h-screen w-screen flex flex-col items-center p-6 pt-16">
+    <div class="w-full flex justify-start">
+      <LocaleSwitcher />
+    </div>
     <h1 class="text-4xl font-bold text-white mb-2 mt-2 animate-pop select-none drop-shadow-sm">
       {{ t('app.title') }}
     </h1>

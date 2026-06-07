@@ -1,6 +1,6 @@
 -- name: InsertRoom :one
-INSERT INTO rooms
-DEFAULT VALUES
+INSERT INTO rooms (code, host_person_id, expires_at)
+VALUES ($1, $2, $3)
 RETURNING *;
 
 -- name: InsertRoomPlayer :one
