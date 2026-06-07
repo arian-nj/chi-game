@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/arian-nj/chigame/backend/database"
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
 	"github.com/arian-nj/chigame/backend/internals/commander"
 	"github.com/arian-nj/chigame/backend/internals/random"
@@ -45,9 +46,11 @@ type Room struct {
 
 	MsgChnl  chan *RoomEvent
 	TaskSync sync.Mutex
+
+	Queries *database.Queries
 }
 
-func NewRoom(code string, hostPersonID int64, gameKey string) *Room {
+func NewRoom(code string, hostPersonID int64, gameKey string, queries *database.Queries) *Room {
 	now := time.Now()
 	expiresAt := now.Add(roomLifetime)
 	return &Room{
@@ -62,6 +65,8 @@ func NewRoom(code string, hostPersonID int64, gameKey string) *Room {
 		MsgChnl: make(chan *RoomEvent, 10),
 
 		Commander: commander.NewCommander(),
+
+		Queries: queries,
 	}
 }
 
@@ -76,7 +81,7 @@ func (app *APIApplication) RunRoom(r *Room) {
 
 					switch msg := roomEvent.Event.Content.(type) {
 					case *roomv1.RoomMessage_ChatReq:
-						r.Commander.PushCommand(NewRoomMessageCommand(r, roomEvent.Player, msg.ChatReq, app.Queries))
+						r.Commander.PushCommand(NewRoomMessageCommand(r, roomEvent.Player, msg.ChatReq))
 					default:
 						slog.Error("unhandled room event", "event", roomEvent.Event)
 						_ = msg // Avoid unused variable warning if not handling other cases
@@ -96,14 +101,19 @@ func (r *Room) AddMember(member *RoomMember) {
 	r.TaskSync.Lock()
 	defer r.TaskSync.Unlock()
 
-	r.Members[member.PersonID] = member
+	r.Members[member.Person.ID] = member
+	r.Commander.PushCommand(NewRoomMemberJoinedCommand(r, member))
 }
 
-func (r *Room) RemoveMember(personID int64) {
+func (r *Room) RemoveMember(member *RoomMember) {
 	r.TaskSync.Lock()
 	defer r.TaskSync.Unlock()
 
-	delete(r.Members, personID)
+	if _, ok := r.Members[member.Person.ID]; !ok {
+		return
+	}
+	r.Commander.PushCommand(NewRoomMemberLeftCommand(r, member))
+	delete(r.Members, member.Person.ID)
 }
 
 // Room Store
@@ -119,13 +129,13 @@ func NewRoomsStore() *RoomsStore {
 	}
 }
 
-func (s *RoomsStore) CreateRoom(hostPersonID int64, gameKey string) (*Room, error) {
+func (s *RoomsStore) CreateRoom(hostPersonID int64, gameKey string, queries *database.Queries) (*Room, error) {
 	for range 8 {
 		code := random.GenerateInviteCode(roomCodeLength)
 		if _, exists := s.GetByCode(code); exists {
 			continue
 		}
-		newRoom := NewRoom(code, hostPersonID, gameKey)
+		newRoom := NewRoom(code, hostPersonID, gameKey, queries)
 
 		return newRoom, nil
 	}
@@ -222,14 +232,14 @@ func removePlayerID(ids []int64, personID int64) []int64 {
 
 // Room Member
 type RoomMember struct {
-	PersonID int64
+	Person   *database.Person
 	JoinedAt time.Time
 	Socket   *socket.Socket
 }
 
-func NewRoomMember(personID int64, socket *socket.Socket) *RoomMember {
+func NewRoomMember(person *database.Person, socket *socket.Socket) *RoomMember {
 	return &RoomMember{
-		PersonID: personID,
+		Person:   person,
 		JoinedAt: time.Now(),
 		Socket:   socket,
 	}

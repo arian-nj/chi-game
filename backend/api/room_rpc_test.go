@@ -56,31 +56,6 @@ func TestCreateMultipleRoomsSameHost(t *testing.T) {
 	}
 }
 
-func TestCreateJoinGetRoom(t *testing.T) {
-	app := setupTestApp(t)
-	host := mustValidateGuest(t, app, "room-host-device")
-	guest := mustValidateGuest(t, app, "room-guest-device")
-
-	createResp, err := app.CreateRoom(context.Background(), authRequest(t, &roomv1.CreateRoomRequest{GameKey: ""}, host.GetToken()))
-	if err != nil {
-		t.Fatalf("CreateRoom: %v", err)
-	}
-	code := createResp.Msg.GetCode()
-
-	_, err = app.JoinRoom(context.Background(), authRequest(t, &roomv1.JoinRoomRequest{Code: code}, guest.GetToken()))
-	if err != nil {
-		t.Fatalf("JoinRoom: %v", err)
-	}
-
-	getResp, err := app.GetRoom(context.Background(), authRequest(t, &roomv1.GetRoomRequest{Code: code}, host.GetToken()))
-	if err != nil {
-		t.Fatalf("GetRoom: %v", err)
-	}
-	if len(getResp.Msg.GetPlayers()) != 2 {
-		t.Fatalf("expected 2 players, got %d", len(getResp.Msg.GetPlayers()))
-	}
-}
-
 func TestJoinRoomFull(t *testing.T) {
 	app := setupTestApp(t)
 	host := mustValidateGuest(t, app, "room-full-host")
@@ -168,35 +143,5 @@ func TestJoinRoomIdempotent(t *testing.T) {
 	_, err = app.JoinRoom(context.Background(), joinReq)
 	if err != nil {
 		t.Fatalf("JoinRoom idempotent: %v", err)
-	}
-}
-
-func TestGuestCanStayInRoomAfterHostCreatesAnother(t *testing.T) {
-	app := setupTestApp(t)
-	host := mustValidateGuest(t, app, "room-stay-host")
-	guest := mustValidateGuest(t, app, "room-stay-guest")
-
-	first, err := app.CreateRoom(context.Background(), authRequest(t, &roomv1.CreateRoomRequest{GameKey: ""}, host.GetToken()))
-	if err != nil {
-		t.Fatalf("CreateRoom first: %v", err)
-	}
-	code1 := first.Msg.GetCode()
-
-	_, err = app.JoinRoom(context.Background(), authRequest(t, &roomv1.JoinRoomRequest{Code: code1}, guest.GetToken()))
-	if err != nil {
-		t.Fatalf("JoinRoom: %v", err)
-	}
-
-	_, err = app.CreateRoom(context.Background(), authRequest(t, &roomv1.CreateRoomRequest{GameKey: ""}, host.GetToken()))
-	if err != nil {
-		t.Fatalf("CreateRoom second: %v", err)
-	}
-
-	getResp, err := app.GetRoom(context.Background(), authRequest(t, &roomv1.GetRoomRequest{Code: code1}, guest.GetToken()))
-	if err != nil {
-		t.Fatalf("GetRoom: %v", err)
-	}
-	if len(getResp.Msg.GetPlayers()) != 2 {
-		t.Fatalf("expected guest to remain in first room, got %d players", len(getResp.Msg.GetPlayers()))
 	}
 }

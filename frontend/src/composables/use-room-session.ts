@@ -93,11 +93,32 @@ export function provideRoomSession(): RoomSessionContext {
   const { data, isError, error } = useQuery({
     queryKey: computed(() => ['room', roomCode.value]),
     queryFn: ({ signal }) => client.getRoom({ code: roomCode.value }, { signal }),
-    refetchInterval: 2000,
     enabled: computed(() => Boolean(roomCode.value) && joinReady.value),
   });
 
-  const players = computed(() => data.value?.players ?? []);
+  const playersList = ref<Account[]>([]);
+  const players = computed(() => playersList.value);
+
+  function addPlayer(player: Account) {
+    if (playersList.value.some((entry) => entry.id === player.id)) {
+      return;
+    }
+    playersList.value = [...playersList.value, player];
+  }
+
+  function removePlayer(playerId: bigint) {
+    playersList.value = playersList.value.filter((entry) => entry.id !== playerId);
+  }
+
+  watch(
+    () => data.value?.hostPlayer,
+    (hostPlayer) => {
+      if (hostPlayer) {
+        addPlayer(hostPlayer);
+      }
+    },
+    { immediate: true },
+  );
   const isReadyToPlay = computed(() => players.value.length >= 2);
   const isHost = computed(() => data.value?.hostPlayer?.id === meData.value?.account?.id);
   const roomLink = computed(() => roomInviteUrl(locale.value, roomCode.value));
@@ -198,6 +219,18 @@ export function provideRoomSession(): RoomSessionContext {
   socket.HandleSessionErrorMessage = (errType: RoomErrorType) => {
     toast.error(`${errType}`);
   };
+  socket.HandleMemberJoined = (memberJoined) => {
+    const player = memberJoined.player;
+    if (player) {
+      addPlayer(player);
+    }
+  };
+  socket.HandleMemberLeft = (memberLeft) => {
+    const player = memberLeft.player;
+    if (player?.id) {
+      removePlayer(player.id);
+    }
+  };
 
   const myId = computed(() => meData.value?.account?.id);
   const {
@@ -210,6 +243,8 @@ export function provideRoomSession(): RoomSessionContext {
   } = useRoomChat(socket, players, myId, playerLabel);
 
   onBeforeUnmount(() => {
+    socket.HandleMemberJoined = null;
+    socket.HandleMemberLeft = null;
     socket.close();
   });
 

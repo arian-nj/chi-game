@@ -1,7 +1,7 @@
 import { getApiBaseUrl } from "./api-base-url";
 import { readGuestToken } from "./guest-auth-storage";
 import { create, fromBinary, toBinary } from "@bufbuild/protobuf";
-import type { ChatMessageResponse } from "@/gen/room/v1/room_pb";
+import type { ChatMessageResponse, RoomMemberJoined, RoomMemberLeft } from "@/gen/room/v1/room_pb";
 import { ChatMessageRequestSchema, RoomErrorType, RoomMessageSchema } from "@/gen/room/v1/room_pb";
 
 function roomWebSocketURL(code:string): string {
@@ -19,6 +19,10 @@ export function useRoomSocket(code:string) {
 
 export class SessionSocket extends WebSocket {
     HandleChatMessage: ((chatMsg: ChatMessageResponse) => void) | null = null
+
+    HandleMemberJoined: ((memberJoined: RoomMemberJoined) => void) | null = null
+
+    HandleMemberLeft: ((memberLeft: RoomMemberLeft) => void) | null = null
   
     HandleSessionErrorMessage: ((errType: RoomErrorType) => void) | null = null
   
@@ -52,6 +56,14 @@ export class SessionSocket extends WebSocket {
         if (newSessionMessage.content.case == "chat") {
             if (this.HandleChatMessage != null) {
                 this.HandleChatMessage(newSessionMessage.content.value)
+            }
+        } else if (newSessionMessage.content.case == "memberJoined") {
+            if (this.HandleMemberJoined != null) {
+                this.HandleMemberJoined(newSessionMessage.content.value)
+            }
+        } else if (newSessionMessage.content.case == "memberLeft") {
+            if (this.HandleMemberLeft != null) {
+                this.HandleMemberLeft(newSessionMessage.content.value)
             }
         } else if (newSessionMessage.content.case == "error") {
             if (this.HandleSessionErrorMessage != null) {

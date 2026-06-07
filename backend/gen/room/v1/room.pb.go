@@ -290,8 +290,7 @@ type GetRoomResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Code          string                 `protobuf:"bytes,1,opt,name=code,proto3" json:"code,omitempty"`
 	GameKey       string                 `protobuf:"bytes,2,opt,name=game_key,json=gameKey,proto3" json:"game_key,omitempty"`
-	HostPlayer    *v1.Account            `protobuf:"bytes,3,opt,name=host_player,json=hostPlayer,proto3" json:"host_player,omitempty"`
-	Players       []*v1.Account          `protobuf:"bytes,4,rep,name=players,proto3" json:"players,omitempty"`
+	HostPlayer    *v1.Account            `protobuf:"bytes,3,opt,name=host_player,json=hostPlayer,proto3" json:"host_player,omitempty"` // repeated account.v1.Account players = 4;
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -343,13 +342,6 @@ func (x *GetRoomResponse) GetGameKey() string {
 func (x *GetRoomResponse) GetHostPlayer() *v1.Account {
 	if x != nil {
 		return x.HostPlayer
-	}
-	return nil
-}
-
-func (x *GetRoomResponse) GetPlayers() []*v1.Account {
-	if x != nil {
-		return x.Players
 	}
 	return nil
 }
@@ -546,6 +538,94 @@ func (x *ChatMessageResponse) GetId() int64 {
 	return 0
 }
 
+type RoomMemberJoined struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Player        *v1.Account            `protobuf:"bytes,1,opt,name=player,proto3" json:"player,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RoomMemberJoined) Reset() {
+	*x = RoomMemberJoined{}
+	mi := &file_room_v1_room_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RoomMemberJoined) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RoomMemberJoined) ProtoMessage() {}
+
+func (x *RoomMemberJoined) ProtoReflect() protoreflect.Message {
+	mi := &file_room_v1_room_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RoomMemberJoined.ProtoReflect.Descriptor instead.
+func (*RoomMemberJoined) Descriptor() ([]byte, []int) {
+	return file_room_v1_room_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *RoomMemberJoined) GetPlayer() *v1.Account {
+	if x != nil {
+		return x.Player
+	}
+	return nil
+}
+
+type RoomMemberLeft struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Player        *v1.Account            `protobuf:"bytes,1,opt,name=player,proto3" json:"player,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RoomMemberLeft) Reset() {
+	*x = RoomMemberLeft{}
+	mi := &file_room_v1_room_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RoomMemberLeft) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RoomMemberLeft) ProtoMessage() {}
+
+func (x *RoomMemberLeft) ProtoReflect() protoreflect.Message {
+	mi := &file_room_v1_room_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RoomMemberLeft.ProtoReflect.Descriptor instead.
+func (*RoomMemberLeft) Descriptor() ([]byte, []int) {
+	return file_room_v1_room_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *RoomMemberLeft) GetPlayer() *v1.Account {
+	if x != nil {
+		return x.Player
+	}
+	return nil
+}
+
 type RoomMessage struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Content:
@@ -553,6 +633,8 @@ type RoomMessage struct {
 	//	*RoomMessage_Chat
 	//	*RoomMessage_ChatReq
 	//	*RoomMessage_Error
+	//	*RoomMessage_MemberJoined
+	//	*RoomMessage_MemberLeft
 	Content       isRoomMessage_Content `protobuf_oneof:"content"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -560,7 +642,7 @@ type RoomMessage struct {
 
 func (x *RoomMessage) Reset() {
 	*x = RoomMessage{}
-	mi := &file_room_v1_room_proto_msgTypes[10]
+	mi := &file_room_v1_room_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -572,7 +654,7 @@ func (x *RoomMessage) String() string {
 func (*RoomMessage) ProtoMessage() {}
 
 func (x *RoomMessage) ProtoReflect() protoreflect.Message {
-	mi := &file_room_v1_room_proto_msgTypes[10]
+	mi := &file_room_v1_room_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -585,7 +667,7 @@ func (x *RoomMessage) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RoomMessage.ProtoReflect.Descriptor instead.
 func (*RoomMessage) Descriptor() ([]byte, []int) {
-	return file_room_v1_room_proto_rawDescGZIP(), []int{10}
+	return file_room_v1_room_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *RoomMessage) GetContent() isRoomMessage_Content {
@@ -622,6 +704,24 @@ func (x *RoomMessage) GetError() RoomErrorType {
 	return RoomErrorType_ROOM_ERROR_TYPE_UNSPECIFIED
 }
 
+func (x *RoomMessage) GetMemberJoined() *RoomMemberJoined {
+	if x != nil {
+		if x, ok := x.Content.(*RoomMessage_MemberJoined); ok {
+			return x.MemberJoined
+		}
+	}
+	return nil
+}
+
+func (x *RoomMessage) GetMemberLeft() *RoomMemberLeft {
+	if x != nil {
+		if x, ok := x.Content.(*RoomMessage_MemberLeft); ok {
+			return x.MemberLeft
+		}
+	}
+	return nil
+}
+
 type isRoomMessage_Content interface {
 	isRoomMessage_Content()
 }
@@ -635,7 +735,15 @@ type RoomMessage_ChatReq struct {
 }
 
 type RoomMessage_Error struct {
-	Error RoomErrorType `protobuf:"varint,4,opt,name=error,proto3,enum=room.v1.RoomErrorType,oneof"`
+	Error RoomErrorType `protobuf:"varint,3,opt,name=error,proto3,enum=room.v1.RoomErrorType,oneof"`
+}
+
+type RoomMessage_MemberJoined struct {
+	MemberJoined *RoomMemberJoined `protobuf:"bytes,4,opt,name=member_joined,json=memberJoined,proto3,oneof"`
+}
+
+type RoomMessage_MemberLeft struct {
+	MemberLeft *RoomMemberLeft `protobuf:"bytes,5,opt,name=member_left,json=memberLeft,proto3,oneof"`
 }
 
 func (*RoomMessage_Chat) isRoomMessage_Content() {}
@@ -643,6 +751,10 @@ func (*RoomMessage_Chat) isRoomMessage_Content() {}
 func (*RoomMessage_ChatReq) isRoomMessage_Content() {}
 
 func (*RoomMessage_Error) isRoomMessage_Content() {}
+
+func (*RoomMessage_MemberJoined) isRoomMessage_Content() {}
+
+func (*RoomMessage_MemberLeft) isRoomMessage_Content() {}
 
 var File_room_v1_room_proto protoreflect.FileDescriptor
 
@@ -657,13 +769,12 @@ const file_room_v1_room_proto_rawDesc = "" +
 	"\x04code\x18\x01 \x01(\tR\x04code\"\x12\n" +
 	"\x10JoinRoomResponse\"$\n" +
 	"\x0eGetRoomRequest\x12\x12\n" +
-	"\x04code\x18\x01 \x01(\tR\x04code\"\xa5\x01\n" +
+	"\x04code\x18\x01 \x01(\tR\x04code\"v\n" +
 	"\x0fGetRoomResponse\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x12\x19\n" +
 	"\bgame_key\x18\x02 \x01(\tR\agameKey\x124\n" +
 	"\vhost_player\x18\x03 \x01(\v2\x13.account.v1.AccountR\n" +
-	"hostPlayer\x12-\n" +
-	"\aplayers\x18\x04 \x03(\v2\x13.account.v1.AccountR\aplayers\"&\n" +
+	"hostPlayer\"&\n" +
 	"\x10LeaveRoomRequest\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\"#\n" +
 	"\x11LeaveRoomResponse\x12\x0e\n" +
@@ -673,11 +784,18 @@ const file_room_v1_room_proto_rawDesc = "" +
 	"\x13ChatMessageResponse\x12\x1b\n" +
 	"\tplayer_id\x18\x01 \x01(\x03R\bplayerId\x12\x12\n" +
 	"\x04text\x18\x02 \x01(\tR\x04text\x12\x0e\n" +
-	"\x02id\x18\x03 \x01(\x03R\x02id\"\xb6\x01\n" +
+	"\x02id\x18\x03 \x01(\x03R\x02id\"?\n" +
+	"\x10RoomMemberJoined\x12+\n" +
+	"\x06player\x18\x01 \x01(\v2\x13.account.v1.AccountR\x06player\"=\n" +
+	"\x0eRoomMemberLeft\x12+\n" +
+	"\x06player\x18\x01 \x01(\v2\x13.account.v1.AccountR\x06player\"\xb4\x02\n" +
 	"\vRoomMessage\x122\n" +
 	"\x04chat\x18\x01 \x01(\v2\x1c.room.v1.ChatMessageResponseH\x00R\x04chat\x128\n" +
 	"\bchat_req\x18\x02 \x01(\v2\x1b.room.v1.ChatMessageRequestH\x00R\achatReq\x12.\n" +
-	"\x05error\x18\x04 \x01(\x0e2\x16.room.v1.RoomErrorTypeH\x00R\x05errorB\t\n" +
+	"\x05error\x18\x03 \x01(\x0e2\x16.room.v1.RoomErrorTypeH\x00R\x05error\x12@\n" +
+	"\rmember_joined\x18\x04 \x01(\v2\x19.room.v1.RoomMemberJoinedH\x00R\fmemberJoined\x12:\n" +
+	"\vmember_left\x18\x05 \x01(\v2\x17.room.v1.RoomMemberLeftH\x00R\n" +
+	"memberLeftB\t\n" +
 	"\acontent*\x88\x01\n" +
 	"\rRoomErrorType\x12\x1f\n" +
 	"\x1bROOM_ERROR_TYPE_UNSPECIFIED\x10\x00\x12\x18\n" +
@@ -705,7 +823,7 @@ func file_room_v1_room_proto_rawDescGZIP() []byte {
 }
 
 var file_room_v1_room_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_room_v1_room_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_room_v1_room_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_room_v1_room_proto_goTypes = []any{
 	(RoomErrorType)(0),          // 0: room.v1.RoomErrorType
 	(*CreateRoomRequest)(nil),   // 1: room.v1.CreateRoomRequest
@@ -718,28 +836,33 @@ var file_room_v1_room_proto_goTypes = []any{
 	(*LeaveRoomResponse)(nil),   // 8: room.v1.LeaveRoomResponse
 	(*ChatMessageRequest)(nil),  // 9: room.v1.ChatMessageRequest
 	(*ChatMessageResponse)(nil), // 10: room.v1.ChatMessageResponse
-	(*RoomMessage)(nil),         // 11: room.v1.RoomMessage
-	(*v1.Account)(nil),          // 12: account.v1.Account
+	(*RoomMemberJoined)(nil),    // 11: room.v1.RoomMemberJoined
+	(*RoomMemberLeft)(nil),      // 12: room.v1.RoomMemberLeft
+	(*RoomMessage)(nil),         // 13: room.v1.RoomMessage
+	(*v1.Account)(nil),          // 14: account.v1.Account
 }
 var file_room_v1_room_proto_depIdxs = []int32{
-	12, // 0: room.v1.GetRoomResponse.host_player:type_name -> account.v1.Account
-	12, // 1: room.v1.GetRoomResponse.players:type_name -> account.v1.Account
-	10, // 2: room.v1.RoomMessage.chat:type_name -> room.v1.ChatMessageResponse
-	9,  // 3: room.v1.RoomMessage.chat_req:type_name -> room.v1.ChatMessageRequest
-	0,  // 4: room.v1.RoomMessage.error:type_name -> room.v1.RoomErrorType
-	1,  // 5: room.v1.RoomService.CreateRoom:input_type -> room.v1.CreateRoomRequest
-	3,  // 6: room.v1.RoomService.JoinRoom:input_type -> room.v1.JoinRoomRequest
-	5,  // 7: room.v1.RoomService.GetRoom:input_type -> room.v1.GetRoomRequest
-	7,  // 8: room.v1.RoomService.LeaveRoom:input_type -> room.v1.LeaveRoomRequest
-	2,  // 9: room.v1.RoomService.CreateRoom:output_type -> room.v1.CreateRoomResponse
-	4,  // 10: room.v1.RoomService.JoinRoom:output_type -> room.v1.JoinRoomResponse
-	6,  // 11: room.v1.RoomService.GetRoom:output_type -> room.v1.GetRoomResponse
-	8,  // 12: room.v1.RoomService.LeaveRoom:output_type -> room.v1.LeaveRoomResponse
-	9,  // [9:13] is the sub-list for method output_type
-	5,  // [5:9] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	14, // 0: room.v1.GetRoomResponse.host_player:type_name -> account.v1.Account
+	14, // 1: room.v1.RoomMemberJoined.player:type_name -> account.v1.Account
+	14, // 2: room.v1.RoomMemberLeft.player:type_name -> account.v1.Account
+	10, // 3: room.v1.RoomMessage.chat:type_name -> room.v1.ChatMessageResponse
+	9,  // 4: room.v1.RoomMessage.chat_req:type_name -> room.v1.ChatMessageRequest
+	0,  // 5: room.v1.RoomMessage.error:type_name -> room.v1.RoomErrorType
+	11, // 6: room.v1.RoomMessage.member_joined:type_name -> room.v1.RoomMemberJoined
+	12, // 7: room.v1.RoomMessage.member_left:type_name -> room.v1.RoomMemberLeft
+	1,  // 8: room.v1.RoomService.CreateRoom:input_type -> room.v1.CreateRoomRequest
+	3,  // 9: room.v1.RoomService.JoinRoom:input_type -> room.v1.JoinRoomRequest
+	5,  // 10: room.v1.RoomService.GetRoom:input_type -> room.v1.GetRoomRequest
+	7,  // 11: room.v1.RoomService.LeaveRoom:input_type -> room.v1.LeaveRoomRequest
+	2,  // 12: room.v1.RoomService.CreateRoom:output_type -> room.v1.CreateRoomResponse
+	4,  // 13: room.v1.RoomService.JoinRoom:output_type -> room.v1.JoinRoomResponse
+	6,  // 14: room.v1.RoomService.GetRoom:output_type -> room.v1.GetRoomResponse
+	8,  // 15: room.v1.RoomService.LeaveRoom:output_type -> room.v1.LeaveRoomResponse
+	12, // [12:16] is the sub-list for method output_type
+	8,  // [8:12] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_room_v1_room_proto_init() }
@@ -747,10 +870,12 @@ func file_room_v1_room_proto_init() {
 	if File_room_v1_room_proto != nil {
 		return
 	}
-	file_room_v1_room_proto_msgTypes[10].OneofWrappers = []any{
+	file_room_v1_room_proto_msgTypes[12].OneofWrappers = []any{
 		(*RoomMessage_Chat)(nil),
 		(*RoomMessage_ChatReq)(nil),
 		(*RoomMessage_Error)(nil),
+		(*RoomMessage_MemberJoined)(nil),
+		(*RoomMessage_MemberLeft)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -758,7 +883,7 @@ func file_room_v1_room_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_room_v1_room_proto_rawDesc), len(file_room_v1_room_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   11,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

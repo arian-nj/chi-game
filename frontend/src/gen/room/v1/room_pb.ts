@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file room/v1/room.proto.
  */
 export const file_room_v1_room: GenFile = /*@__PURE__*/
-  fileDesc("ChJyb29tL3YxL3Jvb20ucHJvdG8SB3Jvb20udjEiJQoRQ3JlYXRlUm9vbVJlcXVlc3QSEAoIZ2FtZV9rZXkYASABKAkiIgoSQ3JlYXRlUm9vbVJlc3BvbnNlEgwKBGNvZGUYASABKAkiHwoPSm9pblJvb21SZXF1ZXN0EgwKBGNvZGUYASABKAkiEgoQSm9pblJvb21SZXNwb25zZSIeCg5HZXRSb29tUmVxdWVzdBIMCgRjb2RlGAEgASgJIoEBCg9HZXRSb29tUmVzcG9uc2USDAoEY29kZRgBIAEoCRIQCghnYW1lX2tleRgCIAEoCRIoCgtob3N0X3BsYXllchgDIAEoCzITLmFjY291bnQudjEuQWNjb3VudBIkCgdwbGF5ZXJzGAQgAygLMhMuYWNjb3VudC52MS5BY2NvdW50IiAKEExlYXZlUm9vbVJlcXVlc3QSDAoEY29kZRgBIAEoCSIfChFMZWF2ZVJvb21SZXNwb25zZRIKCgJvaxgBIAEoCCIiChJDaGF0TWVzc2FnZVJlcXVlc3QSDAoEdGV4dBgBIAEoCSJCChNDaGF0TWVzc2FnZVJlc3BvbnNlEhEKCXBsYXllcl9pZBgBIAEoAxIMCgR0ZXh0GAIgASgJEgoKAmlkGAMgASgDIqABCgtSb29tTWVzc2FnZRIsCgRjaGF0GAEgASgLMhwucm9vbS52MS5DaGF0TWVzc2FnZVJlc3BvbnNlSAASLwoIY2hhdF9yZXEYAiABKAsyGy5yb29tLnYxLkNoYXRNZXNzYWdlUmVxdWVzdEgAEicKBWVycm9yGAQgASgOMhYucm9vbS52MS5Sb29tRXJyb3JUeXBlSABCCQoHY29udGVudCqIAQoNUm9vbUVycm9yVHlwZRIfChtST09NX0VSUk9SX1RZUEVfVU5TUEVDSUZJRUQQABIYChRST09NX0VSUk9SX1RZUEVfQVVUSBABEhoKFlJPT01fRVJST1JfVFlQRV9OT1JPT00QAhIgChxST09NX0VSUk9SX1RZUEVfSU5WQUxJRF9DT0RFEAMylwIKC1Jvb21TZXJ2aWNlEkUKCkNyZWF0ZVJvb20SGi5yb29tLnYxLkNyZWF0ZVJvb21SZXF1ZXN0Ghsucm9vbS52MS5DcmVhdGVSb29tUmVzcG9uc2USPwoISm9pblJvb20SGC5yb29tLnYxLkpvaW5Sb29tUmVxdWVzdBoZLnJvb20udjEuSm9pblJvb21SZXNwb25zZRI8CgdHZXRSb29tEhcucm9vbS52MS5HZXRSb29tUmVxdWVzdBoYLnJvb20udjEuR2V0Um9vbVJlc3BvbnNlEkIKCUxlYXZlUm9vbRIZLnJvb20udjEuTGVhdmVSb29tUmVxdWVzdBoaLnJvb20udjEuTGVhdmVSb29tUmVzcG9uc2VCjQEKC2NvbS5yb29tLnYxQglSb29tUHJvdG9QAVo2Z2l0aHViLmNvbS9hcmlhbi1uai9jaGlnYW1lL2JhY2tlbmQvZ2VuL3Jvb20vdjE7cm9vbXYxogIDUlhYqgIHUm9vbS5WMcoCB1Jvb21cVjHiAhNSb29tXFYxXEdQQk1ldGFkYXRh6gIIUm9vbTo6VjFiBnByb3RvMw", [file_account_v1_account]);
+  fileDesc("ChJyb29tL3YxL3Jvb20ucHJvdG8SB3Jvb20udjEiJQoRQ3JlYXRlUm9vbVJlcXVlc3QSEAoIZ2FtZV9rZXkYASABKAkiIgoSQ3JlYXRlUm9vbVJlc3BvbnNlEgwKBGNvZGUYASABKAkiHwoPSm9pblJvb21SZXF1ZXN0EgwKBGNvZGUYASABKAkiEgoQSm9pblJvb21SZXNwb25zZSIeCg5HZXRSb29tUmVxdWVzdBIMCgRjb2RlGAEgASgJIlsKD0dldFJvb21SZXNwb25zZRIMCgRjb2RlGAEgASgJEhAKCGdhbWVfa2V5GAIgASgJEigKC2hvc3RfcGxheWVyGAMgASgLMhMuYWNjb3VudC52MS5BY2NvdW50IiAKEExlYXZlUm9vbVJlcXVlc3QSDAoEY29kZRgBIAEoCSIfChFMZWF2ZVJvb21SZXNwb25zZRIKCgJvaxgBIAEoCCIiChJDaGF0TWVzc2FnZVJlcXVlc3QSDAoEdGV4dBgBIAEoCSJCChNDaGF0TWVzc2FnZVJlc3BvbnNlEhEKCXBsYXllcl9pZBgBIAEoAxIMCgR0ZXh0GAIgASgJEgoKAmlkGAMgASgDIjcKEFJvb21NZW1iZXJKb2luZWQSIwoGcGxheWVyGAEgASgLMhMuYWNjb3VudC52MS5BY2NvdW50IjUKDlJvb21NZW1iZXJMZWZ0EiMKBnBsYXllchgBIAEoCzITLmFjY291bnQudjEuQWNjb3VudCKEAgoLUm9vbU1lc3NhZ2USLAoEY2hhdBgBIAEoCzIcLnJvb20udjEuQ2hhdE1lc3NhZ2VSZXNwb25zZUgAEi8KCGNoYXRfcmVxGAIgASgLMhsucm9vbS52MS5DaGF0TWVzc2FnZVJlcXVlc3RIABInCgVlcnJvchgDIAEoDjIWLnJvb20udjEuUm9vbUVycm9yVHlwZUgAEjIKDW1lbWJlcl9qb2luZWQYBCABKAsyGS5yb29tLnYxLlJvb21NZW1iZXJKb2luZWRIABIuCgttZW1iZXJfbGVmdBgFIAEoCzIXLnJvb20udjEuUm9vbU1lbWJlckxlZnRIAEIJCgdjb250ZW50KogBCg1Sb29tRXJyb3JUeXBlEh8KG1JPT01fRVJST1JfVFlQRV9VTlNQRUNJRklFRBAAEhgKFFJPT01fRVJST1JfVFlQRV9BVVRIEAESGgoWUk9PTV9FUlJPUl9UWVBFX05PUk9PTRACEiAKHFJPT01fRVJST1JfVFlQRV9JTlZBTElEX0NPREUQAzKXAgoLUm9vbVNlcnZpY2USRQoKQ3JlYXRlUm9vbRIaLnJvb20udjEuQ3JlYXRlUm9vbVJlcXVlc3QaGy5yb29tLnYxLkNyZWF0ZVJvb21SZXNwb25zZRI/CghKb2luUm9vbRIYLnJvb20udjEuSm9pblJvb21SZXF1ZXN0Ghkucm9vbS52MS5Kb2luUm9vbVJlc3BvbnNlEjwKB0dldFJvb20SFy5yb29tLnYxLkdldFJvb21SZXF1ZXN0Ghgucm9vbS52MS5HZXRSb29tUmVzcG9uc2USQgoJTGVhdmVSb29tEhkucm9vbS52MS5MZWF2ZVJvb21SZXF1ZXN0Ghoucm9vbS52MS5MZWF2ZVJvb21SZXNwb25zZUKNAQoLY29tLnJvb20udjFCCVJvb21Qcm90b1ABWjZnaXRodWIuY29tL2FyaWFuLW5qL2NoaWdhbWUvYmFja2VuZC9nZW4vcm9vbS92MTtyb29tdjGiAgNSWFiqAgdSb29tLlYxygIHUm9vbVxWMeICE1Jvb21cVjFcR1BCTWV0YWRhdGHqAghSb29tOjpWMWIGcHJvdG8z", [file_account_v1_account]);
 
 /**
  * @generated from message room.v1.CreateRoomRequest
@@ -110,14 +110,11 @@ export type GetRoomResponse = Message<"room.v1.GetRoomResponse"> & {
   gameKey: string;
 
   /**
+   * repeated account.v1.Account players = 4;
+   *
    * @generated from field: account.v1.Account host_player = 3;
    */
   hostPlayer?: Account;
-
-  /**
-   * @generated from field: repeated account.v1.Account players = 4;
-   */
-  players: Account[];
 };
 
 /**
@@ -206,6 +203,40 @@ export const ChatMessageResponseSchema: GenMessage<ChatMessageResponse> = /*@__P
   messageDesc(file_room_v1_room, 9);
 
 /**
+ * @generated from message room.v1.RoomMemberJoined
+ */
+export type RoomMemberJoined = Message<"room.v1.RoomMemberJoined"> & {
+  /**
+   * @generated from field: account.v1.Account player = 1;
+   */
+  player?: Account;
+};
+
+/**
+ * Describes the message room.v1.RoomMemberJoined.
+ * Use `create(RoomMemberJoinedSchema)` to create a new message.
+ */
+export const RoomMemberJoinedSchema: GenMessage<RoomMemberJoined> = /*@__PURE__*/
+  messageDesc(file_room_v1_room, 10);
+
+/**
+ * @generated from message room.v1.RoomMemberLeft
+ */
+export type RoomMemberLeft = Message<"room.v1.RoomMemberLeft"> & {
+  /**
+   * @generated from field: account.v1.Account player = 1;
+   */
+  player?: Account;
+};
+
+/**
+ * Describes the message room.v1.RoomMemberLeft.
+ * Use `create(RoomMemberLeftSchema)` to create a new message.
+ */
+export const RoomMemberLeftSchema: GenMessage<RoomMemberLeft> = /*@__PURE__*/
+  messageDesc(file_room_v1_room, 11);
+
+/**
  * @generated from message room.v1.RoomMessage
  */
 export type RoomMessage = Message<"room.v1.RoomMessage"> & {
@@ -226,10 +257,22 @@ export type RoomMessage = Message<"room.v1.RoomMessage"> & {
     case: "chatReq";
   } | {
     /**
-     * @generated from field: room.v1.RoomErrorType error = 4;
+     * @generated from field: room.v1.RoomErrorType error = 3;
      */
     value: RoomErrorType;
     case: "error";
+  } | {
+    /**
+     * @generated from field: room.v1.RoomMemberJoined member_joined = 4;
+     */
+    value: RoomMemberJoined;
+    case: "memberJoined";
+  } | {
+    /**
+     * @generated from field: room.v1.RoomMemberLeft member_left = 5;
+     */
+    value: RoomMemberLeft;
+    case: "memberLeft";
   } | { case: undefined; value?: undefined };
 };
 
@@ -238,7 +281,7 @@ export type RoomMessage = Message<"room.v1.RoomMessage"> & {
  * Use `create(RoomMessageSchema)` to create a new message.
  */
 export const RoomMessageSchema: GenMessage<RoomMessage> = /*@__PURE__*/
-  messageDesc(file_room_v1_room, 10);
+  messageDesc(file_room_v1_room, 12);
 
 /**
  * @generated from enum room.v1.RoomErrorType

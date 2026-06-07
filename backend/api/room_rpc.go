@@ -36,7 +36,7 @@ func (app *APIApplication) CreateRoom(
 		}
 	}
 
-	newRoom, err := app.RoomsStore.CreateRoom(person.ID, gameKey)
+	newRoom, err := app.RoomsStore.CreateRoom(person.ID, gameKey, app.Queries)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
@@ -132,7 +132,6 @@ func (app *APIApplication) GetRoom(
 	return connect.NewResponse(&roomv1.GetRoomResponse{
 		Code:       room.Code,
 		GameKey:    room.GameKey,
-		Players:    playersAccounts,
 		HostPlayer: hostPerson,
 	}), nil
 }
@@ -149,6 +148,12 @@ func (app *APIApplication) LeaveRoom(
 	code := normalizeRoomCode(req.Msg.GetCode())
 	if code == "" {
 		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("room code required"))
+	}
+
+	if room, ok := app.RoomsStore.GetByCode(code); ok {
+		if member, exists := room.Members[person.ID]; exists {
+			room.RemoveMember(member)
+		}
 	}
 
 	if err := app.RoomsStore.RemovePlayer(code, person.ID); err != nil {

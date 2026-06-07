@@ -18,6 +18,7 @@ const entries: ChangelogEntry[] = [
     date: '2026-06-07',
     new: [
       'chat ui added.',
+      'room member joined and left events added.',
     ],
   },
   {
