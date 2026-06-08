@@ -13,61 +13,186 @@ const locale = route.params.locale as string;
 onMounted(() => {
   import('../views/GameView.vue');
 });
-
 </script>
 
 <template>
-  <div class="bg-custom-blue min-h-screen w-screen flex flex-col items-center p-6 pt-16">
-    <div class="w-full flex justify-start">
+  <div class="home-root">
+
+    <div class="loc-switcher-row">
       <LocaleSwitcher />
     </div>
-    <h1 class="text-4xl font-bold text-white mb-2 mt-2 animate-pop select-none drop-shadow-sm">
+    
+    <h1 class="home-title">
       {{ t('app.title') }}
     </h1>
 
-    <div
-      class="grid w-full max-w-5xl gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center mx-auto px-4"
-    >
+    <div class="games-grid">
       <component
         :is="game.isEnable ? RouterLink : 'div'"
         v-for="game in gamesData"
         :key="game.key"
         v-bind="game.isEnable ? { to: `/${locale}/game/${game.key}` } : {}"
-        class="rounded-2xl w-full transition duration-100 shadow outline-none focus:ring-2 focus:ring-blue-500 aspect-4/3 overflow-hidden flex flex-col items-center justify-center"
-        :class="
-          game.isEnable
-            ? 'bg-custom-lite-blue hover:bg-custom-deep-blue cursor-pointer'
-            : 'bg-custom-deep-blue/40 cursor-not-allowed opacity-55 saturate-0'
-        "
+        :class="[
+          'game-card',
+          game.isEnable ? 'game-card--enabled' : 'game-card--disabled'
+        ]"
         :aria-disabled="game.isEnable ? undefined : 'true'"
+        tabindex="0"
       >
-        <div class="relative flex flex-col items-center justify-center w-full h-full p-4">
-          <span class="text-lg md:text-xl font-semibold text-white select-none text-center">
+        <div class="game-card-content">
+          <span class="game-card-title">
             {{ t(`games.${game.key}`) }}
           </span>
         </div>
       </component>
     </div>
 
-    <nav class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Site">
-      <!-- <RouterLink
-        :to="`/${locale}/room`"
-        class="text-blue-100 hover:text-white underline underline-offset-4 font-semibold"
-      >
-        {{ t('nav.room') }}
-      </RouterLink> -->
+    <nav class="nav-links" aria-label="Site">
       <RouterLink
         :to="`/${locale}/about`"
-        class="text-blue-100 hover:text-white underline underline-offset-4 font-semibold"
+        class="nav-link"
       >
         {{ t('nav.about') }}
       </RouterLink>
       <RouterLink
         :to="`/${locale}/changelog`"
-        class="text-blue-100 hover:text-white underline underline-offset-4 font-semibold"
+        class="nav-link"
       >
         {{ t('nav.changelog') }}
       </RouterLink>
     </nav>
   </div>
 </template>
+
+<style scoped>
+.home-root {
+  background: var(--color-custom-blue);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  padding-top: 4rem;
+  box-sizing: border-box;
+}
+.loc-switcher-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+.home-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  animation: pop 0.18s cubic-bezier(0.1, 1.18, 1, 1.01) both;
+  user-select: none;
+  filter: drop-shadow(0 1px 3px rgba(16,30,87,0.2));
+}
+@keyframes pop {
+  0% {
+    transform: scale(0.97);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.games-grid {
+  display: grid;
+  width: 100%;
+  max-width: 80rem;
+  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  place-items: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+@media (min-width: 768px) {
+  .games-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .games-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.game-card {
+  border-radius: 1rem;
+  width: 100%;
+  transition: background 100ms, filter 100ms, box-shadow 100ms;
+  box-shadow: 0 2px 8px 0 rgba(16,30,87,0.12);
+  outline: none;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.game-card:focus {
+  box-shadow: 0 0 0 3px #3b82f6, 0 2px 8px 0 rgba(16,30,87,0.12);
+  z-index: 1;
+}
+.game-card--enabled {
+  background: var(--color-custom-lite-blue);
+  cursor: pointer;
+}
+.game-card--enabled:hover {
+  background: var(--color-custom-deep-blue);
+}
+.game-card--disabled {
+  background: rgba(37, 52, 84, 0.4);
+  cursor: not-allowed;
+  opacity: 0.55;
+  filter: saturate(0);
+}
+.game-card-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+.game-card-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+  user-select: none;
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .game-card-title {
+    font-size: 1.25rem;
+  }
+}
+.nav-links {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 1.5rem;
+}
+.nav-link {
+  color: #c7d5ef;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 120ms;
+}
+.nav-link:hover {
+  color: #fff;
+}
+</style>

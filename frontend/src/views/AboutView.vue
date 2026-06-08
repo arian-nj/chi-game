@@ -9,51 +9,119 @@ const sectionKeys = ['mission', 'games', 'roadmap'] as const;
 </script>
 
 <template>
-  <div class="bg-custom-blue min-h-screen w-screen flex flex-col items-center p-6 pt-16">
+  <div class="about-root">
     <section
       :dir="textDir"
-      class="w-full max-w-3xl mx-auto p-6 bg-custom-lite-blue/40 rounded-2xl border border-white/10 shadow-md"
+      class="about-section"
     >
-      <div class="flex items-center justify-between gap-4 mb-6">
-        <h1
-          class="text-3xl font-extrabold tracking-wide bg-linear-to-r from-white to-blue-200 bg-clip-text text-transparent"
-        >
+      <div class="about-header-row">
+        <h1 class="about-title">
           {{ t('about.title') }}
         </h1>
 
         <RouterLink
           :to="{ name: 'home', params: { locale: $route.params.locale } }"
-          class="text-sm font-semibold text-blue-100 hover:text-white underline underline-offset-4 shrink-0"
+          class="about-back-link"
         >
           {{ t('nav.backToHome') }}
         </RouterLink>
       </div>
 
-      <p class="text-lg text-white font-medium mb-8 leading-relaxed">
+      <p class="about-tagline">
         {{ t('about.tagline') }}
       </p>
 
-      <div class="space-y-6 text-blue-100 leading-relaxed">
+      <div class="about-article-list">
         <article
           v-for="key in sectionKeys"
           :key="key"
-          class="rounded-xl bg-custom-deep-blue/30 border border-white/10 p-4"
+          class="about-article"
         >
-          <h2 class="font-bold text-white text-lg mb-2">
+          <h2 class="about-article-title">
             {{ t(`about.sections.${key}.title`) }}
           </h2>
           <p>{{ t(`about.sections.${key}.body`) }}</p>
         </article>
       </div>
-
-      <p class="mt-8 text-center text-sm text-blue-200/80">
-        <RouterLink
-          :to="{ name: 'health', params: { locale: $route.params.locale } }"
-          class="underline underline-offset-4 hover:text-white"
-        >
-          {{ t('nav.health') }}
-        </RouterLink>
-      </p>
     </section>
   </div>
 </template>
+
+<style scoped>
+.about-root {
+  background: var(--color-custom-blue);
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  padding-top: 4rem;
+  box-sizing: border-box;
+}
+.about-section {
+  width: 100%;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.5rem;
+  background: color-mix(in srgb, var(--color-custom-lite-blue) 40%, transparent);
+  border-radius: 1rem;
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow: 0 2px 8px 0 rgba(16,30,87,0.12);
+}
+.about-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.about-title {
+  font-size: 1.875rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  background: linear-gradient(to right, #fff, #bcd7ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.about-back-link {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #bcd7ff;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 0.15s;
+  flex-shrink: 0;
+}
+.about-back-link:hover {
+  color: #fff;
+}
+.about-tagline {
+  font-size: 1.125rem;
+  color: #fff;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+.about-article-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: #bcd7ff;
+  line-height: 1.6;
+}
+.about-article {
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--color-custom-deep-blue) 30%, transparent);
+  border: 1px solid rgba(255,255,255,0.10);
+  padding: 1rem;
+}
+.about-article-title {
+  font-weight: bold;
+  color: #fff;
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+</style>
