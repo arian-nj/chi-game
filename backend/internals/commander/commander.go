@@ -40,7 +40,7 @@ func (commander *Commander) notif() {
 	})
 }
 
-// Commands
+// PushCommand adds a command to the end of the command queue.
 func (commander *Commander) PushCommand(newCommand Command) {
 	commander.mu.Lock()
 	defer commander.mu.Unlock()
@@ -49,6 +49,8 @@ func (commander *Commander) PushCommand(newCommand Command) {
 	commander.notif()
 }
 
+// InjectCommand injects a command at the beginning of the command queue.
+// This is useful for commands that need to be executed before the other commands.
 func (commander *Commander) InjectCommand(newAction Command) {
 	commander.mu.Lock()
 	defer commander.mu.Unlock()
@@ -56,6 +58,8 @@ func (commander *Commander) InjectCommand(newAction Command) {
 	commander.Commands = append([]Command{newAction}, commander.Commands...)
 	commander.notif()
 }
+
+// PopCommand removes and returns the first command from the command queue.
 func (commander *Commander) PopCommand() Command {
 	commander.mu.Lock()
 	defer commander.mu.Unlock()

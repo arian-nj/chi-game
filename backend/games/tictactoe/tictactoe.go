@@ -1,3 +1,4 @@
+// my old code change by ai
 package tictactoe
 
 import (
@@ -108,9 +109,9 @@ func (c Cell) Valid() bool {
 	return c == CellEmpty || c == CellX || c == CellO
 }
 
-func (b *Board) Size() int       { return b.size }
-func (b *Board) WinLength() int  { return b.winLen }
-func (b *Board) Len() int        { return len(b.cells) }
+func (b *Board) Size() int      { return b.size }
+func (b *Board) WinLength() int { return b.winLen }
+func (b *Board) Len() int       { return len(b.cells) }
 
 // Get returns the mark at index. Panics are avoided; out-of-range returns CellEmpty.
 func (b *Board) Get(index int) (Cell, error) {
@@ -149,18 +150,53 @@ func (b *Board) RowCol(index int) (row, col int, err error) {
 	return index / b.size, index % b.size, nil
 }
 
-// Play places mark at index. Returns an error if the move is invalid.
-func (b *Board) Play(index int, mark Cell) error {
+// Play places mark at index. On success, returns a win result when the move
+// completes a line, using an incremental check from the played cell.
+func (b *Board) Play(index int, mark Cell) (*WinResult, error) {
 	if !mark.IsMark() {
-		return ErrInvalidMark
+		return nil, ErrInvalidMark
 	}
 	if err := b.validateIndex(index); err != nil {
-		return err
+		return nil, err
 	}
 	if b.cells[index] != CellEmpty {
-		return ErrCellOccupied
+		return nil, ErrCellOccupied
 	}
 	b.cells[index] = mark
+	return b.CheckWinnerAt(index), nil
+}
+
+// HasWonAt reports whether the mark at index completes a winning line.
+func (b *Board) HasWonAt(index int) bool {
+	return b.CheckWinnerAt(index) != nil
+}
+
+// CheckWinnerAt checks whether the mark at index completes a winning line.
+// Prefer this over CheckWinner when the last move index is known.
+func (b *Board) CheckWinnerAt(index int) *WinResult {
+	if err := b.validateIndex(index); err != nil {
+		return nil
+	}
+	mark := b.cells[index]
+	if !mark.IsMark() {
+		return nil
+	}
+
+	row, col, err := b.RowCol(index)
+	if err != nil {
+		return nil
+	}
+
+	directions := [][2]int{{0, 1}, {1, 0}, {1, 1}, {1, -1}}
+	for _, dir := range directions {
+		count := 1 +
+			b.countAlong(row, col, dir[0], dir[1], mark) +
+			b.countAlong(row, col, -dir[0], -dir[1], mark)
+		if count >= b.winLen {
+			line := b.lineAlong(row, col, dir[0], dir[1], mark)
+			return &WinResult{Winner: mark, Line: winSegment(line, index, b.winLen)}
+		}
+	}
 	return nil
 }
 
@@ -283,4 +319,64 @@ func lineWinner(cells []Cell, line []int) Cell {
 		}
 	}
 	return first
+}
+
+func (b *Board) countAlong(row, col, dr, dc int, mark Cell) int {
+	count := 0
+	for i := 1; i < b.winLen; i++ {
+		nr, nc := row+dr*i, col+dc*i
+		if nr < 0 || nr >= b.size || nc < 0 || nc >= b.size || b.cells[nr*b.size+nc] != mark {
+			break
+		}
+		count++
+	}
+	return count
+}
+
+func (b *Board) lineAlong(row, col, dr, dc int, mark Cell) []int {
+	positive := make([]int, 0, b.size)
+	for i := 1; ; i++ {
+		nr, nc := row+dr*i, col+dc*i
+		if nr < 0 || nr >= b.size || nc < 0 || nc >= b.size || b.cells[nr*b.size+nc] != mark {
+			break
+		}
+		positive = append(positive, nr*b.size+nc)
+	}
+
+	negative := make([]int, 0, b.size)
+	for i := 1; ; i++ {
+		nr, nc := row-dr*i, col-dc*i
+		if nr < 0 || nr >= b.size || nc < 0 || nc >= b.size || b.cells[nr*b.size+nc] != mark {
+			break
+		}
+		negative = append(negative, nr*b.size+nc)
+	}
+
+	line := make([]int, 0, len(negative)+1+len(positive))
+	for i := len(negative) - 1; i >= 0; i-- {
+		line = append(line, negative[i])
+	}
+	line = append(line, row*b.size+col)
+	line = append(line, positive...)
+	return line
+}
+
+func winSegment(line []int, index, winLen int) []int {
+	if len(line) <= winLen {
+		return line
+	}
+
+	pos := 0
+	for i, idx := range line {
+		if idx == index {
+			pos = i
+			break
+		}
+	}
+
+	start := pos
+	if start > len(line)-winLen {
+		start = len(line) - winLen
+	}
+	return line[start : start+winLen]
 }

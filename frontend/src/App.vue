@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import { useGuestAuth } from '@/composables/use-guest-auth';
 import { usePageSeo } from '@/composables/use-page-seo';
 import Toast, { configureToast } from './components/Toast.vue';
 import { onMounted } from 'vue';
 
 usePageSeo();
-useGuestAuth();
 
 onMounted(() => {
   configureToast({

@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/arian-nj/chigame/backend/database"
-	"github.com/arian-nj/chigame/backend/games"
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
 	"github.com/arian-nj/chigame/backend/internals/commander"
 	"github.com/arian-nj/chigame/backend/internals/random"
@@ -27,17 +26,19 @@ var AllowedRoomGameKeys = map[string]struct{}{
 }
 
 var (
-	errRoomFull = errors.New("room is full")
+	ErrRoomFull = errors.New("room is full")
 )
+
+type MapRoomMembers map[int64]*RoomMember
 
 type Room struct {
 	ID           int64
 	Code         string
 	HostPersonID int64
-	Members      map[int64]*RoomMember
+	Members      MapRoomMembers
 
 	GameKey string
-	Game    games.GameEngine
+	Game    GameEngine
 
 	CreatedAt time.Time
 	ExpiresAt time.Time
@@ -107,7 +108,7 @@ func (r *Room) AddMember(member *RoomMember) error {
 		return nil
 	}
 	if len(r.Members) >= maxPlayersPerRoom {
-		return errRoomFull
+		return ErrRoomFull
 	}
 
 	r.Members[member.Person.ID] = member

@@ -10,6 +10,7 @@ import (
 
 	"github.com/arian-nj/chigame/backend/database"
 	"github.com/arian-nj/chigame/backend/internals/config"
+	"github.com/arian-nj/chigame/backend/internals/room"
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 )
@@ -17,14 +18,14 @@ import (
 type APIApplication struct {
 	Config     *config.Config
 	Queries    *database.Queries
-	RoomsStore *RoomsStore
+	RoomsStore *room.RoomsStore
 }
 
 func NewAPIApplication(cfg *config.Config, queries *database.Queries) *APIApplication {
 	return &APIApplication{
 		Config:     cfg,
 		Queries:    queries,
-		RoomsStore: NewRoomsStore(),
+		RoomsStore: room.NewRoomsStore(),
 	}
 }
 

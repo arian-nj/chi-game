@@ -4,16 +4,15 @@ import { gamesData } from '@/libs/game'
 import LocaleLayout from '@/views/LocaleLayout.vue'
 import { getInitialLocale, i18n, persistLocale, setDocumentLocale, type AppLocale } from '@/i18n'
 import NotFoundView from '@/views/NotFoundView.vue'
-import AdminView from '@/views/AdminView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/admin',
-      name: 'admin',
-      component: AdminView,
-    },
+    // {
+    //   path: '/admin',
+    //   name: 'admin',
+    //   component: AdminView,
+    // },
     {
       path: '/',
       redirect: () => `/${getInitialLocale()}`,
@@ -42,32 +41,32 @@ const router = createRouter({
           name: 'about',
           component: () => import('@/views/AboutView.vue'),
         },
-        {
-          path: 'health',
-          name: 'health',
-          component: () => import('@/views/HealthView.vue'),
-        },
-        {
-          path: 'room',
-          name: 'room',
-          component: () => import('@/views/NewRoomView.vue'),
-        },
-        {
-          path: 'room/:code',
-          component: () => import('@/views/RoomShell.vue'),
-          children: [
-            {
-              path: '',
-              name: 'room-code',
-              component: () => import('@/views/RoomLobbyPanel.vue'),
-            },
-            {
-              path: 'play',
-              name: 'room-play',
-              component: () => import('@/views/RoomPlayPanel.vue'),
-            },
-          ],
-        },
+        // {
+        //   path: 'health',
+        //   name: 'health',
+        //   component: () => import('@/views/HealthView.vue'),
+        // },
+        // {
+        //   path: 'room',
+        //   name: 'room',
+        //   component: () => import('@/views/NewRoomView.vue'),
+        // },
+        // {
+        //   path: 'room/:code',
+        //   component: () => import('@/views/RoomShell.vue'),
+        //   children: [
+        //     {
+        //       path: '',
+        //       name: 'room-code',
+        //       component: () => import('@/views/RoomLobbyPanel.vue'),
+        //     },
+        //     {
+        //       path: 'play',
+        //       name: 'room-play',
+        //       component: () => import('@/views/RoomPlayPanel.vue'),
+        //     },
+        //   ],
+        // },
         {
           path: 'game/:game',
           name: 'game',
@@ -130,9 +129,9 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  if (to.name === 'admin') {
-    return true;
-  }
+  // if (to.name === 'admin') {
+  //   return true;
+  // }
 
   const localeParam = to.params.locale
   if (typeof localeParam !== 'string') return true

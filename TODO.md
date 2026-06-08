@@ -3,6 +3,24 @@
 [-] Doing
 [ ] Not Done
 
+
+
+dark/light mode
+
+Focous on Offline only game for now
+[ ] Mine Sweeper
+
+[ ] Solarite
+[ ] yahtzee
+[ ] hearts
+[ ] spades
+[ ] MAHJONG
+[ ] Soduko
+[ ] Blackjack
+
+[ ] add a card games page
+
+
 # V 0.1.0 offline games
 [X] basic Home View
 [X] Game Page View
@@ -44,31 +62,89 @@
 # V 0.3.0 game backend frameworkish
 [X] invite create/join
 
-[] rooms
+[X] rooms
     [X] rooms in backend
     [X] websocket
     [X] chat
     [X] new room member join/left event
-    [ ] gameselector when no active game
-    [ ] room run lifecycel
 
 [X] remove playersid from room
 
 
 [X] move invites from db to memory
 [X] merge invites and rooms
+
+-
+[ ] gameselector when no active game
 [ ] online xo
+    [ ] backend
+    [ ] frontend
+
+-
+[ ] in game panel online option
+[ ] room run lifecycel
+
 [ ] online connect 4
+    [ ] backend
+    [ ] frontend
+
+
+
+# 0.4.0 wait and polish
+-
 [ ] check file sizes
+[ ] dark/light mode
+[ ] add pictures
+
+-
+[ ] make sure everything is logged in backend
+[ ] better statistics in admin panel
+
+# 0.5.0 add games
+-
+[ ] line and dots
+
+-
+[ ] go game
+
+-
+[ ] snake and ladder
+
+-
+[ ] Battle ship
+
+# 0.6.0 information
+-
+[ ] games history
+
+-
+[ ] pergame ranking (elo?)
+[ ] daily and 30 day leaderboard
+
+# 0.7.0 coins
+-
+[ ] add in game coin
+[ ] transactions
+# 0.8.0
+
+# 0.9.0
+
+
+
+
+# Maybe
+[ ] overal level
 
 # Games
 # piority
 [ ] line and dots 
 [ ] go game
-[ ] snake and ladder
 [ ] Sea Battle
+[ ] snake and ladder
 
-[ ] pool 8-ball
+[ ] 8-pool
+[ ] snoker
+[ ] blackjack
 [ ] Poker
 [ ] mench
 

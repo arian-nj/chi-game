@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
+	"github.com/arian-nj/chigame/backend/internals/room"
 	"github.com/arian-nj/chigame/backend/internals/socket"
 	"github.com/arian-nj/chigame/backend/internals/utils"
 	"github.com/coder/websocket"
@@ -46,9 +47,9 @@ func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	roomMember := NewRoomMember(person, socketClient)
+	roomMember := room.NewRoomMember(person, socketClient)
 	if err := currentRoom.AddMember(roomMember); err != nil {
-		if errors.Is(err, errRoomFull) {
+		if errors.Is(err, room.ErrRoomFull) {
 			sendRoomSocketError(socketClient, roomv1.RoomErrorType_ROOM_ERROR_TYPE_INVALID_CODE)
 		}
 		return
@@ -72,7 +73,7 @@ func (app *APIApplication) roomWebsocket(w http.ResponseWriter, r *http.Request)
 				slog.Error("failed to unmarshal message", "error", err)
 				continue
 			}
-			currentRoom.MsgChnl <- NewRoomEvent(roomMember, newRoomMsg)
+			currentRoom.MsgChnl <- room.NewRoomEvent(roomMember, newRoomMsg)
 		}
 	}
 }

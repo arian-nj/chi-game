@@ -10,6 +10,7 @@ import (
 	"github.com/arian-nj/chigame/backend/database"
 	accountv1 "github.com/arian-nj/chigame/backend/gen/account/v1"
 	roomv1 "github.com/arian-nj/chigame/backend/gen/room/v1"
+	"github.com/arian-nj/chigame/backend/internals/room"
 	"github.com/arian-nj/chigame/backend/internals/utils"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
@@ -31,7 +32,7 @@ func (app *APIApplication) CreateRoom(
 
 	gameKey := strings.TrimSpace(req.Msg.GetGameKey())
 	if gameKey != "" {
-		if _, ok := AllowedRoomGameKeys[gameKey]; !ok {
+		if _, ok := room.AllowedRoomGameKeys[gameKey]; !ok {
 			return nil, errInvalidGameKey
 		}
 	}
@@ -51,7 +52,7 @@ func (app *APIApplication) CreateRoom(
 	}
 	newRoom.ID = roomRow.ID
 	app.RoomsStore.AddRoom(newRoom)
-	RunRoom(newRoom)
+	room.RunRoom(newRoom)
 
 	return connect.NewResponse(&roomv1.CreateRoomResponse{
 		Code: newRoom.Code,
@@ -103,7 +104,7 @@ func (app *APIApplication) GetRoom(
 	}), nil
 }
 
-func roomConnectedPlayers(room *Room) []*accountv1.Account {
+func roomConnectedPlayers(room *room.Room) []*accountv1.Account {
 	room.TaskSync.Lock()
 	defer room.TaskSync.Unlock()
 

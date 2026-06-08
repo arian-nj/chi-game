@@ -3,18 +3,15 @@ import { gamesData } from '../libs/game';
 import { onMounted } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useRoute } from 'vue-router';
-import { useGuestProfile } from '@/composables/use-guest-profile';
 import { useI18n } from 'vue-i18n';
 import LocaleSwitcher from '@/components/LocaleSwitcher.vue';
 
 const { t } = useI18n();
-const { displayUsername } = useGuestProfile();
 const route = useRoute();
 const locale = route.params.locale as string;
 
 onMounted(() => {
   import('../views/GameView.vue');
-  import('@/views/RoomShell.vue');
 });
 
 </script>
@@ -27,13 +24,6 @@ onMounted(() => {
     <h1 class="text-4xl font-bold text-white mb-2 mt-2 animate-pop select-none drop-shadow-sm">
       {{ t('app.title') }}
     </h1>
-    <p
-      v-if="displayUsername"
-      class="mb-8 text-lg font-medium text-blue-100 select-none"
-    >
-      {{ displayUsername }}
-    </p>
-    <div v-else class="mb-8" aria-hidden="true" ></div>
 
     <div
       class="grid w-full max-w-5xl gap-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 place-items-center mx-auto px-4"
@@ -60,12 +50,12 @@ onMounted(() => {
     </div>
 
     <nav class="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="Site">
-      <RouterLink
+      <!-- <RouterLink
         :to="`/${locale}/room`"
         class="text-blue-100 hover:text-white underline underline-offset-4 font-semibold"
       >
         {{ t('nav.room') }}
-      </RouterLink>
+      </RouterLink> -->
       <RouterLink
         :to="`/${locale}/about`"
         class="text-blue-100 hover:text-white underline underline-offset-4 font-semibold"
