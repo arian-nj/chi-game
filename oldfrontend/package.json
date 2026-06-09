@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
-    "build-only": "vite build",
+    "generate-seo": "jiti scripts/generate-seo-files.ts",
+    "build-only": "npm run generate-seo && vite build",
     "type-check": "vue-tsc --build",
     "lint": "run-s lint:*",
     "lint:oxlint": "oxlint . --fix",
@@ -15,7 +16,15 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "@bufbuild/protobuf": "^2.12.0",
+    "@connectrpc/connect": "^2.1.1",
+    "@connectrpc/connect-web": "^2.1.1",
+    "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/vue-query": "^5.101.0",
+    "@unhead/vue": "^3.1.1",
+    "tailwindcss": "^4.3.0",
     "vue": "^3.5.32",
+    "vue-i18n": "^11.4.4",
     "vue-router": "^5.0.4"
   },
   "devDependencies": {

@@ -1,6 +1,3 @@
 # frontend
 
-chigame only offline games
-being a offline platform is first
-later add online functionalities like statistics about users
-maybe later add online games
+This template should help get you started developing with Vue 3 in Vite.

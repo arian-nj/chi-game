@@ -1,24 +1,11 @@
-<script setup lang="ts">
-import { usePageSeo } from '@/composables/use-page-seo';
-import Toast, { configureToast } from './components/Toast.vue';
-import { onMounted } from 'vue';
-
-usePageSeo();
-
-onMounted(() => {
-  configureToast({
-    duration: 2000,
-    position: 'top-center',
-    pauseOnHover: false,
-    limit: 2,
-  });
-});
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <div class="relative min-h-screen">
-    <RouterView />
-    <Toast />
-
-  </div>
+  <h1>You did it!</h1>
+  <p>
+    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
+    documentation
+  </p>
 </template>
+
+<style scoped></style>
