@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@keyframes pop {
+	0% {
+		transform: scale(0.2) rotate(-20deg);
+		opacity: 0;
+	}
+
+	55% {
+		transform: scale(1.3) rotate(10deg);
+		opacity: 1;
+	}
+
+	100% {
+		transform: scale(1) rotate(0deg);
+	}
+}
+
+.animate-pop {
+	animation: pop 0.4s ease-out;
+}
+
+@keyframes play-btn-enter {
+	from {
+		opacity: 0;
+		transform: translateX(-50%) translateY(120%);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX(-50%) translateY(0);
+	}
+}
+
+.animate-play-btn-enter {
+	animation: play-btn-enter 0.7s cubic-bezier(0.23, 1.12, 0.75, 0.95) forwards;
+}
+
+@keyframes turn-pulse {
+	0%,
+	100% {
+		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45);
+	}
+
+	50% {
+		box-shadow: 0 0 0 8px rgba(255, 255, 255, 0);
+	}
+}
+
+.turn-indicator-active {
+	animation: turn-pulse 1.4s ease-in-out infinite;
+}
+
+:root {
+	--color-custom-blue: #17212b;
+	--color-custom-deep-blue: #030712;
+	--color-custom-lite-blue: #1d2934;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	min-height: 100%;
+	color: #fff;
+}
+body {
+    /* background: linear-gradient(to bottom,#708dae,#ffffff); */
+    background: linear-gradient(to bottom,#314e69,#ffffff);
+	background-image: url('/public/games/minesweeper/bliss.jpg');
+}
+
+#app {
+	min-height: 100%;
+}  
+
+
+@theme {
+	--color-custom-blue: #17212b;
+	--color-custom-deep-blue: #030712;
+	--color-custom-lite-blue: #1d2934;
+}  
