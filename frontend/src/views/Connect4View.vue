@@ -39,7 +39,7 @@ function closeGame() {
 <template>
     <HeaderComponent />
 
-    <div class="connect4-desktop min-h-screen w-full flex items-start justify-center">
+    <div class="connect4-desktop w-full flex items-start justify-center">
         <XpWindow>
             <XpTitleBar title="Connect 4" :icon="connect4Logo" @close="closeGame" />
             <Connect4GameMenu
