@@ -12,7 +12,7 @@ import Connect4Game from './Connect4Game.vue';
 
 const router = useRouter();
 
-const gameMode = ref<GameMode>('local');
+const gameMode = ref<GameMode>('bot');
 const botDifficulty = ref<BotDifficulty>('medium');
 const gameRef = useTemplateRef('gameRef');
 

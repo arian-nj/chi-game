@@ -12,7 +12,7 @@ import TicTacToeGame from './TicTacToeGame.vue';
 
 const router = useRouter();
 
-const gameMode = ref<GameMode>('local');
+const gameMode = ref<GameMode>('bot');
 const boardSizeKey = ref<BoardSizeKey>('classic');
 const botDifficulty = ref<BotDifficulty>('medium');
 const gameRef = useTemplateRef('gameRef');
