@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
+import { useLocalePath } from '@/composables/useLocalePath';
 import connect4Logo from '@/assets/games/connect4/connect4_logo.svg';
 import Connect4GameMenu from '@/components/connect4/Connect4GameMenu.vue';
 import Connect4SettingsBar from '@/components/connect4/Connect4SettingsBar.vue';
@@ -12,6 +13,7 @@ import Connect4Game from './Connect4Game.vue';
 import HeaderComponent from '@/components/header/HeaderComponent.vue';
 
 const router = useRouter();
+const { localePath } = useLocalePath();
 
 const gameMode = ref<GameMode>('bot');
 const botDifficulty = ref<BotDifficulty>('medium');
@@ -32,7 +34,7 @@ function setBotDifficulty(level: BotDifficulty) {
 }
 
 function closeGame() {
-    router.push('/');
+    router.push(localePath('/'));
 }
 </script>
 

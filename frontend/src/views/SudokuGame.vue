@@ -16,14 +16,12 @@ const props = defineProps<{
 const gameState = ref<'playing' | 'won'>('playing');
 const facePressed = ref(false);
 const elapsedSeconds = ref(0);
-const notesMode = ref(false);
 const selectedCell = ref<[number, number] | null>(null);
 
 let timerId: ReturnType<typeof setInterval> | null = null;
 
 const given = ref<boolean[][]>([]);
 const board = ref<Grid>([]);
-const notes = ref<Set<number>[][]>([]);
 
 const faceEmoji = computed(() => {
     if (facePressed.value) return '😮';
@@ -36,12 +34,6 @@ const conflicts = computed(() => getConflictingCells(board.value));
 function formatTimer(value: number): string {
     const clamped = Math.max(0, Math.min(999, value));
     return String(clamped).padStart(3, '0');
-}
-
-function createNotesGrid(): Set<number>[][] {
-    return Array.from({ length: GRID_SIZE }, () =>
-        Array.from({ length: GRID_SIZE }, () => new Set<number>()),
-    );
 }
 
 function createGivenMask(grid: Grid): boolean[][] {
@@ -67,14 +59,12 @@ function resetGame() {
     gameState.value = 'playing';
     facePressed.value = false;
     elapsedSeconds.value = 0;
-    notesMode.value = false;
     selectedCell.value = null;
 
     const { givenCount } = DIFFICULTIES[props.difficulty];
     const generated = generatePuzzle(givenCount);
     given.value = createGivenMask(generated.puzzle);
     board.value = generated.puzzle.map(row => [...row]);
-    notes.value = createNotesGrid();
     startTimer();
 }
 
@@ -90,15 +80,6 @@ function selectCell(row: number, col: number) {
 function setCellValue(row: number, col: number, value: CellValue) {
     if (gameState.value !== 'playing' || isGiven(row, col)) return;
 
-    if (notesMode.value && value !== 0) {
-        const cellNotes = notes.value[row]![col]!;
-        if (cellNotes.has(value)) cellNotes.delete(value);
-        else cellNotes.add(value);
-        board.value[row]![col] = 0;
-        return;
-    }
-
-    notes.value[row]![col]!.clear();
     board.value[row]![col] = value;
     checkWin();
 }
@@ -113,7 +94,6 @@ function clearSelectedCell() {
     if (!selectedCell.value) return;
     const [row, col] = selectedCell.value;
     if (isGiven(row, col)) return;
-    notes.value[row]![col]!.clear();
     board.value[row]![col] = 0;
 }
 
@@ -144,14 +124,6 @@ function cellClass(row: number, col: number): Record<string, boolean> {
     };
 }
 
-function formatNotes(cellNotes: Set<number>): string {
-    const chars = Array(9).fill(' ');
-    for (const n of cellNotes) {
-        chars[n - 1] = String(n);
-    }
-    return chars.join('');
-}
-
 function onKeyDown(event: KeyboardEvent) {
     if (gameState.value !== 'playing') return;
 
@@ -162,11 +134,6 @@ function onKeyDown(event: KeyboardEvent) {
     }
     if (event.key === 'Backspace' || event.key === 'Delete' || event.key === '0') {
         clearSelectedCell();
-        event.preventDefault();
-        return;
-    }
-    if (event.key === 'n' || event.key === 'N') {
-        notesMode.value = !notesMode.value;
         event.preventDefault();
     }
 }
@@ -199,12 +166,6 @@ defineExpose({ resetGame });
                 @mouseup="facePressed = false"
                 @mouseleave="facePressed = false"
             >{{ faceEmoji }}</button>
-            <button
-                type="button"
-                class="xp-notes-btn"
-                :class="{ 'xp-notes-btn-active': notesMode }"
-                @click="notesMode = !notesMode"
-            >Notes</button>
         </div>
 
         <div class="xp-board-scroll">
@@ -222,10 +183,6 @@ defineExpose({ resetGame });
                             v-if="value !== 0"
                             class="xp-cell-value"
                         >{{ value }}</span>
-                        <span
-                            v-else-if="notes[rIndex]![cIndex]!.size > 0"
-                            class="xp-cell-notes"
-                        >{{ formatNotes(notes[rIndex]![cIndex]!) }}</span>
                     </button>
                 </div>
             </div>
@@ -320,24 +277,6 @@ defineExpose({ resetGame });
     border-color: #808080 #fff #fff #808080;
 }
 
-.xp-notes-btn {
-    padding: 4px 10px;
-    font-size: 11px;
-    font-family: Tahoma, 'MS Sans Serif', sans-serif;
-    color: #000;
-    background: #c0c0c0;
-    border: 2px solid;
-    border-color: #fff #808080 #808080 #fff;
-    cursor: default;
-    white-space: nowrap;
-}
-
-.xp-notes-btn-active {
-    border-color: #808080 #fff #fff #808080;
-    background: #ece9d8;
-    font-weight: bold;
-}
-
 .xp-board-scroll {
     overflow: auto;
     width: 100%;
@@ -401,17 +340,6 @@ defineExpose({ resetGame });
     font-weight: normal;
     color: #000;
     line-height: 1;
-}
-
-.xp-cell-notes {
-    font-size: calc(var(--cell-size) * 0.18);
-    font-family: 'Courier New', Courier, monospace;
-    letter-spacing: -0.5px;
-    line-height: 1;
-    color: #505050;
-    white-space: pre;
-    width: 100%;
-    text-align: center;
 }
 
 .xp-numpad {

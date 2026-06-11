@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
+import { useLocalePath } from '@/composables/useLocalePath';
+
+const { localePath } = useLocalePath();
 </script>
 
 <template>
     <header class="site-header mb-8">
-        <RouterLink to="/" class="site-hero">
+        <RouterLink :to="localePath('/')" class="site-hero">
             <div class="site-hero-titlebar">
                 <div class="site-hero-titlebar-left">
                     <img

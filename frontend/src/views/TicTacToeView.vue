@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
+import { useLocalePath } from '@/composables/useLocalePath';
 import tictactoeLogo from '@/assets/games/tictactoe/tictactoe_logo.svg';
 import TicTacToeGameMenu from '@/components/tictactoe/TicTacToeGameMenu.vue';
 import TicTacToeSettingsBar from '@/components/tictactoe/TicTacToeSettingsBar.vue';
@@ -12,6 +13,7 @@ import TicTacToeGame from './TicTacToeGame.vue';
 import HeaderComponent from '@/components/header/HeaderComponent.vue';
 
 const router = useRouter();
+const { localePath } = useLocalePath();
 
 const gameMode = ref<GameMode>('bot');
 const boardSizeKey = ref<BoardSizeKey>('classic');
@@ -38,7 +40,7 @@ function setBotDifficulty(level: BotDifficulty) {
 }
 
 function closeGame() {
-    router.push('/');
+    router.push(localePath('/'));
 }
 </script>
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
+import { useLocalePath } from '@/composables/useLocalePath';
 import sudokuLogo from '@/assets/games/sudoku/sudoku_logo.svg';
 import SudokuGameMenu from '@/components/sudoku/SudokuGameMenu.vue';
 import SudokuSettingsBar from '@/components/sudoku/SudokuSettingsBar.vue';
@@ -12,6 +13,7 @@ import SudokuGame from './SudokuGame.vue';
 import HeaderComponent from '@/components/header/HeaderComponent.vue';
 
 const router = useRouter();
+const { localePath } = useLocalePath();
 
 const difficulty = ref<Difficulty>('easy');
 const gameRef = useTemplateRef('gameRef');
@@ -25,7 +27,7 @@ function setDifficulty(level: Difficulty) {
 }
 
 function closeGame() {
-    router.push('/');
+    router.push(localePath('/'));
 }
 </script>
 

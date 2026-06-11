@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
+import { useLocalePath } from '@/composables/useLocalePath';
 import minesweeperLogo from '@/assets/games/minesweeper/minesweeper_logo.png';
 import MinesweeperGameMenu from '@/components/minesweeper/MinesweeperGameMenu.vue';
 import MinesweeperSettingsBar from '@/components/minesweeper/MinesweeperSettingsBar.vue';
@@ -12,6 +13,7 @@ import MinesweeperGame from './MinesweeperGame.vue';
 import HeaderComponent from '@/components/header/HeaderComponent.vue';
 
 const router = useRouter();
+const { localePath } = useLocalePath();
 
 const difficulty = ref<Difficulty>('beginner');
 const gameRef = useTemplateRef('gameRef');
@@ -27,7 +29,7 @@ function setDifficulty(level: Difficulty) {
 }
 
 function closeGame() {
-    router.push('/');
+    router.push(localePath('/'));
 }
 </script>
 

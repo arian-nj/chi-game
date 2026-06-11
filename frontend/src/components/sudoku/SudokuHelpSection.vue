@@ -26,8 +26,7 @@ import sudokuLogo from '@/assets/games/sudoku/sudoku_logo.svg';
                 <p>
                     Click a cell and type a number (<strong>1–9</strong>) to fill it in. Use
                     <strong>Backspace</strong> or <strong>Delete</strong> to clear your entry.
-                    Toggle <strong>Notes</strong> mode to pencil in possible values. Conflicting
-                    numbers are highlighted in red.
+                    Conflicting numbers are highlighted in red.
                 </p>
                 <p>
                     Choose a difficulty from the Game menu — <strong>Easy</strong>,
