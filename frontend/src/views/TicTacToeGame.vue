@@ -30,16 +30,19 @@ const result = computed(() => checkWinner(board.value, props.boardSize));
 const hasDraw = computed(() => isDraw(board.value, props.boardSize));
 const isGameOver = computed(() => result.value !== null || hasDraw.value);
 
-const turnIndicator = computed(() => {
-    if (result.value) return result.value.winner;
-    if (hasDraw.value) return '—';
-    if (isBotThinking.value) return 'O';
+const activePlayer = computed<Player | null>(() => {
+    if (isGameOver.value) return null;
+    if (isBotThinking.value) return BOT;
     return currentPlayer.value;
 });
 
-function formatCounter(value: number): string {
-    return String(Math.min(999, value)).padStart(3, '0');
-}
+const resultText = computed(() => {
+    if (result.value) return `${result.value.winner} wins!`;
+    if (hasDraw.value) return 'Draw game';
+    return '';
+});
+
+const oPlayerLabel = computed(() => (props.isBot ? 'Computer' : 'Player 2'));
 
 const faceEmoji = computed(() => {
     if (facePressed.value) return '😮';
@@ -127,36 +130,54 @@ defineExpose({ resetGame });
 
 <template>
     <div
-        class="xp-client select-none"
-        :class="boardSize === 5 ? 'xp-board-5' : 'xp-board-3'"
+        class="ttt-client select-none"
+        :class="boardSize === 5 ? 'ttt-size-5' : 'ttt-size-3'"
         :style="{ '--grid-cols': boardSize }"
     >
-        <div class="xp-game-body">
-            <div class="xp-sunken xp-status-panel">
-                <div class="xp-led">{{ turnIndicator }}</div>
+        <div class="ttt-status">
+            <div
+                class="ttt-player"
+                :class="{ 'ttt-player-active': activePlayer === 'X' }"
+            >
+                <span class="ttt-mark ttt-mark-x" aria-hidden="true">X</span>
+                <span class="ttt-player-name">Player 1</span>
+            </div>
+
+            <div class="ttt-center">
                 <button
                     type="button"
-                    class="xp-face-btn"
+                    class="ttt-face-btn"
+                    title="New game"
                     @click="resetGame"
                     @mousedown="facePressed = true"
                     @mouseup="facePressed = false"
                     @mouseleave="facePressed = false"
                 >{{ faceEmoji }}</button>
-                <div class="xp-led">{{ formatCounter(moveCount) }}</div>
+                <span v-if="resultText" class="ttt-result">{{ resultText }}</span>
+                <span v-else-if="isBotThinking" class="ttt-thinking">Thinking…</span>
+                <span v-else class="ttt-moves">{{ moveCount }} {{ moveCount === 1 ? 'move' : 'moves' }}</span>
             </div>
 
-            <div class="xp-sunken xp-grid-panel">
+            <div
+                class="ttt-player"
+                :class="{ 'ttt-player-active': activePlayer === 'O' }"
+            >
+                <span class="ttt-mark ttt-mark-o" aria-hidden="true" />
+                <span class="ttt-player-name">{{ oPlayerLabel }}</span>
+            </div>
+        </div>
+
+        <div class="ttt-board-frame">
+            <div class="ttt-board">
                 <button
                     v-for="(cell, index) in board"
                     :key="index"
                     type="button"
-                    class="xp-cell"
+                    class="ttt-cell"
                     :class="{
-                        'xp-cell-empty': cell === null,
-                        'xp-cell-filled': cell !== null,
-                        'xp-cell-winning': isWinningCell(index),
-                        'xp-cell-x': cell === 'X',
-                        'xp-cell-o': cell === 'O',
+                        'ttt-cell-winning': isWinningCell(index),
+                        'ttt-cell-x': cell === 'X',
+                        'ttt-cell-o': cell === 'O',
                     }"
                     :disabled="
                         cell !== null
@@ -166,7 +187,8 @@ defineExpose({ resetGame });
                     "
                     @click="handleCellClick(index)"
                 >
-                    {{ cell ?? '' }}
+                    <span v-if="cell === 'X'" class="ttt-mark ttt-mark-x" aria-hidden="true">X</span>
+                    <span v-else-if="cell === 'O'" class="ttt-mark ttt-mark-o" aria-hidden="true" />
                 </button>
             </div>
         </div>
@@ -174,144 +196,193 @@ defineExpose({ resetGame });
 </template>
 
 <style scoped>
-.xp-client {
-    --cell-size: 64px;
-    --panel-pad: calc(var(--cell-size) * 0.35);
-    --board-width: calc(var(--cell-size) * var(--grid-cols) + var(--panel-pad) * 2 + 6px);
+.ttt-client {
+    --cell-size: 72px;
+    --mark-size: calc(var(--cell-size) * 0.55);
     width: fit-content;
     background: #c0c0c0;
-    padding: 10px;
+    padding: 12px 14px 14px;
     box-sizing: border-box;
 }
 
-.xp-board-5 {
-    --cell-size: 44px;
+.ttt-size-5 {
+    --cell-size: 52px;
 }
 
 @media (max-width: 640px) {
-    .xp-client {
-        --cell-size: 72px;
-        padding: 12px;
+    .ttt-client {
+        --cell-size: 80px;
+        padding: 10px 12px 12px;
     }
 
-    .xp-board-5 {
-        --cell-size: 48px;
+    .ttt-size-5 {
+        --cell-size: 56px;
     }
 }
 
-.xp-game-body {
-    width: fit-content;
-    max-width: 100%;
-}
-
-.xp-sunken {
-    border: 3px solid;
-    border-color: #808080 #fff #fff #808080;
-    background: #c0c0c0;
-}
-
-.xp-status-panel {
-    position: relative;
+.ttt-status {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: var(--board-width);
-    box-sizing: border-box;
-    padding: calc(var(--cell-size) * 0.15) calc(var(--cell-size) * 0.2);
-    margin-bottom: calc(var(--cell-size) * 0.2);
+    gap: 8px;
+    margin-bottom: 10px;
+    font-family: Tahoma, 'MS Sans Serif', sans-serif;
+    font-size: 11px;
 }
 
-.xp-led {
+.ttt-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: 64px;
+    padding: 4px 8px;
+    opacity: 0.45;
+    transition: opacity 0.15s;
+}
+
+.ttt-player-active {
+    opacity: 1;
+    background: #ece9d8;
+    border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+}
+
+.ttt-player-name {
+    color: #000;
+    white-space: nowrap;
+}
+
+.ttt-center {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-align: center;
+    color: #000;
+    font-size: 12px;
     min-width: 0;
-    background: #000;
-    color: #f00;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: calc(var(--cell-size) * 0.38);
-    font-weight: bold;
-    line-height: 1;
-    padding: 2px 4px;
-    text-align: right;
-    letter-spacing: 1px;
 }
 
-.xp-face-btn {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(var(--cell-size) * 1.1);
-    height: calc(var(--cell-size) * 1.1);
-    font-size: calc(var(--cell-size) * 0.65);
-    line-height: 1;
+.ttt-face-btn {
+    width: 44px;
+    height: 44px;
     padding: 0;
+    font-size: 28px;
+    line-height: 1;
     cursor: default;
     background: #c0c0c0;
-    border: 3px solid;
+    border: 2px solid;
     border-color: #fff #808080 #808080 #fff;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.xp-face-btn:active {
+.ttt-face-btn:active {
     border-color: #808080 #fff #fff #808080;
 }
 
-.xp-grid-panel {
-    display: grid;
-    grid-template-columns: repeat(var(--grid-cols), var(--cell-size));
-    width: var(--board-width);
-    box-sizing: border-box;
-    padding: var(--panel-pad);
-    gap: 0;
+.ttt-result {
+    font-weight: bold;
+    color: #000080;
 }
 
-.xp-cell {
+.ttt-thinking {
+    color: #808080;
+    font-style: italic;
+}
+
+.ttt-moves {
+    color: #404040;
+}
+
+.ttt-board-frame {
+    border: 3px solid;
+    border-color: #808080 #fff #fff #808080;
+    background: #808080;
+    padding: 2px;
+}
+
+.ttt-board {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), var(--cell-size));
+    background: #ece9d8;
+}
+
+.ttt-cell {
     width: var(--cell-size);
     height: var(--cell-size);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: calc(var(--cell-size) * 0.62);
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    border-right: 2px solid #808080;
+    border-bottom: 2px solid #808080;
+    cursor: default;
+    box-sizing: border-box;
+}
+
+.ttt-size-3 .ttt-cell:nth-child(3n) {
+    border-right: none;
+}
+
+.ttt-size-3 .ttt-cell:nth-last-child(-n + 3) {
+    border-bottom: none;
+}
+
+.ttt-size-5 .ttt-cell:nth-child(5n) {
+    border-right: none;
+}
+
+.ttt-size-5 .ttt-cell:nth-last-child(-n + 5) {
+    border-bottom: none;
+}
+
+.ttt-cell:not(:disabled):hover {
+    background: rgba(49, 106, 197, 0.08);
+}
+
+.ttt-cell:disabled {
+    cursor: default;
+}
+
+.ttt-cell-winning {
+    background: #90ee90;
+}
+
+.ttt-mark {
+    display: block;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.ttt-mark-x {
+    font-size: var(--mark-size);
     font-weight: bold;
     font-family: Tahoma, 'MS Sans Serif', sans-serif;
-    box-sizing: border-box;
-    cursor: default;
-    padding: 0;
-}
-
-.xp-cell-empty {
-    background: #c0c0c0;
-    border-style: solid;
-    border-width: max(3px, calc(var(--cell-size) * 0.12));
-    border-color: #fff #808080 #808080 #fff;
-}
-
-.xp-cell-empty:not(:disabled):active {
-    border-width: max(2px, calc(var(--cell-size) * 0.08));
-    border-color: #808080;
-}
-
-.xp-cell-filled {
-    background: #c0c0c0;
-    border-style: solid;
-    border-width: max(2px, calc(var(--cell-size) * 0.06));
-    border-color: #808080;
-}
-
-.xp-cell:disabled {
-    cursor: default;
-}
-
-.xp-cell-x {
     color: #0000ff;
 }
 
-.xp-cell-o {
-    color: #ff0000;
+.ttt-mark-o {
+    width: var(--mark-size);
+    height: var(--mark-size);
+    border: calc(var(--mark-size) * 0.12) solid #ff0000;
+    border-radius: 50%;
+    box-sizing: border-box;
 }
 
-.xp-cell-winning {
-    background: #ffff00;
+.ttt-player .ttt-mark-x {
+    font-size: 18px;
+}
+
+.ttt-player .ttt-mark-o {
+    width: 18px;
+    height: 18px;
+    border-width: 2.5px;
 }
 </style>
