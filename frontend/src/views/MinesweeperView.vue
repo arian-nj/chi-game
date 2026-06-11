@@ -33,7 +33,7 @@ function closeGame() {
 
 <template>
     <HeaderComponent />
-    <div class="minesweeper-desktop min-h-screen w-full flex items-start justify-center">
+    <div class="minesweeper-desktop w-full flex items-start justify-center">
         <XpWindow>
             <XpTitleBar title="Minesweeper" :icon="minesweeperLogo" @close="closeGame" />
             <MinesweeperGameMenu
