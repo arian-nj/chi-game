@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref } from 'vue';
+import { computed, onUnmounted, ref, watch } from 'vue';
 import {
     computeNeighborMines,
     generateSolvableMines,
@@ -201,7 +201,14 @@ function revealAllMines() {
   }
 }
 
+watch(
+    () => [props.cellWidth, props.cellHeight, props.mineCount],
+    () => resetGame(),
+)
+
 onUnmounted(stopTimer)
+
+defineExpose({ resetGame })
 </script>
 
 <template>
@@ -245,8 +252,9 @@ onUnmounted(stopTimer)
 
 <style scoped>
 .xp-client {
+    --cell-size: 20px;
     background: #c0c0c0;
-    padding: 6px;
+    padding: 8px;
 }
 
 .xp-sunken {
@@ -259,27 +267,27 @@ onUnmounted(stopTimer)
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 4px 7px;
-    margin-bottom: 6px;
+    padding: 5px 9px;
+    margin-bottom: 8px;
 }
 
 .xp-led {
     background: #000;
     color: #f00;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 23px;
+    font-size: 28px;
     font-weight: bold;
     line-height: 1;
-    padding: 1px 3px;
-    min-width: 41px;
+    padding: 2px 4px;
+    min-width: 50px;
     text-align: right;
     letter-spacing: 1px;
 }
 
 .xp-face-btn {
-    width: 26px;
-    height: 26px;
-    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
     line-height: 1;
     padding: 0;
     cursor: default;
@@ -297,16 +305,16 @@ onUnmounted(stopTimer)
 
 .xp-grid-panel {
     display: inline-block;
-    padding: 6px;
+    padding: 8px;
 }
 
 .xp-cell {
-    width: 16px;
-    height: 16px;
+    width: var(--cell-size);
+    height: var(--cell-size);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 14px;
     font-weight: bold;
     font-family: Tahoma, 'MS Sans Serif', sans-serif;
     box-sizing: border-box;
@@ -330,7 +338,7 @@ onUnmounted(stopTimer)
 }
 
 .xp-flag {
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1;
 }
 </style>

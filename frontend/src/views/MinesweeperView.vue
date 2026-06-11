@@ -1,5 +1,56 @@
 <script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import MinesweeperGame from './MinesweeperGame.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+type Difficulty = 'beginner' | 'intermediate' | 'expert';
+
+const DIFFICULTIES: Record<Difficulty, { cellWidth: number; cellHeight: number; mineCount: number }> = {
+    beginner: { cellWidth: 9, cellHeight: 9, mineCount: 10 },
+    intermediate: { cellWidth: 16, cellHeight: 16, mineCount: 40 },
+    expert: { cellWidth: 30, cellHeight: 16, mineCount: 99 },
+};
+
+const difficulty = ref<Difficulty>('beginner');
+const gameMenuOpen = ref(false);
+const gameRef = useTemplateRef('gameRef');
+const menuRootRef = useTemplateRef('menuRootRef');
+
+const gameConfig = computed(() => DIFFICULTIES[difficulty.value]);
+
+function closeGameMenu() {
+    gameMenuOpen.value = false;
+}
+
+function toggleGameMenu() {
+    gameMenuOpen.value = !gameMenuOpen.value;
+}
+
+function newGame() {
+    gameRef.value?.resetGame();
+    closeGameMenu();
+}
+
+function setDifficulty(level: Difficulty) {
+    difficulty.value = level;
+    closeGameMenu();
+}
+
+function onDocumentClick(event: MouseEvent) {
+    if (!gameMenuOpen.value) return;
+    const root = menuRootRef.value;
+    if (root && !root.contains(event.target as Node)) {
+        closeGameMenu();
+    }
+}
+function closeGame() {
+    router.push('/');
+}
+
+onMounted(() => document.addEventListener('click', onDocumentClick));
+onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 </script>
 
 <template>
@@ -18,18 +69,61 @@ import MinesweeperGame from './MinesweeperGame.vue';
                 <div class="xp-titlebar-buttons">
                     <button type="button" class="xp-win-btn xp-win-btn-min" aria-label="Minimize" />
                     <button type="button" class="xp-win-btn xp-win-btn-max" aria-label="Maximize" />
-                    <button type="button" class="xp-win-btn xp-win-btn-close" aria-label="Close" />
+                    <button type="button" @click="closeGame" class="xp-win-btn xp-win-btn-close" aria-label="Close" />
                 </div>
             </div>
 
             <!-- menu bar -->
             <div class="xp-menubar">
-                <button type="button" class="xp-menu-item">Game</button>
+                <div ref="menuRootRef" class="xp-menu-root">
+                    <button
+                        type="button"
+                        class="xp-menu-item"
+                        :class="{ 'xp-menu-item-active': gameMenuOpen }"
+                        @click.stop="toggleGameMenu"
+                    >Game</button>
+                    <div v-if="gameMenuOpen" class="xp-dropdown" @click.stop>
+                        <button type="button" class="xp-dropdown-item" @click="newGame">
+                            <span class="xp-dropdown-bullet" />
+                            New Game
+                        </button>
+                        <div class="xp-dropdown-separator" />
+                        <button
+                            type="button"
+                            class="xp-dropdown-item"
+                            @click="setDifficulty('beginner')"
+                        >
+                            <span class="xp-dropdown-bullet">{{ difficulty === 'beginner' ? '•' : '' }}</span>
+                            Beginner
+                        </button>
+                        <button
+                            type="button"
+                            class="xp-dropdown-item"
+                            @click="setDifficulty('intermediate')"
+                        >
+                            <span class="xp-dropdown-bullet">{{ difficulty === 'intermediate' ? '•' : '' }}</span>
+                            Intermediate
+                        </button>
+                        <button
+                            type="button"
+                            class="xp-dropdown-item"
+                            @click="setDifficulty('expert')"
+                        >
+                            <span class="xp-dropdown-bullet">{{ difficulty === 'expert' ? '•' : '' }}</span>
+                            Expert
+                        </button>
+                    </div>
+                </div>
                 <a href="#how-to-play-minesweeper" class="xp-menu-item">Help</a>
             </div>
 
             <!-- game -->
-            <MinesweeperGame :cell-height="9" :cell-width="9" :mine-count="10" />
+            <MinesweeperGame
+                ref="gameRef"
+                :cell-height="gameConfig.cellHeight"
+                :cell-width="gameConfig.cellWidth"
+                :mine-count="gameConfig.mineCount"
+            />
         </div>
     </div>
 
@@ -48,7 +142,7 @@ import MinesweeperGame from './MinesweeperGame.vue';
     border: 1px solid #0054e3;
     border-radius: 8px 8px 0 0;
     box-shadow: 1px 1px 0 #000;
-    overflow: hidden;
+    overflow: visible;
     font-family: Tahoma, 'MS Sans Serif', sans-serif;
 }
 
@@ -157,25 +251,85 @@ import MinesweeperGame from './MinesweeperGame.vue';
 
 .xp-menubar {
     display: flex;
+    align-items: center;
     gap: 0;
     background: #ece9d8;
     padding: 2px 0;
     border-bottom: 1px solid #aca899;
+    position: relative;
+    z-index: 10;
+}
+
+.xp-menu-root {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .xp-menu-item {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    background: none;
+    border: none;
+    color: #000;
+    font-size: 11px;
+    line-height: 1;
+    font-family: inherit;
+    padding: 2px 6px;
+    cursor: default;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.xp-menu-item:hover,
+.xp-menu-item-active {
+    background: #316ac5;
+    color: #fff;
+}
+
+.xp-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 140px;
+    background: #fff;
+    border: 1px solid #716f64;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+    padding: 2px 0;
+    z-index: 20;
+}
+
+.xp-dropdown-item {
+    display: flex;
+    align-items: center;
+    width: 100%;
     background: none;
     border: none;
     color: #000;
     font-size: 11px;
     font-family: inherit;
-    padding: 1px 6px;
+    padding: 3px 20px 3px 2px;
     cursor: default;
-    text-decoration: none;
+    text-align: left;
+    white-space: nowrap;
 }
 
-.xp-menu-item:hover {
+.xp-dropdown-item:hover {
     background: #316ac5;
     color: #fff;
+}
+
+.xp-dropdown-bullet {
+    display: inline-block;
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.xp-dropdown-separator {
+    height: 1px;
+    margin: 2px 2px;
+    background: #aca899;
 }
 </style>
