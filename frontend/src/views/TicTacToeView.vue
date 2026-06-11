@@ -9,6 +9,7 @@ import XpTitleBar from '@/components/xp/XpTitleBar.vue';
 import XpWindow from '@/components/xp/XpWindow.vue';
 import { BOARD_SIZES, type BoardSizeKey, type BotDifficulty, type GameMode } from '@/lib/tictactoe/types';
 import TicTacToeGame from './TicTacToeGame.vue';
+import HeaderComponent from '@/components/header/HeaderComponent.vue';
 
 const router = useRouter();
 
@@ -42,6 +43,8 @@ function closeGame() {
 </script>
 
 <template>
+    <HeaderComponent />
+
     <div class="tictactoe-desktop min-h-screen w-full flex items-start justify-center">
         <XpWindow>
             <XpTitleBar title="Tic Tac Toe" :icon="tictactoeLogo" @close="closeGame" />

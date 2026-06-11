@@ -9,6 +9,7 @@ import XpTitleBar from '@/components/xp/XpTitleBar.vue';
 import XpWindow from '@/components/xp/XpWindow.vue';
 import type { Difficulty } from '@/lib/sudoku/types';
 import SudokuGame from './SudokuGame.vue';
+import HeaderComponent from '@/components/header/HeaderComponent.vue';
 
 const router = useRouter();
 
@@ -29,6 +30,8 @@ function closeGame() {
 </script>
 
 <template>
+    <HeaderComponent />
+
     <div class="sudoku-desktop min-h-screen w-full flex items-start justify-center">
         <XpWindow>
             <XpTitleBar title="Sudoku" :icon="sudokuLogo" @close="closeGame" />

@@ -9,6 +9,7 @@ import XpTitleBar from '@/components/xp/XpTitleBar.vue';
 import XpWindow from '@/components/xp/XpWindow.vue';
 import { DIFFICULTIES, type Difficulty } from '@/lib/minesweeper/types';
 import MinesweeperGame from './MinesweeperGame.vue';
+import HeaderComponent from '@/components/header/HeaderComponent.vue';
 
 const router = useRouter();
 
@@ -31,6 +32,7 @@ function closeGame() {
 </script>
 
 <template>
+    <HeaderComponent />
     <div class="minesweeper-desktop min-h-screen w-full flex items-start justify-center">
         <XpWindow>
             <XpTitleBar title="Minesweeper" :icon="minesweeperLogo" @close="closeGame" />

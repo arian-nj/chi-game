@@ -3,7 +3,7 @@ import { RouterLink } from 'vue-router';
 </script>
 
 <template>
-    <header class="site-header">
+    <header class="site-header mb-8">
         <RouterLink to="/" class="site-hero">
             <div class="site-hero-titlebar">
                 <div class="site-hero-titlebar-left">
@@ -24,9 +24,6 @@ import { RouterLink } from 'vue-router';
                     <span class="chrome-btn chrome-btn-close" />
                 </div>
             </div>
-            <!-- <div class="site-hero-body">
-                <p class="site-tagline">Play classics in your browser</p>
-            </div> -->
         </RouterLink>
     </header>
 </template>

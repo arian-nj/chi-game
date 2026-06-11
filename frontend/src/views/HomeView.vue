@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AboutUsSection from '@/components/AboutUsSection.vue';
 import GamesBoard from '@/components/GamesBoard.vue';
 import HeaderComponent from '../components/header/HeaderComponent.vue';
 
@@ -8,6 +9,7 @@ import HeaderComponent from '../components/header/HeaderComponent.vue';
   <div class="home-root lg:w-80/100 m-auto">
     <HeaderComponent />
     <GamesBoard />
+    <AboutUsSection />
   </div>
 </template>
 

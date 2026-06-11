@@ -9,6 +9,7 @@ import XpTitleBar from '@/components/xp/XpTitleBar.vue';
 import XpWindow from '@/components/xp/XpWindow.vue';
 import type { BotDifficulty, GameMode } from '@/lib/connect4/types';
 import Connect4Game from './Connect4Game.vue';
+import HeaderComponent from '@/components/header/HeaderComponent.vue';
 
 const router = useRouter();
 
@@ -36,6 +37,8 @@ function closeGame() {
 </script>
 
 <template>
+    <HeaderComponent />
+
     <div class="connect4-desktop min-h-screen w-full flex items-start justify-center">
         <XpWindow>
             <XpTitleBar title="Connect 4" :icon="connect4Logo" @close="closeGame" />
