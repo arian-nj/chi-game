@@ -213,6 +213,7 @@ defineExpose({ resetGame })
 
 <template>
 <div class="xp-client select-none">
+    <div class="xp-game-body">
     <div class="xp-sunken xp-status-panel">
         <div class="xp-led">{{ formatCounter(mineCounter) }}</div>
         <button
@@ -226,26 +227,29 @@ defineExpose({ resetGame })
         <div class="xp-led">{{ formatCounter(elapsedSeconds) }}</div>
     </div>
 
-    <div class="xp-sunken xp-grid-panel">
-        <div v-for="(row, rIndex) in board" :key="rIndex" class="flex">
-            <div
-                v-for="(cell, cIndex) in row"
-                :key="cIndex"
-                class="xp-cell"
-                :class="cell.isRevealed ? 'xp-cell-revealed' : 'xp-cell-hidden'"
-                @click="revealCell(rIndex, cIndex)"
-                @contextmenu.prevent="rightClickCell(rIndex, cIndex)"
-            >
-                <template v-if="!cell.isRevealed">
-                    <span v-if="cell.isFlagged" class="xp-flag">🚩</span>
-                </template>
-                <template v-else-if="cell.isMine">💣</template>
-                <span
-                    v-else-if="cell.neighborMines > 0"
-                    :class="getNumbersColor(cell.neighborMines)"
-                >{{ cell.neighborMines }}</span>
+    <div class="xp-board-scroll">
+        <div class="xp-sunken xp-grid-panel">
+            <div v-for="(row, rIndex) in board" :key="rIndex" class="flex">
+                <div
+                    v-for="(cell, cIndex) in row"
+                    :key="cIndex"
+                    class="xp-cell"
+                    :class="cell.isRevealed ? 'xp-cell-revealed' : 'xp-cell-hidden'"
+                    @click="revealCell(rIndex, cIndex)"
+                    @contextmenu.prevent="rightClickCell(rIndex, cIndex)"
+                >
+                    <template v-if="!cell.isRevealed">
+                        <span v-if="cell.isFlagged" class="xp-flag">🚩</span>
+                    </template>
+                    <template v-else-if="cell.isMine">💣</template>
+                    <span
+                        v-else-if="cell.neighborMines > 0"
+                        :class="getNumbersColor(cell.neighborMines)"
+                    >{{ cell.neighborMines }}</span>
+                </div>
             </div>
         </div>
+    </div>
     </div>
 </div>
 </template>
@@ -255,6 +259,13 @@ defineExpose({ resetGame })
     --cell-size: 20px;
     background: #c0c0c0;
     padding: 8px;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.xp-game-body {
+    width: fit-content;
+    max-width: 100%;
 }
 
 .xp-sunken {
@@ -267,6 +278,8 @@ defineExpose({ resetGame })
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
     padding: 5px 9px;
     margin-bottom: 8px;
 }
@@ -303,8 +316,18 @@ defineExpose({ resetGame })
     border-color: #808080 #fff #fff #808080;
 }
 
+.xp-board-scroll {
+    overflow: auto;
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100vh - 7rem);
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+}
+
 .xp-grid-panel {
     display: inline-block;
+    width: max-content;
     padding: 8px;
 }
 

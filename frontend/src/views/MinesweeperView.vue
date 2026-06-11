@@ -54,7 +54,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 </script>
 
 <template>
-    <div class="minesweeper-desktop min-h-screen w-full flex items-start justify-center pt-8">
+    <div class="minesweeper-desktop min-h-screen w-full flex items-start justify-center">
         <div class="xp-window">
             <!-- title bar -->
             <div class="xp-titlebar">
@@ -136,14 +136,25 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 <style scoped>
 .minesweeper-desktop {
     background: url('/games/minesweeper/bliss.jpg') center / cover no-repeat;
+    box-sizing: border-box;
+    padding: 2rem 0.5rem;
+    overflow-x: hidden;
 }
 
 .xp-window {
     border: 1px solid #0054e3;
     border-radius: 8px 8px 0 0;
     box-shadow: 1px 1px 0 #000;
-    overflow: visible;
+    overflow: hidden;
     font-family: Tahoma, 'MS Sans Serif', sans-serif;
+    width: fit-content;
+    max-width: 100%;
+}
+
+@media (max-width: 640px) {
+    .minesweeper-desktop {
+        padding: 0.5rem 0.25rem;
+    }
 }
 
 .xp-titlebar {
