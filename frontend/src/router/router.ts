@@ -27,6 +27,11 @@ const router = createRouter({
           name: 'connect4',
           component: () => import('@/views/Connect4View.vue'),
         },
+        {
+          path: 'sudoku',
+          name: 'sudoku',
+          component: () => import('@/views/SudokuView.vue'),
+        },
       ],
     },
 

@@ -3,6 +3,7 @@ import type { GameData } from '@/lib/types.ts';
 import GameIcon from './GameIcon.vue';
 import Connect4Logo from '@/assets/games/connect4/connect4_logo.svg';
 import MinesweeperLogo from '@/assets/games/minesweeper/minesweeper_logo.png';
+import SudokuLogo from '@/assets/games/sudoku/sudoku_logo.svg';
 import TicTacToeLogo from '@/assets/games/tictactoe/tictactoe_logo.svg';
 
 const games: GameData[] = [
@@ -20,6 +21,11 @@ const games: GameData[] = [
         name: 'Connect 4',
         key: 'connect4',
         logo: Connect4Logo,
+    },
+    {
+        name: 'Sudoku',
+        key: 'sudoku',
+        logo: SudokuLogo,
     },
 ]
 
