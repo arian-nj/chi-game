@@ -3,6 +3,7 @@ import { computed, ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 import minesweeperLogo from '@/assets/games/minesweeper/minesweeper_logo.png';
 import MinesweeperGameMenu from '@/components/minesweeper/MinesweeperGameMenu.vue';
+import MinesweeperSettingsBar from '@/components/minesweeper/MinesweeperSettingsBar.vue';
 import MinesweeperHelpSection from '@/components/minesweeper/MinesweeperHelpSection.vue';
 import XpTitleBar from '@/components/xp/XpTitleBar.vue';
 import XpWindow from '@/components/xp/XpWindow.vue';
@@ -43,6 +44,11 @@ function closeGame() {
                 :cell-height="gameConfig.cellHeight"
                 :cell-width="gameConfig.cellWidth"
                 :mine-count="gameConfig.mineCount"
+            />
+            <MinesweeperSettingsBar
+                :difficulty="difficulty"
+                @new-game="newGame"
+                @set-difficulty="setDifficulty"
             />
         </XpWindow>
     </div>

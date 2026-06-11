@@ -258,7 +258,7 @@ defineExpose({ resetGame })
 .xp-client {
     --cell-size: 26px;
     background: #c0c0c0;
-    padding: 10px;
+    padding: 10px 10px 6px;
     max-width: 100%;
     box-sizing: border-box;
 }
@@ -266,13 +266,14 @@ defineExpose({ resetGame })
 @media (max-width: 640px) {
     .xp-client {
         --cell-size: 34px;
-        padding: 12px;
+        padding: 12px 12px 6px;
     }
 }
 
 .xp-game-body {
     width: fit-content;
     max-width: 100%;
+    margin: auto;
 }
 
 .xp-sunken {
