@@ -17,6 +17,11 @@ const router = createRouter({
           name : 'minesweeper',
           component: () => import('@/views/MinesweeperView.vue'),
         },
+        {
+          path: 'tictactoe',
+          name: 'tictactoe',
+          component: () => import('@/views/TicTacToeView.vue'),
+        },
       ],
     },
 
