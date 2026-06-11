@@ -23,6 +23,14 @@
                     <strong>offline-first</strong> approach so the games stay fast and reliable. More titles are on
                     the way.
                 </p>
+
+                <h3>What is Chi?</h3>
+                <p>
+                    <strong>Chi</strong> Means <strong>"Life Energy"</strong> in <strong>Chinese</strong>
+                    <br>
+                    Also Means <strong>"What"</strong> in <strong>Persian</strong>
+                    <p>i like the persian one more <strong>"What Game"</strong></p>
+                </p>
             </div>
         </div>
     </section>
@@ -93,12 +101,20 @@
     box-shadow: inset 1px 1px 0 #fff;
 }
 
-.about-body p {
+.about-body p,h2 {
     margin: 0;
     font-size: clamp(0.9rem, 2.5vw, 1rem);
     line-height: 1.6;
     font-weight: 400;
     color: #000;
+}
+
+.about-body h3 {
+    font-size: 1.0rem;
+    font-weight: 600;
+    color: #000;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .about-body p + p {

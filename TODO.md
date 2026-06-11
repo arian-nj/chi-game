@@ -12,12 +12,12 @@ Focous on Offline only game for now
 [X] Connect 4
 [X] Sudoko
 
-[ ] Write Home Page
-[ ] Write tic tac toe
-[ ] write connect 4
-[ ] Write sudoko
-[ ] Write minesweeper
-[ ] publish
+[X] publish
+[ ] Write better Home Page
+[ ] Write better tic tac toe
+[ ] write better connect 4
+[ ] Write better sudoko
+[ ] Write better minesweeper
 
 [ ] Solarite
 [ ] yahtzee
