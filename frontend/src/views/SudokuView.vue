@@ -32,7 +32,7 @@ function closeGame() {
 <template>
     <HeaderComponent />
 
-    <div class="sudoku-desktop min-h-screen w-full flex items-start justify-center">
+    <div class="sudoku-desktop w-full flex items-start justify-center">
         <XpWindow>
             <XpTitleBar title="Sudoku" :icon="sudokuLogo" @close="closeGame" />
             <SudokuGameMenu
