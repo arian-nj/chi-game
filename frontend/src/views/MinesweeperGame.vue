@@ -256,11 +256,18 @@ defineExpose({ resetGame })
 
 <style scoped>
 .xp-client {
-    --cell-size: 20px;
+    --cell-size: 26px;
     background: #c0c0c0;
-    padding: 8px;
+    padding: 10px;
     max-width: 100%;
     box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+    .xp-client {
+        --cell-size: 34px;
+        padding: 12px;
+    }
 }
 
 .xp-game-body {
@@ -280,27 +287,27 @@ defineExpose({ resetGame })
     justify-content: space-between;
     width: 100%;
     box-sizing: border-box;
-    padding: 5px 9px;
-    margin-bottom: 8px;
+    padding: calc(var(--cell-size) * 0.2) calc(var(--cell-size) * 0.35);
+    margin-bottom: calc(var(--cell-size) * 0.3);
 }
 
 .xp-led {
     background: #000;
     color: #f00;
     font-family: 'Courier New', Courier, monospace;
-    font-size: 28px;
+    font-size: calc(var(--cell-size) * 1.1);
     font-weight: bold;
     line-height: 1;
     padding: 2px 4px;
-    min-width: 50px;
+    min-width: calc(var(--cell-size) * 2);
     text-align: right;
     letter-spacing: 1px;
 }
 
 .xp-face-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 20px;
+    width: calc(var(--cell-size) * 1.5);
+    height: calc(var(--cell-size) * 1.5);
+    font-size: calc(var(--cell-size) * 0.85);
     line-height: 1;
     padding: 0;
     cursor: default;
@@ -328,7 +335,7 @@ defineExpose({ resetGame })
 .xp-grid-panel {
     display: inline-block;
     width: max-content;
-    padding: 8px;
+    padding: calc(var(--cell-size) * 0.35);
 }
 
 .xp-cell {
@@ -337,7 +344,7 @@ defineExpose({ resetGame })
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
+    font-size: calc(var(--cell-size) * 0.65);
     font-weight: bold;
     font-family: Tahoma, 'MS Sans Serif', sans-serif;
     box-sizing: border-box;
@@ -346,22 +353,25 @@ defineExpose({ resetGame })
 
 .xp-cell-hidden {
     background: #c0c0c0;
-    border: 2px solid;
+    border-style: solid;
+    border-width: max(3px, calc(var(--cell-size) * 0.16));
     border-color: #fff #808080 #808080 #fff;
 }
 
 .xp-cell-hidden:active {
-    border-width: 1px;
+    border-width: max(2px, calc(var(--cell-size) * 0.1));
     border-color: #808080;
 }
 
 .xp-cell-revealed {
     background: #c0c0c0;
-    border: 1px solid #808080;
+    border-style: solid;
+    border-width: max(2px, calc(var(--cell-size) * 0.08));
+    border-color: #808080;
 }
 
 .xp-flag {
-    font-size: 12px;
+    font-size: calc(var(--cell-size) * 0.55);
     line-height: 1;
 }
 </style>

@@ -1,19 +1,23 @@
 <script lang="ts" setup>
 import type { GameData } from '@/lib/types.ts';
 import GameIcon from './GameIcon.vue';
+import MinesweeperLogo from '@/assets/games/minesweeper/minesweeper_logo.png';
 
 const games :GameData[]= [
     {
         name: 'Minesweeper',
         key: 'minesweeper',
+        logo: MinesweeperLogo,
     },
     {
         name: 'Minesweeper',
         key: 'minesweeper',
+        logo: MinesweeperLogo,
     },
     {
         name: 'Minesweeper',
         key: 'minesweeper',
+        logo: MinesweeperLogo,
     },
 ]
 

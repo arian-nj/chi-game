@@ -67,7 +67,6 @@ body {
 body {
     /* background: linear-gradient(to bottom,#708dae,#ffffff); */
     background: linear-gradient(to bottom,#314e69,#ffffff);
-	background-image: url('/public/games/minesweeper/bliss.jpg');
 }
 
 #app {

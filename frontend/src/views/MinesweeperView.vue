@@ -2,6 +2,7 @@
 import { computed, onMounted, onUnmounted, ref, useTemplateRef } from 'vue';
 import MinesweeperGame from './MinesweeperGame.vue';
 import { useRouter } from 'vue-router';
+import minesweeperLogo from '@/assets/games/minesweeper/minesweeper_logo.png';
 
 const router = useRouter();
 
@@ -60,8 +61,8 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
             <div class="xp-titlebar">
                 <div class="xp-titlebar-left">
                     <img
-                        src="/games/minesweeper/minesweeper_logo.png"
-                        alt=""
+                        :src="minesweeperLogo"
+                        alt="Minesweeper Logo"
                         class="xp-titlebar-icon"
                     >
                     <span class="xp-titlebar-text">Minesweeper</span>
@@ -134,14 +135,10 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 </template>
 
 <style scoped>
-.minesweeper-desktop {
-    background: url('/games/minesweeper/bliss.jpg') center / cover no-repeat;
-    box-sizing: border-box;
-    padding: 2rem 0.5rem;
-    overflow-x: hidden;
-}
-
 .xp-window {
+    --title-btn-size: 28px;
+    --title-icon-size: 18px;
+    --title-font-size: 13px;
     border: 1px solid #0054e3;
     border-radius: 8px 8px 0 0;
     box-shadow: 1px 1px 0 #000;
@@ -155,14 +152,21 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
     .minesweeper-desktop {
         padding: 0.5rem 0.25rem;
     }
+
+    .xp-window {
+        --title-btn-size: 34px;
+        --title-icon-size: 22px;
+        --title-font-size: 16px;
+    }
 }
 
 .xp-titlebar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 30px;
-    padding: 0 3px 0 4px;
+    gap: 8px;
+    min-height: calc(var(--title-btn-size) + 8px);
+    padding: 4px 4px 4px 5px;
     background: linear-gradient(180deg, #0997ff 0%, #0053ee 8%, #0050ee 40%, #06f 88%, #06f 93%, #005eff 95%, #003ddb 96%, #003ddb 100%);
     border-radius: 8px 8px 0 0;
 }
@@ -175,32 +179,44 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 }
 
 .xp-titlebar-icon {
-    width: 16px;
-    height: 16px;
+    width: var(--title-icon-size);
+    height: var(--title-icon-size);
     flex-shrink: 0;
 }
 
 .xp-titlebar-text {
     color: #fff;
-    font-size: 11px;
+    font-size: var(--title-font-size);
     font-weight: bold;
     text-shadow: 1px 1px #000;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    line-height: 1;
 }
 
 .xp-titlebar-buttons {
     display: flex;
+    align-items: center;
     gap: 2px;
     flex-shrink: 0;
 }
 
 .xp-win-btn {
-    width: 21px;
-    height: 21px;
-    border: none;
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: var(--title-btn-size);
+    height: var(--title-btn-size);
+    min-width: var(--title-btn-size);
+    max-width: var(--title-btn-size);
+    box-sizing: border-box;
+    flex-shrink: 0;
     padding: 0;
+    margin: 0;
     cursor: default;
     border-radius: 3px;
 }
@@ -210,15 +226,15 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
     background: linear-gradient(180deg, #3c8cfd 0%, #3b8bfc 50%, #3a8afb 51%, #3586f8 100%);
     border: 1px solid #003c74;
     box-shadow: inset 1px 1px 0 #6ba8ff;
-    position: relative;
 }
 
 .xp-win-btn-min::after {
     content: '';
     position: absolute;
-    left: 5px;
-    right: 5px;
-    top: 9px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 55%;
     height: 2px;
     background: #fff;
 }
@@ -226,10 +242,11 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 .xp-win-btn-max::after {
     content: '';
     position: absolute;
-    left: 5px;
-    top: 5px;
-    width: 9px;
-    height: 9px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 42%;
+    height: 42%;
     border: 2px solid #fff;
     box-sizing: border-box;
 }
@@ -238,26 +255,25 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
     background: linear-gradient(180deg, #e88a8f 0%, #e4787d 50%, #e36b70 51%, #d94a4f 100%);
     border: 1px solid #8b0000;
     box-shadow: inset 1px 1px 0 #f0a8ab;
-    position: relative;
 }
 
 .xp-win-btn-close::before,
 .xp-win-btn-close::after {
     content: '';
     position: absolute;
-    left: 4px;
-    right: 4px;
-    top: 9px;
+    left: 50%;
+    top: 50%;
+    width: 55%;
     height: 2px;
     background: #fff;
 }
 
 .xp-win-btn-close::before {
-    transform: rotate(45deg);
+    transform: translate(-50%, -50%) rotate(45deg);
 }
 
 .xp-win-btn-close::after {
-    transform: rotate(-45deg);
+    transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .xp-menubar {
@@ -284,7 +300,7 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
     background: none;
     border: none;
     color: #000;
-    font-size: 11px;
+    font-size: 15px;
     line-height: 1;
     font-family: inherit;
     padding: 2px 6px;
