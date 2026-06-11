@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { GameData } from '@/lib/types.ts';
 import GameIcon from './GameIcon.vue';
+import Connect4Logo from '@/assets/games/connect4/connect4_logo.svg';
 import MinesweeperLogo from '@/assets/games/minesweeper/minesweeper_logo.png';
 import TicTacToeLogo from '@/assets/games/tictactoe/tictactoe_logo.svg';
 
@@ -14,6 +15,11 @@ const games: GameData[] = [
         name: 'Tic Tac Toe',
         key: 'tictactoe',
         logo: TicTacToeLogo,
+    },
+    {
+        name: 'Connect 4',
+        key: 'connect4',
+        logo: Connect4Logo,
     },
 ]
 

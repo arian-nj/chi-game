@@ -1,0 +1,73 @@
+<script setup lang="ts">
+import { computed, ref, useTemplateRef } from 'vue';
+import { useRouter } from 'vue-router';
+import connect4Logo from '@/assets/games/connect4/connect4_logo.svg';
+import Connect4GameMenu from '@/components/connect4/Connect4GameMenu.vue';
+import Connect4SettingsBar from '@/components/connect4/Connect4SettingsBar.vue';
+import Connect4HelpSection from '@/components/connect4/Connect4HelpSection.vue';
+import XpTitleBar from '@/components/xp/XpTitleBar.vue';
+import XpWindow from '@/components/xp/XpWindow.vue';
+import type { BotDifficulty, GameMode } from '@/lib/connect4/types';
+import Connect4Game from './Connect4Game.vue';
+
+const router = useRouter();
+
+const gameMode = ref<GameMode>('local');
+const botDifficulty = ref<BotDifficulty>('medium');
+const gameRef = useTemplateRef('gameRef');
+
+const isBot = computed(() => gameMode.value === 'bot');
+
+function newGame() {
+    gameRef.value?.resetGame();
+}
+
+function setGameMode(mode: GameMode) {
+    gameMode.value = mode;
+}
+
+function setBotDifficulty(level: BotDifficulty) {
+    botDifficulty.value = level;
+}
+
+function closeGame() {
+    router.push('/');
+}
+</script>
+
+<template>
+    <div class="connect4-desktop min-h-screen w-full flex items-start justify-center">
+        <XpWindow>
+            <XpTitleBar title="Connect 4" :icon="connect4Logo" @close="closeGame" />
+            <Connect4GameMenu
+                :game-mode="gameMode"
+                :bot-difficulty="botDifficulty"
+                @new-game="newGame"
+                @set-game-mode="setGameMode"
+                @set-bot-difficulty="setBotDifficulty"
+            />
+            <Connect4Game
+                ref="gameRef"
+                :is-bot="isBot"
+                :bot-difficulty="botDifficulty"
+            />
+            <Connect4SettingsBar
+                :game-mode="gameMode"
+                :bot-difficulty="botDifficulty"
+                @new-game="newGame"
+                @set-game-mode="setGameMode"
+                @set-bot-difficulty="setBotDifficulty"
+            />
+        </XpWindow>
+    </div>
+
+    <Connect4HelpSection />
+</template>
+
+<style scoped>
+@media (max-width: 640px) {
+    .connect4-desktop {
+        padding: 0.5rem 0.25rem;
+    }
+}
+</style>
