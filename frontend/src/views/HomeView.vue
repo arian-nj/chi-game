@@ -14,7 +14,7 @@ import HeaderComponent from '../components/header/HeaderComponent.vue';
 <style scoped>
 
 .home-root {
-  border: 1px solid red;
+  /* border: 1px solid; */
   min-height: 100vh;
   min-height: 100dvh;
 }
