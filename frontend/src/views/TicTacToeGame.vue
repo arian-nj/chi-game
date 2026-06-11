@@ -201,7 +201,7 @@ defineExpose({ resetGame });
     --mark-size: calc(var(--cell-size) * 0.55);
     width: fit-content;
     background: #c0c0c0;
-    padding: 12px 14px 14px;
+    padding: 12px 14px 6px;
     box-sizing: border-box;
 }
 

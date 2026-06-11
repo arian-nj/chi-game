@@ -3,6 +3,7 @@ import { computed, ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 import tictactoeLogo from '@/assets/games/tictactoe/tictactoe_logo.svg';
 import TicTacToeGameMenu from '@/components/tictactoe/TicTacToeGameMenu.vue';
+import TicTacToeSettingsBar from '@/components/tictactoe/TicTacToeSettingsBar.vue';
 import TicTacToeHelpSection from '@/components/tictactoe/TicTacToeHelpSection.vue';
 import XpTitleBar from '@/components/xp/XpTitleBar.vue';
 import XpWindow from '@/components/xp/XpWindow.vue';
@@ -58,6 +59,15 @@ function closeGame() {
                 :board-size="boardSize"
                 :is-bot="isBot"
                 :bot-difficulty="botDifficulty"
+            />
+            <TicTacToeSettingsBar
+                :game-mode="gameMode"
+                :board-size-key="boardSizeKey"
+                :bot-difficulty="botDifficulty"
+                @new-game="newGame"
+                @set-game-mode="setGameMode"
+                @set-board-size="setBoardSize"
+                @set-bot-difficulty="setBotDifficulty"
             />
         </XpWindow>
     </div>
