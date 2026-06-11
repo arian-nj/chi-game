@@ -9,6 +9,9 @@
     --title-btn-size: 28px;
     --title-icon-size: 18px;
     --title-font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     border: 1px solid #0054e3;
     border-radius: 8px 8px 0 0;
     box-shadow: 1px 1px 0 #000;

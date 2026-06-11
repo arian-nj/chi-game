@@ -45,7 +45,7 @@ function closeGame() {
 <template>
     <HeaderComponent />
 
-    <div class="tictactoe-desktop min-h-screen w-full flex items-start justify-center">
+    <div class="tictactoe-desktop w-full flex items-start justify-center">
         <XpWindow>
             <XpTitleBar title="Tic Tac Toe" :icon="tictactoeLogo" @close="closeGame" />
             <TicTacToeGameMenu

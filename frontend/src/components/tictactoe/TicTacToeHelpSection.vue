@@ -41,7 +41,7 @@ import tictactoeLogo from '@/assets/games/tictactoe/tictactoe_logo.svg';
 .help-section {
     display: flex;
     justify-content: center;
-    margin-top: 2.5rem;
+    margin-top: 1.5rem;
     padding: 0 0.75rem 2rem;
 }
 

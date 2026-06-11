@@ -199,7 +199,9 @@ defineExpose({ resetGame });
 .ttt-client {
     --cell-size: 72px;
     --mark-size: calc(var(--cell-size) * 0.55);
-    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
     background: #c0c0c0;
     padding: 12px 14px 6px;
     box-sizing: border-box;
@@ -299,6 +301,7 @@ defineExpose({ resetGame });
 }
 
 .ttt-board-frame {
+    align-self: center;
     border: 3px solid;
     border-color: #808080 #fff #fff #808080;
     background: #808080;
