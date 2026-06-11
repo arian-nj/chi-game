@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-
+import {
+    computeNeighborMines,
+    generateSolvableMines,
+} from '@/lib/minesweeper/minesweeperSolver'
 
 const props = defineProps<{
     cellWidth: number;
@@ -29,55 +32,31 @@ const DIRS: [number, number][] = [
   [1, -1],  [1, 0],  [1, 1],
 ]
 
-// function placeBombsRandomly() {
-//     const emptyCells: { row: number; col: number }[] = [];
-//     for (let row = 0; row < props.cellHeight; row++) {
-//         for (let col = 0; col < props.cellWidth; col++) {
-//             emptyCells.push({ row, col });
-//         }
-//     }
+function applyGeneratedMines(mines: boolean[][]) {
+  const neighborCounts = computeNeighborMines(mines, props.cellHeight, props.cellWidth)
 
-//     for (let i = 0; i < props.mineCount && emptyCells.length > 0; i++) {
-//         const index = Math.floor(Math.random() * emptyCells.length);
-//         const { row, col } = emptyCells.splice(index, 1)[0]!;
-//         board.value[row]![col]!.isMine = true;
-//     }
-// }
-function isInFirstClickSafeZone(r: number, c: number, safeRow: number, safeCol: number) {
-  return Math.abs(r - safeRow) <= 1 && Math.abs(c - safeCol) <= 1
-}
-
-function placeMinesAvoiding(safeRow: number, safeCol: number) {
-  const cells: [number, number][] = []
-  for (let r = 0; r < props.cellHeight; r++) {
-    for (let c = 0; c < props.cellWidth; c++) {
-      if (isInFirstClickSafeZone(r, c, safeRow, safeCol)) continue
-      cells.push([r, c])
-    }
-  }
-  const minesToPlace = Math.min(props.mineCount, cells.length)
-  for (let i = 0; i < minesToPlace; i++) {
-    const j = i + Math.floor(Math.random() * (cells.length - i))
-    ;[cells[i], cells[j]] = [cells[j]!, cells[i]!]
-    const [row, col] = cells[i]!
-    board.value[row]![col]!.isMine = true
-  }
-}
-
-function calculateNeighborMines() {
   for (let row = 0; row < props.cellHeight; row++) {
     for (let col = 0; col < props.cellWidth; col++) {
       const cell = board.value[row]![col]!
-      if (cell.isMine) {
-        cell.neighborMines = 0
-        continue
-      }
-      let count = 0
-      for (const [dr, dc] of DIRS) {
-        if (board.value[row + dr]?.[col + dc]?.isMine) count++
-      }
-      cell.neighborMines = count
+      cell.isMine = mines[row]![col]!
+      cell.neighborMines = neighborCounts[row]![col]!
     }
+  }
+}
+
+function placeMinesUntilSolvable(safeRow: number, safeCol: number) {
+  const { mines, solvable } = generateSolvableMines(
+    props.cellHeight,
+    props.cellWidth,
+    props.mineCount,
+    safeRow,
+    safeCol,
+  )
+
+  applyGeneratedMines(mines)
+
+  if (!solvable) {
+    console.warn('Could not generate a logic-solvable board within the attempt limit')
   }
 }
 
@@ -112,8 +91,7 @@ function revealCell(row: number, col: number) {
     if (!cell || cell.isRevealed || cell.isFlagged) return;
 
     if (!minesPlaced.value) {
-        placeMinesAvoiding(row, col)
-        calculateNeighborMines()
+        placeMinesUntilSolvable(row, col)
         minesPlaced.value = true
     }
     

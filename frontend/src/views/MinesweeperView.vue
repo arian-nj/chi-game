@@ -9,7 +9,7 @@ import MinesweeperGame from './MinesweeperGame.vue';
         class="min-h-screen w-full bg-cover bg-center bg-no-repeat"
     >
         <h1 class="text-center text-4xl font-bold pb-4">ChiGame.Site</h1>
-        <div class="bg-[#0055e8] px-1 pb-1 m-auto rounded-sm">
+        <div class="bg-[#0055e8] px-1 pb-1 m-auto w-fit rounded-sm">
             <!-- title name and logo -->
             <div class="bg-[#0055e8] py-1 flex">
                 <img src="/public/games/minesweeper/minesweeper_logo.png" alt="windows xp bliss" class="w-6 h-6">
