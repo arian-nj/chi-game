@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import SolitaireCard from '@/components/solitaire/SolitaireCard.vue';
 import SolitairePile from '@/components/solitaire/SolitairePile.vue';
 import {
     applyMove,
     canSelectSource,
     flipStock,
+    getMovingCards,
     getValidDestinations,
     isWon,
     newGame,
@@ -13,6 +15,7 @@ import {
 import {
     FOUNDATION_PILE_COUNT,
     TABLEAU_PILE_COUNT,
+    type Card,
     type GameState,
     type MoveDestination,
     type MoveSource,
@@ -23,12 +26,24 @@ const props = defineProps<{
     drawMode: 1 | 3;
 }>();
 
+const DRAG_THRESHOLD = 5;
+const GHOST_OFFSET_X = 20;
+const GHOST_OFFSET_Y = 12;
+const DOUBLE_CLICK_MS = 400;
+
 const gameState = ref<GameState>(newGame(props.drawMode));
 const selection = ref<MoveSource | null>(null);
 const validDestinations = ref<MoveDestination[]>([]);
 const elapsedSeconds = ref(0);
 const facePressed = ref(false);
+const isDragging = ref(false);
+const dragGhost = ref<{ cards: Card[]; x: number; y: number } | null>(null);
 let timerId: ReturnType<typeof setInterval> | null = null;
+let suppressCardClick = false;
+let activePointerId: number | null = null;
+let dragPending: { source: MoveSource; startX: number; startY: number } | null = null;
+let lastClickKey = '';
+let lastClickTime = 0;
 
 const gameWon = computed(() => isWon(gameState.value));
 
@@ -62,6 +77,75 @@ function stopTimer() {
 function clearSelection() {
     selection.value = null;
     validDestinations.value = [];
+}
+
+function clearDragState() {
+    isDragging.value = false;
+    dragGhost.value = null;
+    dragPending = null;
+    activePointerId = null;
+    document.removeEventListener('pointermove', onDocumentPointerMove);
+    document.removeEventListener('pointerup', onDocumentPointerUp);
+    document.removeEventListener('pointercancel', onDocumentPointerUp);
+}
+
+function getDraggingFromIndex(pile: PileRef): number | null {
+    if (!isDragging.value || !selection.value || !pileRefsEqual(selection.value.pile, pile)) {
+        return null;
+    }
+    return selection.value.cardIndex;
+}
+
+function pileClickKey(pile: PileRef, cardIndex: number): string {
+    if (pile.kind === 'waste') {
+        return `waste:${cardIndex}`;
+    }
+    return `${pile.kind}:${pile.index}:${cardIndex}`;
+}
+
+function parsePileFromElement(element: Element | null): PileRef | null {
+    const pileElement = element?.closest('[data-pile-kind]');
+    if (!pileElement) {
+        return null;
+    }
+
+    const kind = pileElement.getAttribute('data-pile-kind');
+    if (kind === 'waste') {
+        return { kind: 'waste' };
+    }
+    if (kind === 'foundation' || kind === 'tableau') {
+        const index = Number(pileElement.getAttribute('data-pile-index'));
+        if (Number.isNaN(index)) {
+            return null;
+        }
+        return { kind, index };
+    }
+
+    return null;
+}
+
+function findPileAt(clientX: number, clientY: number): PileRef | null {
+    const element = document.elementFromPoint(clientX, clientY);
+    return parsePileFromElement(element);
+}
+
+function tryAutoFoundationMove(pile: PileRef, cardIndex: number): boolean {
+    const source: MoveSource = { pile, cardIndex };
+    const destinations = getValidDestinations(gameState.value, source);
+    const foundation = destinations.find((destination) => destination.pile.kind === 'foundation');
+    if (!foundation) {
+        return false;
+    }
+
+    const next = applyMove(gameState.value, source, foundation);
+    if (!next) {
+        return false;
+    }
+
+    startTimer();
+    gameState.value = next;
+    clearSelection();
+    return true;
 }
 
 function isHighlighted(pile: PileRef): boolean {
@@ -101,9 +185,26 @@ function tryMoveTo(pile: PileRef) {
 }
 
 function onCardClick(pile: PileRef, cardIndex: number) {
+    if (suppressCardClick) {
+        suppressCardClick = false;
+        return;
+    }
+
     if (gameWon.value) {
         return;
     }
+
+    const clickKey = pileClickKey(pile, cardIndex);
+    const now = Date.now();
+    if (clickKey === lastClickKey && now - lastClickTime < DOUBLE_CLICK_MS) {
+        if (tryAutoFoundationMove(pile, cardIndex)) {
+            lastClickKey = '';
+            lastClickTime = 0;
+            return;
+        }
+    }
+    lastClickKey = clickKey;
+    lastClickTime = now;
 
     if (selection.value) {
         if (pileRefsEqual(selection.value.pile, pile) && selection.value.cardIndex === cardIndex) {
@@ -147,12 +248,94 @@ function onSlotClick(pile: PileRef | { kind: 'stock' }) {
     }
 }
 
+function onCardPointerDown(pile: PileRef, cardIndex: number, event: PointerEvent) {
+    if (gameWon.value || event.button !== 0) {
+        return;
+    }
+
+    const source: MoveSource = { pile, cardIndex };
+    if (!canSelectSource(gameState.value, source)) {
+        return;
+    }
+
+    dragPending = {
+        source,
+        startX: event.clientX,
+        startY: event.clientY,
+    };
+    activePointerId = event.pointerId;
+
+    document.addEventListener('pointermove', onDocumentPointerMove);
+    document.addEventListener('pointerup', onDocumentPointerUp);
+    document.addEventListener('pointercancel', onDocumentPointerUp);
+}
+
+function onDocumentPointerMove(event: PointerEvent) {
+    if (!dragPending || event.pointerId !== activePointerId) {
+        return;
+    }
+
+    const dx = event.clientX - dragPending.startX;
+    const dy = event.clientY - dragPending.startY;
+
+    if (!isDragging.value) {
+        if (Math.abs(dx) < DRAG_THRESHOLD && Math.abs(dy) < DRAG_THRESHOLD) {
+            return;
+        }
+
+        isDragging.value = true;
+        selectCard(dragPending.source.pile, dragPending.source.cardIndex);
+        const cards = getMovingCards(gameState.value, dragPending.source);
+        if (!cards) {
+            clearDragState();
+            clearSelection();
+            return;
+        }
+        dragGhost.value = {
+            cards,
+            x: event.clientX - GHOST_OFFSET_X,
+            y: event.clientY - GHOST_OFFSET_Y,
+        };
+    }
+
+    if (dragGhost.value) {
+        dragGhost.value = {
+            ...dragGhost.value,
+            x: event.clientX - GHOST_OFFSET_X,
+            y: event.clientY - GHOST_OFFSET_Y,
+        };
+    }
+
+    event.preventDefault();
+}
+
+function onDocumentPointerUp(event: PointerEvent) {
+    if (!dragPending || event.pointerId !== activePointerId) {
+        return;
+    }
+
+    if (isDragging.value) {
+        const targetPile = findPileAt(event.clientX, event.clientY);
+        if (targetPile && isHighlighted(targetPile)) {
+            tryMoveTo(targetPile);
+        } else {
+            clearSelection();
+        }
+        suppressCardClick = true;
+    }
+
+    clearDragState();
+}
+
 function resetGame() {
     stopTimer();
+    clearDragState();
     gameState.value = newGame(props.drawMode);
     elapsedSeconds.value = 0;
     facePressed.value = false;
     clearSelection();
+    lastClickKey = '';
+    lastClickTime = 0;
 }
 
 watch(
@@ -168,6 +351,7 @@ onMounted(() => {
 
 onUnmounted(() => {
     stopTimer();
+    clearDragState();
 });
 
 defineExpose({ resetGame });
@@ -176,7 +360,7 @@ defineExpose({ resetGame });
 <template>
     <div
         class="xp-game-body"
-        :class="{ 'xp-game-won': gameWon }"
+        :class="{ 'xp-game-won': gameWon, 'sol-dragging': isDragging }"
         :style="{
             '--card-width': '52px',
             '--card-height': '72px',
@@ -223,7 +407,12 @@ defineExpose({ resetGame });
                             :selected-card-index="getSelectedCardIndex({ kind: 'waste' })"
                             :highlighted="isHighlighted({ kind: 'waste' })"
                             :waste-fan-count="gameState.drawMode"
+                            :dragging-from-index="getDraggingFromIndex({ kind: 'waste' })"
                             @card-click="onCardClick({ kind: 'waste' }, $event)"
+                            @card-pointer-down="
+                                (cardIndex, event) =>
+                                    onCardPointerDown({ kind: 'waste' }, cardIndex, event)
+                            "
                             @slot-click="onSlotClick({ kind: 'waste' })"
                         />
                     </div>
@@ -239,8 +428,19 @@ defineExpose({ resetGame });
                                 getSelectedCardIndex({ kind: 'foundation', index: index - 1 })
                             "
                             :highlighted="isHighlighted({ kind: 'foundation', index: index - 1 })"
+                            :dragging-from-index="
+                                getDraggingFromIndex({ kind: 'foundation', index: index - 1 })
+                            "
                             @card-click="
                                 onCardClick({ kind: 'foundation', index: index - 1 }, $event)
+                            "
+                            @card-pointer-down="
+                                (cardIndex, event) =>
+                                    onCardPointerDown(
+                                        { kind: 'foundation', index: index - 1 },
+                                        cardIndex,
+                                        event,
+                                    )
                             "
                             @slot-click="onSlotClick({ kind: 'foundation', index: index - 1 })"
                         />
@@ -258,10 +458,38 @@ defineExpose({ resetGame });
                             getSelectedCardIndex({ kind: 'tableau', index: index - 1 })
                         "
                         :highlighted="isHighlighted({ kind: 'tableau', index: index - 1 })"
+                        :dragging-from-index="
+                            getDraggingFromIndex({ kind: 'tableau', index: index - 1 })
+                        "
                         @card-click="onCardClick({ kind: 'tableau', index: index - 1 }, $event)"
+                        @card-pointer-down="
+                            (cardIndex, event) =>
+                                onCardPointerDown(
+                                    { kind: 'tableau', index: index - 1 },
+                                    cardIndex,
+                                    event,
+                                )
+                        "
                         @slot-click="onSlotClick({ kind: 'tableau', index: index - 1 })"
                     />
                 </div>
+            </div>
+        </div>
+
+        <div
+            v-if="dragGhost"
+            class="sol-drag-ghost"
+            :style="{
+                transform: `translate(${dragGhost.x}px, ${dragGhost.y}px)`,
+            }"
+        >
+            <div
+                v-for="(card, index) in dragGhost.cards"
+                :key="index"
+                class="sol-drag-ghost-card"
+                :style="{ top: `calc(var(--card-overlap) * ${index})` }"
+            >
+                <SolitaireCard :card="card" />
             </div>
         </div>
     </div>
@@ -428,5 +656,32 @@ defineExpose({ resetGame });
     .sol-foundations {
         gap: 8px;
     }
+}
+
+.sol-dragging {
+    user-select: none;
+}
+
+.sol-dragging :deep(.sol-card-drag-hidden) {
+    pointer-events: none;
+}
+
+.sol-drag-ghost {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.sol-drag-ghost-card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.35));
+}
+
+.sol-drag-ghost-card :deep(.sol-card) {
+    cursor: grabbing;
 }
 </style>

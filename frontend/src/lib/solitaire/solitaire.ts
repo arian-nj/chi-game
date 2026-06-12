@@ -181,6 +181,10 @@ export function canSelectSource(state: GameState, from: MoveSource): boolean {
     return getMoveStack(state, from) !== null;
 }
 
+export function getMovingCards(state: GameState, from: MoveSource): Card[] | null {
+    return getMoveStack(state, from);
+}
+
 export function pileRefsEqual(left: PileRef, right: PileRef): boolean {
     return isSamePile(left, right);
 }

@@ -3,13 +3,15 @@ import { computed } from 'vue';
 import { cardLabel, suitSymbol } from '@/lib/solitaire/solitaire';
 import { isRed, type Card } from '@/lib/solitaire/types';
 
+const emit = defineEmits<{
+    click: [];
+    pointerDown: [event: PointerEvent];
+}>();
+
 const props = defineProps<{
     card: Card;
     selected?: boolean;
-}>();
-
-const emit = defineEmits<{
-    click: [];
+    dragHidden?: boolean;
 }>();
 
 const colorClass = computed(() => {
@@ -29,9 +31,11 @@ const colorClass = computed(() => {
             {
                 'sol-card-selected': selected,
                 'sol-card-back': !card.faceUp,
+                'sol-card-drag-hidden': dragHidden,
             },
         ]"
         @click.stop="emit('click')"
+        @pointerdown.stop="emit('pointerDown', $event)"
     >
         <template v-if="card.faceUp">
             <span class="sol-card-rank">{{ cardLabel(card.rank) }}</span>
@@ -50,12 +54,14 @@ const colorClass = computed(() => {
     background: #fff;
     box-sizing: border-box;
     position: relative;
-    cursor: default;
+    cursor: grab;
     font-family: Tahoma, 'MS Sans Serif', sans-serif;
-    touch-action: manipulation;
+    touch-action: none;
 }
 
 .sol-card-back {
+    cursor: default;
+    touch-action: manipulation;
     background:
         repeating-linear-gradient(
             45deg,
@@ -65,6 +71,10 @@ const colorClass = computed(() => {
             #2a63b8 8px
         );
     border-color: #0f2f66;
+}
+
+.sol-card-drag-hidden {
+    opacity: 0.25;
 }
 
 .sol-card-selected {

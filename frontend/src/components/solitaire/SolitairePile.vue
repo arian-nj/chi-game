@@ -11,12 +11,29 @@ const props = defineProps<{
     highlighted?: boolean;
     stockHasCards?: boolean;
     wasteFanCount?: 1 | 3;
+    draggingFromIndex?: number | null;
 }>();
 
 const emit = defineEmits<{
     cardClick: [cardIndex: number];
+    cardPointerDown: [cardIndex: number, event: PointerEvent];
     slotClick: [];
 }>();
+
+const pileDataIndex = computed(() => {
+    if (props.pileRef.kind === 'foundation' || props.pileRef.kind === 'tableau') {
+        return props.pileRef.index;
+    }
+    return undefined;
+});
+
+function isDragHidden(index: number): boolean {
+    return (
+        props.draggingFromIndex !== null &&
+        props.draggingFromIndex !== undefined &&
+        index >= props.draggingFromIndex
+    );
+}
 
 const visibleWasteCards = computed(() => {
     if (props.variant !== 'waste') {
@@ -55,6 +72,8 @@ const wasteWidth = computed(() => {
             `sol-pile-${variant}`,
             { 'sol-pile-highlight': highlighted },
         ]"
+        :data-pile-kind="pileRef.kind"
+        :data-pile-index="pileDataIndex"
         :style="{
             minHeight: pileHeight,
             width: variant === 'waste' ? wasteWidth : 'var(--card-width)',
@@ -90,7 +109,9 @@ const wasteWidth = computed(() => {
                 <SolitaireCard
                     :card="entry.card"
                     :selected="selectedCardIndex === entry.index"
+                    :drag-hidden="isDragHidden(entry.index)"
                     @click="emit('cardClick', entry.index)"
+                    @pointer-down="emit('cardPointerDown', entry.index, $event)"
                 />
             </div>
         </template>
@@ -100,7 +121,9 @@ const wasteWidth = computed(() => {
                 <SolitaireCard
                     :card="cards[cards.length - 1]!"
                     :selected="selectedCardIndex === cards.length - 1"
+                    :drag-hidden="isDragHidden(cards.length - 1)"
                     @click="emit('cardClick', cards.length - 1)"
+                    @pointer-down="emit('cardPointerDown', cards.length - 1, $event)"
                 />
             </div>
         </template>
@@ -119,7 +142,9 @@ const wasteWidth = computed(() => {
                         selectedCardIndex !== undefined &&
                         index >= selectedCardIndex
                     "
+                    :drag-hidden="isDragHidden(index)"
                     @click="emit('cardClick', index)"
+                    @pointer-down="emit('cardPointerDown', index, $event)"
                 />
             </div>
         </template>
