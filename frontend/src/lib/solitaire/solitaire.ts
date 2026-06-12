@@ -9,6 +9,7 @@ import {
     SUITS,
     TABLEAU_PILE_COUNT,
     type Card,
+    type DrawMode,
     type GameState,
     type MoveDestination,
     type MoveSource,
@@ -40,7 +41,7 @@ export function createShuffledDeck(): Card[] {
     return shuffle(createDeck());
 }
 
-export function dealKlondike(drawMode: 1 | 3, deck: Card[] = createShuffledDeck()): GameState {
+export function dealKlondike(drawMode: DrawMode, deck: Card[] = createShuffledDeck()): GameState {
     if (deck.length !== 52) {
         throw new Error('Klondike deal requires a 52-card deck');
     }
@@ -76,7 +77,7 @@ export function dealKlondike(drawMode: 1 | 3, deck: Card[] = createShuffledDeck(
     };
 }
 
-export function newGame(drawMode: 1 | 3 = 3): GameState {
+export function newGame(drawMode: DrawMode = 3): GameState {
     return dealKlondike(drawMode);
 }
 

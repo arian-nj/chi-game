@@ -3,19 +3,27 @@ import { ref, useTemplateRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { useLocalePath } from '@/composables/useLocalePath';
 import solitaireLogo from '@/assets/games/solitaire/solitaire_logo.svg';
+import SolitaireGameMenu from '@/components/solitaire/SolitaireGameMenu.vue';
+import SolitaireSettingsBar from '@/components/solitaire/SolitaireSettingsBar.vue';
+import SolitaireHelpSection from '@/components/solitaire/SolitaireHelpSection.vue';
 import XpTitleBar from '@/components/xp/XpTitleBar.vue';
 import XpWindow from '@/components/xp/XpWindow.vue';
-import HeaderComponent from '@/components/header/HeaderComponent.vue';
+import type { DrawMode } from '@/lib/solitaire/types';
 import SolitaireGame from './SolitaireGame.vue';
+import HeaderComponent from '@/components/header/HeaderComponent.vue';
 
 const router = useRouter();
 const { localePath } = useLocalePath();
 
-const drawMode = ref<1 | 3>(1);
+const drawMode = ref<DrawMode>(3);
 const gameRef = useTemplateRef('gameRef');
 
 function newGame() {
     gameRef.value?.resetGame();
+}
+
+function setDrawMode(mode: DrawMode) {
+    drawMode.value = mode;
 }
 
 function closeGame() {
@@ -29,37 +37,24 @@ function closeGame() {
     <div class="solitaire-desktop w-full flex items-start justify-center">
         <XpWindow>
             <XpTitleBar title="Solitaire" :icon="solitaireLogo" @close="closeGame" />
-            <div class="sol-menu-bar">
-                <button type="button" class="sol-menu-btn" @click="newGame">New Game</button>
-            </div>
+            <SolitaireGameMenu
+                :draw-mode="drawMode"
+                @new-game="newGame"
+                @set-draw-mode="setDrawMode"
+            />
             <SolitaireGame ref="gameRef" :draw-mode="drawMode" />
+            <SolitaireSettingsBar
+                :draw-mode="drawMode"
+                @new-game="newGame"
+                @set-draw-mode="setDrawMode"
+            />
         </XpWindow>
     </div>
+
+    <SolitaireHelpSection />
 </template>
 
 <style scoped>
-.sol-menu-bar {
-    display: flex;
-    gap: 4px;
-    padding: 4px 6px;
-    background: #ece9d8;
-    border-bottom: 1px solid #aca899;
-}
-
-.sol-menu-btn {
-    padding: 2px 10px;
-    font-size: 12px;
-    font-family: Tahoma, 'MS Sans Serif', sans-serif;
-    background: #ece9d8;
-    border: 1px solid transparent;
-    cursor: default;
-}
-
-.sol-menu-btn:hover {
-    border-color: #aca899;
-    background: #fff;
-}
-
 @media (max-width: 640px) {
     .solitaire-desktop {
         align-items: stretch;

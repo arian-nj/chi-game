@@ -16,6 +16,7 @@ import {
     FOUNDATION_PILE_COUNT,
     TABLEAU_PILE_COUNT,
     type Card,
+    type DrawMode,
     type GameState,
     type MoveDestination,
     type MoveSource,
@@ -23,7 +24,7 @@ import {
 } from '@/lib/solitaire/types';
 
 const props = defineProps<{
-    drawMode: 1 | 3;
+    drawMode: DrawMode;
 }>();
 
 const DRAG_THRESHOLD = 5;
@@ -38,7 +39,9 @@ const elapsedSeconds = ref(0);
 const facePressed = ref(false);
 const isDragging = ref(false);
 const dragGhost = ref<{ cards: Card[]; x: number; y: number } | null>(null);
+const invalidMoveShake = ref(false);
 let timerId: ReturnType<typeof setInterval> | null = null;
+let shakeTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let suppressCardClick = false;
 let activePointerId: number | null = null;
 let dragPending: { source: MoveSource; startX: number; startY: number } | null = null;
@@ -148,6 +151,19 @@ function tryAutoFoundationMove(pile: PileRef, cardIndex: number): boolean {
     return true;
 }
 
+function triggerInvalidMove() {
+    invalidMoveShake.value = false;
+    requestAnimationFrame(() => {
+        invalidMoveShake.value = true;
+        if (shakeTimeoutId) {
+            clearTimeout(shakeTimeoutId);
+        }
+        shakeTimeoutId = setTimeout(() => {
+            invalidMoveShake.value = false;
+        }, 320);
+    });
+}
+
 function isHighlighted(pile: PileRef): boolean {
     return validDestinations.value.some((destination) => pileRefsEqual(destination.pile, pile));
 }
@@ -169,19 +185,21 @@ function selectCard(pile: PileRef, cardIndex: number) {
     validDestinations.value = getValidDestinations(gameState.value, source);
 }
 
-function tryMoveTo(pile: PileRef) {
+function tryMoveTo(pile: PileRef): boolean {
     if (!selection.value) {
-        return;
+        return false;
     }
 
     const next = applyMove(gameState.value, selection.value, { pile });
     if (!next) {
-        return;
+        triggerInvalidMove();
+        return false;
     }
 
     startTimer();
     gameState.value = next;
     clearSelection();
+    return true;
 }
 
 function onCardClick(pile: PileRef, cardIndex: number) {
@@ -222,6 +240,7 @@ function onCardClick(pile: PileRef, cardIndex: number) {
             return;
         }
 
+        triggerInvalidMove();
         clearSelection();
         return;
     }
@@ -318,6 +337,9 @@ function onDocumentPointerUp(event: PointerEvent) {
         const targetPile = findPileAt(event.clientX, event.clientY);
         if (targetPile && isHighlighted(targetPile)) {
             tryMoveTo(targetPile);
+        } else if (targetPile) {
+            triggerInvalidMove();
+            clearSelection();
         } else {
             clearSelection();
         }
@@ -329,6 +351,11 @@ function onDocumentPointerUp(event: PointerEvent) {
 
 function resetGame() {
     stopTimer();
+    if (shakeTimeoutId) {
+        clearTimeout(shakeTimeoutId);
+        shakeTimeoutId = null;
+    }
+    invalidMoveShake.value = false;
     clearDragState();
     gameState.value = newGame(props.drawMode);
     elapsedSeconds.value = 0;
@@ -390,7 +417,13 @@ defineExpose({ resetGame });
                 <span class="xp-win-time">Finished in {{ formatCounter(elapsedSeconds) }}s</span>
             </div>
 
-            <div class="sol-board" :class="{ 'sol-board-won': gameWon }">
+            <div
+                class="sol-board"
+                :class="{
+                    'sol-board-won': gameWon,
+                    'sol-board-shake': invalidMoveShake,
+                }"
+            >
                 <div class="sol-top-row">
                     <div class="sol-top-left">
                         <SolitairePile
@@ -580,6 +613,29 @@ defineExpose({ resetGame });
 
 .sol-board-won {
     box-shadow: 0 0 0 3px #2e8b2e, 0 0 18px rgba(80, 220, 80, 0.65);
+}
+
+.sol-board-shake {
+    animation: sol-invalid-shake 0.32s ease-in-out;
+}
+
+@keyframes sol-invalid-shake {
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-4px);
+    }
+    40% {
+        transform: translateX(4px);
+    }
+    60% {
+        transform: translateX(-3px);
+    }
+    80% {
+        transform: translateX(3px);
+    }
 }
 
 .sol-top-row {

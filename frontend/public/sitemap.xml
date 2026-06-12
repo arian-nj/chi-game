@@ -28,4 +28,9 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://chigame.site/en/game/sudoku" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://chigame.site/en/game/sudoku" />
   </url>
+  <url>
+    <loc>https://chigame.site/en/game/solitaire</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://chigame.site/en/game/solitaire" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://chigame.site/en/game/solitaire" />
+  </url>
 </urlset>

@@ -1,5 +1,6 @@
 export type Suit = 'hearts' | 'diamonds' | 'clubs' | 'spades';
 export type Rank = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13; // Ace=1, King=13
+export type DrawMode = 1 | 3;
 export type PileKind = 'stock' | 'waste' | 'foundation' | 'tableau';
 
 export const SUITS: Suit[] = ['hearts', 'diamonds', 'clubs', 'spades'];
@@ -18,7 +19,7 @@ export interface GameState {
     waste: Card[];
     foundations: Card[][];
     tableau: Card[][];
-    drawMode: 1 | 3;
+    drawMode: DrawMode;
     moves: number;
 }
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import type { Card, PileRef } from '@/lib/solitaire/types';
+import type { Card, DrawMode, PileRef } from '@/lib/solitaire/types';
 import SolitaireCard from './SolitaireCard.vue';
 
 const props = defineProps<{
@@ -10,7 +10,7 @@ const props = defineProps<{
     selectedCardIndex?: number | null;
     highlighted?: boolean;
     stockHasCards?: boolean;
-    wasteFanCount?: 1 | 3;
+    wasteFanCount?: DrawMode;
     draggingFromIndex?: number | null;
 }>();
 
