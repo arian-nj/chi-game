@@ -654,12 +654,12 @@ defineExpose({ resetGame })
 
 .xp-cell-highlighted.xp-cell-hidden {
     border-width: max(2px, calc(var(--cell-size) * 0.1));
-    border-color: #808080;
+    border-color: #458b19;
 }
 
 .xp-cell-highlighted.xp-cell-revealed {
-    background: #a8a8a8;
-    box-shadow: inset 0 0 0 1px #ffd700;
+    background: #9fdfae47;
+    box-shadow: inset 0 0 0 2px #2e8b2e;
 }
 
 @keyframes xp-chord-wiggle {
