@@ -23,13 +23,12 @@ const maxMines = computed(() =>
     maxMinesForBoard(props.customConfig.cellWidth, props.customConfig.cellHeight),
 );
 
-function updateCustomField(field: keyof CustomGameConfig, rawValue: string) {
-    const parsed = Number.parseInt(rawValue, 10);
-    if (Number.isNaN(parsed)) return;
+function updateCustomField(field: keyof CustomGameConfig, rawValue: number) {
+    if (Number.isNaN(rawValue)) return;
 
     emit('set-custom-config', clampCustomConfig({
         ...props.customConfig,
-        [field]: parsed,
+        [field]: rawValue,
     }));
 }
 </script>
@@ -68,42 +67,51 @@ function updateCustomField(field: keyof CustomGameConfig, rawValue: string) {
 
         <div v-if="difficulty === 'custom'" class="ms-custom-panel">
             <div class="ms-custom-field">
-                <label class="ms-custom-label" for="ms-custom-width">Width</label>
+                <div class="ms-custom-field-header">
+                    <label class="ms-custom-label" for="ms-custom-width">Width</label>
+                    <span class="ms-custom-value">{{ customConfig.cellWidth }}</span>
+                </div>
                 <input
                     id="ms-custom-width"
-                    class="ms-custom-input"
-                    type="number"
-                    inputmode="numeric"
+                    class="ms-custom-slider"
+                    type="range"
                     :min="CUSTOM_LIMITS.minWidth"
                     :max="CUSTOM_LIMITS.maxWidth"
+                    step="1"
                     :value="customConfig.cellWidth"
-                    @change="updateCustomField('cellWidth', ($event.target as HTMLInputElement).value)"
+                    @input="updateCustomField('cellWidth', Number(($event.target as HTMLInputElement).value))"
                 >
             </div>
             <div class="ms-custom-field">
-                <label class="ms-custom-label" for="ms-custom-height">Height</label>
+                <div class="ms-custom-field-header">
+                    <label class="ms-custom-label" for="ms-custom-height">Height</label>
+                    <span class="ms-custom-value">{{ customConfig.cellHeight }}</span>
+                </div>
                 <input
                     id="ms-custom-height"
-                    class="ms-custom-input"
-                    type="number"
-                    inputmode="numeric"
+                    class="ms-custom-slider"
+                    type="range"
                     :min="CUSTOM_LIMITS.minHeight"
                     :max="CUSTOM_LIMITS.maxHeight"
+                    step="1"
                     :value="customConfig.cellHeight"
-                    @change="updateCustomField('cellHeight', ($event.target as HTMLInputElement).value)"
+                    @input="updateCustomField('cellHeight', Number(($event.target as HTMLInputElement).value))"
                 >
             </div>
             <div class="ms-custom-field">
-                <label class="ms-custom-label" for="ms-custom-mines">Mines</label>
+                <div class="ms-custom-field-header">
+                    <label class="ms-custom-label" for="ms-custom-mines">Mines</label>
+                    <span class="ms-custom-value">{{ customConfig.mineCount }}</span>
+                </div>
                 <input
                     id="ms-custom-mines"
-                    class="ms-custom-input"
-                    type="number"
-                    inputmode="numeric"
+                    class="ms-custom-slider"
+                    type="range"
                     :min="CUSTOM_LIMITS.minMines"
                     :max="maxMines"
+                    step="1"
                     :value="customConfig.mineCount"
-                    @change="updateCustomField('mineCount', ($event.target as HTMLInputElement).value)"
+                    @input="updateCustomField('mineCount', Number(($event.target as HTMLInputElement).value))"
                 >
             </div>
             <span class="ms-custom-hint">{{ customConfig.cellWidth }}×{{ customConfig.cellHeight }}, max {{ maxMines }} mines</span>
@@ -172,32 +180,81 @@ function updateCustomField(field: keyof CustomGameConfig, rawValue: string) {
 
 .ms-custom-panel {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px 12px;
+    flex-direction: column;
+    gap: 8px;
     padding: 4px 2px 2px;
+    width: 100%;
+    max-width: 280px;
 }
 
 .ms-custom-field {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ms-custom-field-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
 }
 
 .ms-custom-label {
     color: #000;
-    min-width: 38px;
 }
 
-.ms-custom-input {
-    width: 52px;
-    padding: 2px 4px;
-    font-size: 11px;
-    font-family: inherit;
-    border: 2px solid;
-    border-color: #808080 #fff #fff #808080;
-    background: #fff;
+.ms-custom-value {
     color: #000;
+    font-weight: bold;
+    min-width: 24px;
+    text-align: right;
+}
+
+.ms-custom-slider {
+    width: 100%;
+    height: 18px;
+    margin: 0;
+    accent-color: #316ac5;
+    cursor: default;
+}
+
+.ms-custom-slider::-webkit-slider-runnable-track {
+    height: 4px;
+    background: #fff;
+    border: 1px solid;
+    border-color: #808080 #fff #fff #808080;
+}
+
+.ms-custom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 11px;
+    height: 18px;
+    margin-top: -8px;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+}
+
+.ms-custom-slider:active::-webkit-slider-thumb {
+    border-color: #808080 #fff #fff #808080;
+}
+
+.ms-custom-slider::-moz-range-track {
+    height: 4px;
+    background: #fff;
+    border: 1px solid;
+    border-color: #808080 #fff #fff #808080;
+}
+
+.ms-custom-slider::-moz-range-thumb {
+    width: 11px;
+    height: 18px;
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #fff #808080 #808080 #fff;
+    border-radius: 0;
 }
 
 .ms-custom-hint {
