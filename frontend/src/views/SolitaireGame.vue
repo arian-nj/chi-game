@@ -443,12 +443,12 @@ defineExpose({ resetGame, undo });
         class="xp-game-body"
         :class="{ 'xp-game-won': gameWon, 'sol-dragging': isDragging }"
         :style="{
-            '--card-width': '52px',
-            '--card-height': '72px',
-            '--card-overlap': '18px',
-            '--card-tight-overlap': '4px',
-            '--card-fan': '18px',
-            '--ui-cell-size': '26px',
+            '--card-width': '70px',
+            '--card-height': '97px',
+            '--card-overlap': '24px',
+            '--card-tight-overlap': '5px',
+            '--card-fan': '24px',
+            '--ui-cell-size': '35px',
         }"
     >
         <div class="xp-sunken xp-status-panel">

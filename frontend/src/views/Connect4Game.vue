@@ -218,8 +218,8 @@ defineExpose({ resetGame });
 
 <style scoped>
 .c4-client {
-    --cell-size: 44px;
-    --disc-size: 36px;
+    --cell-size: 58px;
+    --disc-size: 48px;
     width: fit-content;
     background: #c0c0c0;
     padding: 12px 14px 6px;

@@ -6,9 +6,9 @@
 
 <style scoped>
 .xp-window {
-    --title-btn-size: 28px;
-    --title-icon-size: 18px;
-    --title-font-size: 13px;
+    --title-btn-size: 32px;
+    --title-icon-size: 20px;
+    --title-font-size: 14px;
     display: flex;
     flex-direction: column;
     align-items: stretch;

@@ -161,7 +161,7 @@ function clampZoom(value: number): number {
 
 function updateBaseCellSize() {
     if (!window.matchMedia(SMALL_SCREEN_QUERY).matches) {
-        baseCellSize.value = 26
+        baseCellSize.value = 35
         return
     }
 
@@ -584,7 +584,7 @@ defineExpose({ resetGame })
 
 <style scoped>
 .xp-client {
-    --ui-cell-size: 26px;
+    --ui-cell-size: 35px;
     background: #c0c0c0;
     padding: 10px 10px 6px;
     max-width: 100%;

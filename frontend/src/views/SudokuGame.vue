@@ -206,7 +206,7 @@ defineExpose({ resetGame });
 
 <style scoped>
 .xp-client {
-    --cell-size: 36px;
+    --cell-size: 48px;
     background: #c0c0c0;
     padding: 10px 10px 6px;
     max-width: 100%;

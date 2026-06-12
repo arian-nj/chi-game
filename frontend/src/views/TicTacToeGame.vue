@@ -197,7 +197,7 @@ defineExpose({ resetGame });
 
 <style scoped>
 .ttt-client {
-    --cell-size: 72px;
+    --cell-size: 96px;
     --mark-size: calc(var(--cell-size) * 0.55);
     display: flex;
     flex-direction: column;
@@ -208,7 +208,7 @@ defineExpose({ resetGame });
 }
 
 .ttt-size-5 {
-    --cell-size: 52px;
+    --cell-size: 70px;
 }
 
 @media (max-width: 640px) {
