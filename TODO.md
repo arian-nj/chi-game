@@ -16,7 +16,7 @@ Focous on Offline only game for now
 [X] Minesweeper
     [X] when I click on a number it highlights or wiggles the adjacent squares
     [X] Nice bomb animation
-    [ ] Mobile phones
+    [X] Mobile phones
     [ ] how to play
     [ ] add custom boards
 
