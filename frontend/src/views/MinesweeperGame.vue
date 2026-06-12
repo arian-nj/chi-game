@@ -27,10 +27,10 @@ interface Cell {
 
 const board = ref<Cell[][]>(createEmptyBoard())
 const highlightedCells = ref<Set<string>>(new Set())
-const chordSource = ref<[number, number] | null>(null)
-let suppressChordClick = false
+const previewSource = ref<[number, number] | null>(null)
+let suppressNumberClick = false
 
-const MIN_CELL_ZOOM = 0.75
+const MIN_CELL_ZOOM = 0.25
 const MAX_CELL_ZOOM = 2
 const CELL_ZOOM_STEP = 0.25
 const SMALL_SCREEN_QUERY = '(max-width: 640px)'
@@ -220,7 +220,7 @@ function highlightNeighbors(row: number, col: number) {
 
 function clearHighlight() {
     highlightedCells.value = new Set()
-    chordSource.value = null
+    previewSource.value = null
 }
 
 function getNumbersColor(number: number) {
@@ -281,40 +281,7 @@ function floodReveal(startRow: number, startCol: number) {
   }
 }
 
-function chordReveal(row: number, col: number) {
-    const cell = board.value[row]?.[col]
-    if (!cell?.isRevealed || cell.neighborMines === 0 || cell.isMine) return
-
-    let neighborFlags = 0
-    const hiddenNeighbors: [number, number][] = []
-
-    for (const [dr, dc] of DIRS) {
-        const r = row + dr
-        const c = col + dc
-        const neighbor = board.value[r]?.[c]
-        if (!neighbor) continue
-        if (neighbor.isFlagged) neighborFlags++
-        else if (!neighbor.isRevealed) hiddenNeighbors.push([r, c])
-    }
-
-    if (neighborFlags !== cell.neighborMines) return
-
-    for (const [r, c] of hiddenNeighbors) {
-        const neighbor = board.value[r]?.[c]
-        if (!neighbor) continue
-        if (neighbor.isMine) {
-            neighbor.isRevealed = true
-            gameState.value = 'lost'
-            stopTimer()
-            revealAllMines()
-            return
-        }
-        floodReveal(r, c)
-    }
-    checkWin()
-}
-
-function beginChord(row: number, col: number, event?: MouseEvent | TouchEvent) {
+function beginNeighborPreview(row: number, col: number, event?: MouseEvent | TouchEvent) {
     if (event && 'touches' in event && event.touches.length > 1) return
     if (isPinching.value) return
     if (gameState.value !== 'playing') return
@@ -322,17 +289,15 @@ function beginChord(row: number, col: number, event?: MouseEvent | TouchEvent) {
     const cell = board.value[row]?.[col]
     if (!cell?.isRevealed || cell.neighborMines === 0 || cell.isMine) return
 
-    chordSource.value = [row, col]
+    previewSource.value = [row, col]
     highlightNeighbors(row, col)
 }
 
-function finishChord() {
+function finishNeighborPreview() {
     if (isPinching.value) return
-    if (!chordSource.value) return
+    if (!previewSource.value) return
 
-    suppressChordClick = true
-    const [row, col] = chordSource.value
-    chordReveal(row, col)
+    suppressNumberClick = true
     clearHighlight()
 }
 
@@ -340,12 +305,11 @@ function onCellClick(row: number, col: number) {
     const cell = board.value[row]?.[col]
 
     if (cell?.isRevealed && cell.neighborMines > 0 && !cell.isMine) {
-        if (suppressChordClick) {
-            suppressChordClick = false
+        if (suppressNumberClick) {
+            suppressNumberClick = false
             return
         }
         highlightNeighbors(row, col)
-        chordReveal(row, col)
         window.setTimeout(clearHighlight, 200)
         return
     }
@@ -476,9 +440,9 @@ defineExpose({ resetGame })
         <div ref="boardScrollRef" class="xp-board-scroll" :style="boardStyle">
             <div
                 class="xp-sunken xp-grid-panel"
-                @mouseup="finishChord"
+                @mouseup="finishNeighborPreview"
                 @mouseleave="clearHighlight"
-                @touchend="finishChord"
+                @touchend="finishNeighborPreview"
                 @touchcancel="clearHighlight"
             >
                 <div v-for="(row, rIndex) in board" :key="rIndex" class="flex">
@@ -492,8 +456,8 @@ defineExpose({ resetGame })
                             { 'xp-cell-mine-reveal': cell.isRevealed && cell.isMine },
                         ]"
                         @click="onCellClick(rIndex, cIndex)"
-                        @mousedown="beginChord(rIndex, cIndex)"
-                        @touchstart="beginChord(rIndex, cIndex, $event)"
+                        @mousedown="beginNeighborPreview(rIndex, cIndex)"
+                        @touchstart="beginNeighborPreview(rIndex, cIndex, $event)"
                         @contextmenu.prevent="rightClickCell(rIndex, cIndex)"
                     >
                         <template v-if="!cell.isRevealed">
