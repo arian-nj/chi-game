@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <rect width="48" height="48" rx="4" fill="#c0c0c0"/>
+  <rect x="8" y="6" width="28" height="38" rx="3" fill="#fff" stroke="#4a4a4a" stroke-width="1.5"/>
+  <text x="12" y="18" font-family="Tahoma, sans-serif" font-size="9" font-weight="bold" fill="#c00">A</text>
+  <text x="22" y="30" font-family="Tahoma, sans-serif" font-size="16" fill="#c00">e</text>
+  <rect x="14" y="10" width="24" height="34" rx="3" fill="#1e4f9a" stroke="#0f2f66" stroke-width="1.5"/>
+  <line x1="18" y1="14" x2="34" y2="14" stroke="#2a63b8" stroke-width="2"/>
+  <line x1="18" y1="22" x2="34" y2="22" stroke="#2a63b8" stroke-width="2"/>
+  <line x1="18" y1="30" x2="34" y2="30" stroke="#2a63b8" stroke-width="2"/>
+</svg>

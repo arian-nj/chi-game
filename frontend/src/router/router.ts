@@ -8,7 +8,7 @@ import {
 import { supportedLocales } from '@/i18n/config';
 
 const localeParam = supportedLocales.map((l) => l.code).join('|');
-const gameKeys = 'minesweeper|tictactoe|connect4|sudoku';
+const gameKeys = 'minesweeper|tictactoe|connect4|sudoku|solitaire';
 
 function isAppLocale(value: unknown): value is AppLocale {
   return (
@@ -58,6 +58,11 @@ const router = createRouter({
               path: 'sudoku',
               name: 'sudoku',
               component: () => import('@/views/SudokuView.vue'),
+            },
+            {
+              path: 'solitaire',
+              name: 'solitaire',
+              component: () => import('@/views/SolitaireView.vue'),
             },
           ],
         },

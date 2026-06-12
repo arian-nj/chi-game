@@ -4,6 +4,7 @@ import GameIcon from './GameIcon.vue';
 import Connect4Logo from '@/assets/games/connect4/connect4_logo.svg';
 import MinesweeperLogo from '@/assets/games/minesweeper/minesweeper_logo.png';
 import SudokuLogo from '@/assets/games/sudoku/sudoku_logo.svg';
+import SolitaireLogo from '@/assets/games/solitaire/solitaire_logo.svg';
 import TicTacToeLogo from '@/assets/games/tictactoe/tictactoe_logo.svg';
 
 const games: GameData[] = [
@@ -26,6 +27,11 @@ const games: GameData[] = [
         name: 'Sudoku',
         key: 'sudoku',
         logo: SudokuLogo,
+    },
+    {
+        name: 'Solitaire',
+        key: 'solitaire',
+        logo: SolitaireLogo,
     },
 ]
 

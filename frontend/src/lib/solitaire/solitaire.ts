@@ -177,6 +177,14 @@ export function flipStock(state: GameState): GameState {
     return state;
 }
 
+export function canSelectSource(state: GameState, from: MoveSource): boolean {
+    return getMoveStack(state, from) !== null;
+}
+
+export function pileRefsEqual(left: PileRef, right: PileRef): boolean {
+    return isSamePile(left, right);
+}
+
 export function applyMove(
     state: GameState,
     from: MoveSource,
