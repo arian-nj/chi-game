@@ -43,6 +43,14 @@ let pinchStartDistance = 0
 let pinchStartZoom = 1
 let smallScreenQuery: MediaQueryList | null = null
 
+const BOARD_PAN_THRESHOLD = 5
+let isBoardPanning = false
+let suppressBoardClick = false
+let panStartX = 0
+let panStartY = 0
+let panScrollLeft = 0
+let panScrollTop = 0
+
 const effectiveCellSize = computed(() => Math.round(baseCellSize.value * cellZoom.value))
 const zoomPercent = computed(() => Math.round(cellZoom.value * 100))
 const boardStyle = computed(() => ({
@@ -198,6 +206,59 @@ function onBoardTouchEnd(event: TouchEvent) {
     }
 }
 
+function onBoardMouseDown(event: MouseEvent) {
+    if (event.button !== 0) return
+    if (isPinching.value) return
+
+    const boardScroll = boardScrollRef.value
+    if (!boardScroll) return
+
+    isBoardPanning = false
+    panStartX = event.clientX
+    panStartY = event.clientY
+    panScrollLeft = boardScroll.scrollLeft
+    panScrollTop = boardScroll.scrollTop
+
+    document.addEventListener('mousemove', onBoardMouseMove)
+    document.addEventListener('mouseup', onBoardMouseUp)
+}
+
+function onBoardMouseMove(event: MouseEvent) {
+    const boardScroll = boardScrollRef.value
+    if (!boardScroll) return
+
+    const dx = event.clientX - panStartX
+    const dy = event.clientY - panStartY
+
+    if (!isBoardPanning) {
+        if (Math.abs(dx) < BOARD_PAN_THRESHOLD && Math.abs(dy) < BOARD_PAN_THRESHOLD) return
+
+        isBoardPanning = true
+        clearHighlight()
+        boardScroll.classList.add('xp-board-scroll-dragging')
+    }
+
+    event.preventDefault()
+    boardScroll.scrollLeft = panScrollLeft - dx
+    boardScroll.scrollTop = panScrollTop - dy
+}
+
+function stopBoardPan() {
+    document.removeEventListener('mousemove', onBoardMouseMove)
+    document.removeEventListener('mouseup', onBoardMouseUp)
+
+    boardScrollRef.value?.classList.remove('xp-board-scroll-dragging')
+}
+
+function onBoardMouseUp() {
+    if (isBoardPanning) {
+        suppressBoardClick = true
+    }
+
+    isBoardPanning = false
+    stopBoardPan()
+}
+
 function cellKey(row: number, col: number): string {
     return `${row},${col}`
 }
@@ -294,7 +355,7 @@ function beginNeighborPreview(row: number, col: number, event?: MouseEvent | Tou
 }
 
 function finishNeighborPreview() {
-    if (isPinching.value) return
+    if (isPinching.value || isBoardPanning) return
     if (!previewSource.value) return
 
     suppressNumberClick = true
@@ -302,6 +363,11 @@ function finishNeighborPreview() {
 }
 
 function onCellClick(row: number, col: number) {
+    if (suppressBoardClick) {
+        suppressBoardClick = false
+        return
+    }
+
     const cell = board.value[row]?.[col]
 
     if (cell?.isRevealed && cell.neighborMines > 0 && !cell.isMine) {
@@ -392,6 +458,7 @@ onMounted(() => {
         boardScroll.addEventListener('touchmove', onBoardTouchMove, { passive: false })
         boardScroll.addEventListener('touchend', onBoardTouchEnd, { passive: true })
         boardScroll.addEventListener('touchcancel', onBoardTouchEnd, { passive: true })
+        boardScroll.addEventListener('mousedown', onBoardMouseDown)
     }
 })
 
@@ -401,12 +468,15 @@ onUnmounted(() => {
     smallScreenQuery?.removeEventListener('change', onViewportChange)
     window.removeEventListener('resize', onViewportChange)
 
+    stopBoardPan()
+
     const boardScroll = boardScrollRef.value
     if (boardScroll) {
         boardScroll.removeEventListener('touchstart', onBoardTouchStart)
         boardScroll.removeEventListener('touchmove', onBoardTouchMove)
         boardScroll.removeEventListener('touchend', onBoardTouchEnd)
         boardScroll.removeEventListener('touchcancel', onBoardTouchEnd)
+        boardScroll.removeEventListener('mousedown', onBoardMouseDown)
     }
 })
 
@@ -702,6 +772,11 @@ defineExpose({ resetGame })
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     touch-action: pan-x pan-y;
+}
+
+.xp-board-scroll-dragging {
+    cursor: grabbing;
+    user-select: none;
 }
 
 .xp-grid-panel {
