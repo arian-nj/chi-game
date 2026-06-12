@@ -442,14 +442,6 @@ defineExpose({ resetGame, undo });
     <div
         class="xp-game-body"
         :class="{ 'xp-game-won': gameWon, 'sol-dragging': isDragging }"
-        :style="{
-            '--card-width': '70px',
-            '--card-height': '97px',
-            '--card-overlap': '24px',
-            '--card-tight-overlap': '5px',
-            '--card-fan': '24px',
-            '--ui-cell-size': '35px',
-        }"
     >
         <div class="xp-sunken xp-status-panel">
             <div class="xp-led">{{ formatCounter(gameState.moves) }}</div>
@@ -584,10 +576,18 @@ defineExpose({ resetGame, undo });
 
 <style scoped>
 .xp-game-body {
+    --sol-col-gap: clamp(4px, 1.5vw, 12px);
+    --card-width: min(70px, calc((100vw - 3.5rem - 6 * var(--sol-col-gap)) / 7));
+    --card-height: calc(var(--card-width) * 97 / 70);
+    --card-overlap: calc(var(--card-width) * 24 / 70);
+    --card-tight-overlap: calc(var(--card-width) * 5 / 70);
+    --card-fan: calc(var(--card-width) * 24 / 70);
+    --ui-cell-size: calc(var(--card-width) * 35 / 70);
     width: fit-content;
     max-width: 100%;
     margin: auto;
     padding: 8px;
+    box-sizing: border-box;
     background: #0a6b0a;
 }
 
@@ -655,7 +655,7 @@ defineExpose({ resetGame, undo });
 
 .sol-board-area {
     position: relative;
-    overflow-x: auto;
+    overflow: hidden;
     max-width: 100%;
 }
 
@@ -695,23 +695,23 @@ defineExpose({ resetGame, undo });
 .sol-top-row {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 20px;
+    gap: max(8px, var(--sol-col-gap));
+    margin-bottom: max(12px, calc(var(--card-width) * 0.28));
 }
 
 .sol-top-left {
     display: flex;
-    gap: 12px;
+    gap: var(--sol-col-gap);
 }
 
 .sol-foundations {
     display: flex;
-    gap: 12px;
+    gap: var(--sol-col-gap);
 }
 
 .sol-tableau {
     display: flex;
-    gap: 12px;
+    gap: var(--sol-col-gap);
     align-items: flex-start;
 }
 
@@ -750,21 +750,38 @@ defineExpose({ resetGame, undo });
 
 @media (max-width: 640px) {
     .xp-game-body {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
         width: 100%;
-        --card-width: 44px;
-        --card-height: 62px;
-        --card-overlap: 15px;
-        --card-fan: 14px;
+        min-height: 0;
+        margin: 0;
+        padding: 2px;
+        --sol-col-gap: 1px;
+        --card-width: min(
+            70px,
+            calc((100vw - 6 * var(--sol-col-gap)) / 7)
+        );
     }
 
-    .sol-top-row,
-    .sol-tableau {
-        gap: 8px;
+    .sol-board-area {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
-    .sol-top-left,
-    .sol-foundations {
-        gap: 8px;
+    .sol-board {
+        flex-shrink: 0;
+        padding: 2px;
+    }
+
+    .sol-top-row {
+        gap: var(--sol-col-gap);
+        margin-bottom: max(8px, calc(var(--card-width) * 0.2));
     }
 }
 

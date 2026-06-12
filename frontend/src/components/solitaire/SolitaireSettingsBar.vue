@@ -134,14 +134,38 @@ const emit = defineEmits<{
 
 @media (max-width: 640px) {
     .sol-settings {
-        padding: 4px 8px 6px;
+        flex-shrink: 0;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 4px;
+        padding: 3px 6px 4px;
+    }
+
+    .sol-settings-row {
+        flex: 1 1 auto;
+        gap: 4px;
+    }
+
+    .sol-settings-label {
+        min-width: auto;
+        font-size: 10px;
+    }
+
+    .sol-settings-actions {
+        flex: 1 1 auto;
+        justify-content: flex-end;
+        padding-top: 0;
+        padding-bottom: 0;
+        gap: 4px;
     }
 
     .sol-option,
     .sol-undo-btn,
     .sol-new-game-btn {
-        padding: 6px 10px;
-        font-size: 12px;
+        padding: 4px 8px;
+        font-size: 11px;
     }
 }
 </style>

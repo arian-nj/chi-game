@@ -185,4 +185,10 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
     margin: 2px 2px;
     background: #aca899;
 }
+
+@media (max-width: 640px) {
+    .xp-menubar {
+        display: none;
+    }
+}
 </style>

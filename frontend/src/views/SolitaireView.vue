@@ -37,41 +37,66 @@ function closeGame() {
 </script>
 
 <template>
-    <HeaderComponent />
+    <div class="solitaire-page">
+        <HeaderComponent />
 
-    <div class="solitaire-desktop w-full flex items-start justify-center">
-        <XpWindow>
-            <XpTitleBar title="Solitaire" :icon="solitaireLogo" @close="closeGame" />
-            <SolitaireGameMenu
-                :draw-mode="drawMode"
-                :can-undo="canUndo"
-                @new-game="newGame"
-                @set-draw-mode="setDrawMode"
-                @undo="undo"
-            />
-            <SolitaireGame
-                ref="gameRef"
-                :draw-mode="drawMode"
-                @update:can-undo="canUndo = $event"
-            />
-            <SolitaireSettingsBar
-                :draw-mode="drawMode"
-                :can-undo="canUndo"
-                @new-game="newGame"
-                @set-draw-mode="setDrawMode"
-                @undo="undo"
-            />
-        </XpWindow>
+        <div class="solitaire-desktop w-full flex items-start justify-center">
+            <XpWindow>
+                <XpTitleBar title="Solitaire" :icon="solitaireLogo" @close="closeGame" />
+                <SolitaireGameMenu
+                    :draw-mode="drawMode"
+                    :can-undo="canUndo"
+                    @new-game="newGame"
+                    @set-draw-mode="setDrawMode"
+                    @undo="undo"
+                />
+                <SolitaireGame
+                    ref="gameRef"
+                    :draw-mode="drawMode"
+                    @update:can-undo="canUndo = $event"
+                />
+                <SolitaireSettingsBar
+                    :draw-mode="drawMode"
+                    :can-undo="canUndo"
+                    @new-game="newGame"
+                    @set-draw-mode="setDrawMode"
+                    @undo="undo"
+                />
+            </XpWindow>
+        </div>
+
+        <SolitaireHelpSection />
     </div>
-
-    <SolitaireHelpSection />
 </template>
 
 <style scoped>
 @media (max-width: 640px) {
+    .solitaire-page {
+        display: flex;
+        flex-direction: column;
+        min-height: 100dvh;
+        box-sizing: border-box;
+    }
+
     .solitaire-desktop {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
         align-items: stretch;
-        padding: 0.25rem 0.25rem 0;
+        align-self: stretch;
+        min-height: 0;
+        width: 100%;
+        padding: 0;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+
+    .solitaire-desktop :deep(.xp-window) {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        width: 100%;
     }
 }
 </style>

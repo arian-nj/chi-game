@@ -1,11 +1,49 @@
 <script setup lang="ts">
+import { onMounted, onUnmounted, useTemplateRef } from 'vue';
 import solitaireLogo from '@/assets/games/solitaire/solitaire_logo.svg';
+
+const detailsRef = useTemplateRef('detailsRef');
+const SMALL_SCREEN_QUERY = '(max-width: 640px)';
+
+let smallScreenQuery: MediaQueryList | null = null;
+
+function syncDetailsOpen() {
+    const details = detailsRef.value;
+    if (!details) {
+        return;
+    }
+
+    if (smallScreenQuery?.matches) {
+        details.removeAttribute('open');
+    } else {
+        details.setAttribute('open', '');
+    }
+}
+
+function onHashChange() {
+    if (window.location.hash === '#how-to-play-solitaire') {
+        detailsRef.value?.setAttribute('open', '');
+    }
+}
+
+onMounted(() => {
+    smallScreenQuery = window.matchMedia(SMALL_SCREEN_QUERY);
+    syncDetailsOpen();
+    smallScreenQuery.addEventListener('change', syncDetailsOpen);
+    onHashChange();
+    window.addEventListener('hashchange', onHashChange);
+});
+
+onUnmounted(() => {
+    smallScreenQuery?.removeEventListener('change', syncDetailsOpen);
+    window.removeEventListener('hashchange', onHashChange);
+});
 </script>
 
 <template>
     <section class="help-section" id="how-to-play-solitaire">
-        <div class="help-window">
-            <div class="help-titlebar">
+        <details ref="detailsRef" class="help-window help-details" open>
+            <summary class="help-titlebar">
                 <div class="help-titlebar-left">
                     <img
                         :src="solitaireLogo"
@@ -16,7 +54,8 @@ import solitaireLogo from '@/assets/games/solitaire/solitaire_logo.svg';
                     >
                     <span class="help-title">How to Play</span>
                 </div>
-            </div>
+                <span class="help-toggle" aria-hidden="true" />
+            </summary>
             <div class="help-body">
                 <p>
                     Move all 52 cards to the four foundation piles at the top right, building each
@@ -40,7 +79,7 @@ import solitaireLogo from '@/assets/games/solitaire/solitaire_logo.svg';
                     <strong>New Game</strong> to deal again.
                 </p>
             </div>
-        </div>
+        </details>
     </section>
 </template>
 
@@ -64,9 +103,23 @@ import solitaireLogo from '@/assets/games/solitaire/solitaire_logo.svg';
     font-family: Tahoma, 'MS Sans Serif', sans-serif;
 }
 
+.help-details {
+    display: block;
+}
+
+.help-details summary {
+    list-style: none;
+    cursor: pointer;
+}
+
+.help-details summary::-webkit-details-marker {
+    display: none;
+}
+
 .help-titlebar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 6px 8px;
     background: linear-gradient(
         180deg,
@@ -126,14 +179,54 @@ import solitaireLogo from '@/assets/games/solitaire/solitaire_logo.svg';
     font-weight: 700;
 }
 
+.help-toggle {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid #fff;
+    filter: drop-shadow(1px 1px 0 #000);
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+}
+
+.help-details[open] .help-toggle {
+    transform: rotate(180deg);
+}
+
+@media (min-width: 641px) {
+    .help-details summary {
+        cursor: default;
+        pointer-events: none;
+    }
+
+    .help-toggle {
+        display: none;
+    }
+}
+
 @media (max-width: 640px) {
     .help-section {
-        margin-top: 0.75rem;
-        padding: 0 0.25rem 1.25rem;
+        flex-shrink: 0;
+        margin-top: 0;
+        padding: 0 0 0.5rem;
     }
 
     .help-window {
         width: 100%;
+    }
+
+    .help-body {
+        padding: 0.75rem 0.875rem 0.875rem;
+    }
+
+    .help-body p {
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .help-body p + p {
+        margin-top: 0.5rem;
     }
 }
 </style>
