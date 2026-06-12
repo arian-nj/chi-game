@@ -16,6 +16,7 @@ const minesPlaced = ref(false);
 const facePressed = ref(false);
 const elapsedSeconds = ref(0);
 let timerId: ReturnType<typeof setInterval> | null = null;
+let mineRevealTimeoutIds: ReturnType<typeof setTimeout>[] = []
 
 interface Cell {
     isMine: boolean;
@@ -82,8 +83,14 @@ function stopTimer() {
     }
 }
 
+function stopMineRevealAnimation() {
+    for (const id of mineRevealTimeoutIds) clearTimeout(id)
+    mineRevealTimeoutIds = []
+}
+
 function resetGame() {
     stopTimer()
+    stopMineRevealAnimation()
     gameState.value = 'playing'
     minesPlaced.value = false
     facePressed.value = false
@@ -291,11 +298,28 @@ function checkWin() {
 }
 
 function revealAllMines() {
-  for (const row of board.value) {
-    for (const cell of row) {
-      if (cell.isMine) cell.isRevealed = true
+    stopMineRevealAnimation()
+
+    const hiddenMines: [number, number][] = []
+    for (let row = 0; row < props.cellHeight; row++) {
+        for (let col = 0; col < props.cellWidth; col++) {
+            const cell = board.value[row]![col]!
+            if (cell.isMine && !cell.isRevealed) hiddenMines.push([row, col])
+        }
     }
-  }
+
+    if (hiddenMines.length === 0) return
+
+    const stepMs = Math.min(100, Math.max(40, Math.floor(2500 / hiddenMines.length)))
+
+    hiddenMines.forEach(([row, col], index) => {
+        const id = window.setTimeout(() => {
+            if (gameState.value !== 'lost') return
+            const cell = board.value[row]?.[col]
+            if (cell?.isMine) cell.isRevealed = true
+        }, index * stepMs)
+        mineRevealTimeoutIds.push(id)
+    })
 }
 
 watch(
@@ -303,7 +327,10 @@ watch(
     () => resetGame(),
 )
 
-onUnmounted(stopTimer)
+onUnmounted(() => {
+    stopTimer()
+    stopMineRevealAnimation()
+})
 
 defineExpose({ resetGame })
 </script>
@@ -340,6 +367,7 @@ defineExpose({ resetGame })
                     :class="[
                         cell.isRevealed ? 'xp-cell-revealed' : 'xp-cell-hidden',
                         { 'xp-cell-highlighted': isCellHighlighted(rIndex, cIndex) },
+                        { 'xp-cell-mine-reveal': cell.isRevealed && cell.isMine },
                     ]"
                     @click="onCellClick(rIndex, cIndex)"
                     @mousedown="beginChord(rIndex, cIndex)"
@@ -478,6 +506,19 @@ defineExpose({ resetGame })
     border-style: solid;
     border-width: max(2px, calc(var(--cell-size) * 0.08));
     border-color: #808080;
+}
+
+.xp-cell-mine-reveal {
+    animation: xp-mine-pop 0.18s ease-out;
+}
+
+@keyframes xp-mine-pop {
+    from {
+        transform: scale(0.4);
+    }
+    to {
+        transform: scale(1);
+    }
 }
 
 .xp-cell-highlighted {
