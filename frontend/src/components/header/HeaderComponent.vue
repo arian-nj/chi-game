@@ -6,26 +6,19 @@ const { localePath } = useLocalePath();
 </script>
 
 <template>
-    <header class="site-header mb-8">
+    <header class="site-header mb-1">
         <RouterLink :to="localePath('/')" class="site-hero">
             <div class="site-hero-titlebar">
-                <div class="site-hero-titlebar-left">
-                    <img
-                        src="/favicon.png"
-                        alt=""
-                        class="site-icon"
-                        width="28"
-                        height="28"
-                    >
-                    <span class="site-title">
-                        ChiGame<span class="site-tld">.Site</span>
-                    </span>
-                </div>
-                <div class="site-hero-chrome" aria-hidden="true">
-                    <span class="chrome-btn chrome-btn-min" />
-                    <span class="chrome-btn chrome-btn-max" />
-                    <span class="chrome-btn chrome-btn-close" />
-                </div>
+                <img
+                    src="/favicon.png"
+                    alt=""
+                    class="site-icon"
+                    width="28"
+                    height="28"
+                >
+                <span class="site-title">
+                    ChiGame<span class="site-tld">.Site</span>
+                </span>
             </div>
         </RouterLink>
     </header>
@@ -73,7 +66,7 @@ const { localePath } = useLocalePath();
 .site-hero-titlebar {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 8px;
     padding: 6px 6px 6px 8px;
     background: linear-gradient(
@@ -88,13 +81,6 @@ const { localePath } = useLocalePath();
         #003ddb 100%
     );
     transition: filter 0.18s ease;
-}
-
-.site-hero-titlebar-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
 }
 
 .site-icon {

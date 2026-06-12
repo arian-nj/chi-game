@@ -7,10 +7,19 @@
 [X] Home screen
 
 Focous on Offline only game for now
-[X] Mine Sweeper
 [X] Tic Tac Toe
 [X] Connect 4
 [X] Sudoko
+
+[ ] Optimize loading
+
+[X] Minesweeper
+    [X] when I click on a number it highlights or wiggles the adjacent squares
+    [ ] Nice effects / animations
+    [ ] Mobile phones
+    [ ] how to play
+
+[ ] PWA?
 
 [X] publish
 [ ] Write better Home Page
@@ -28,3 +37,5 @@ Focous on Offline only game for now
 [ ] Blackjack
 
 [ ] add a card games page
+
+Some kind of progression system

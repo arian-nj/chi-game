@@ -25,6 +25,9 @@ interface Cell {
 }
 
 const board = ref<Cell[][]>(createEmptyBoard())
+const highlightedCells = ref<Set<string>>(new Set())
+const chordSource = ref<[number, number] | null>(null)
+let suppressChordClick = false
 
 function createEmptyBoard(): Cell[][] {
     return Array.from({ length: props.cellHeight }, () =>
@@ -116,6 +119,31 @@ function placeMinesUntilSolvable(safeRow: number, safeCol: number) {
   }
 }
 
+function cellKey(row: number, col: number): string {
+    return `${row},${col}`
+}
+
+function isCellHighlighted(row: number, col: number): boolean {
+    return highlightedCells.value.has(cellKey(row, col))
+}
+
+function highlightNeighbors(row: number, col: number) {
+    const next = new Set<string>()
+    for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+            const r = row + dr
+            const c = col + dc
+            if (board.value[r]?.[c]) next.add(cellKey(r, c))
+        }
+    }
+    highlightedCells.value = next
+}
+
+function clearHighlight() {
+    highlightedCells.value = new Set()
+    chordSource.value = null
+}
+
 function getNumbersColor(number: number) {
     switch (number) {
         case 1: return 'text-[#0000ff]';
@@ -174,6 +202,75 @@ function floodReveal(startRow: number, startCol: number) {
   }
 }
 
+function chordReveal(row: number, col: number) {
+    const cell = board.value[row]?.[col]
+    if (!cell?.isRevealed || cell.neighborMines === 0 || cell.isMine) return
+
+    let neighborFlags = 0
+    const hiddenNeighbors: [number, number][] = []
+
+    for (const [dr, dc] of DIRS) {
+        const r = row + dr
+        const c = col + dc
+        const neighbor = board.value[r]?.[c]
+        if (!neighbor) continue
+        if (neighbor.isFlagged) neighborFlags++
+        else if (!neighbor.isRevealed) hiddenNeighbors.push([r, c])
+    }
+
+    if (neighborFlags !== cell.neighborMines) return
+
+    for (const [r, c] of hiddenNeighbors) {
+        const neighbor = board.value[r]?.[c]
+        if (!neighbor) continue
+        if (neighbor.isMine) {
+            neighbor.isRevealed = true
+            gameState.value = 'lost'
+            stopTimer()
+            revealAllMines()
+            return
+        }
+        floodReveal(r, c)
+    }
+    checkWin()
+}
+
+function beginChord(row: number, col: number) {
+    if (gameState.value !== 'playing') return
+
+    const cell = board.value[row]?.[col]
+    if (!cell?.isRevealed || cell.neighborMines === 0 || cell.isMine) return
+
+    chordSource.value = [row, col]
+    highlightNeighbors(row, col)
+}
+
+function finishChord() {
+    if (!chordSource.value) return
+
+    suppressChordClick = true
+    const [row, col] = chordSource.value
+    chordReveal(row, col)
+    clearHighlight()
+}
+
+function onCellClick(row: number, col: number) {
+    const cell = board.value[row]?.[col]
+
+    if (cell?.isRevealed && cell.neighborMines > 0 && !cell.isMine) {
+        if (suppressChordClick) {
+            suppressChordClick = false
+            return
+        }
+        highlightNeighbors(row, col)
+        chordReveal(row, col)
+        window.setTimeout(clearHighlight, 200)
+        return
+    }
+
+    revealCell(row, col)
+}
+
 function rightClickCell(row: number, col: number) {
   if (gameState.value !== 'playing') return
 
@@ -228,14 +325,25 @@ defineExpose({ resetGame })
     </div>
 
     <div class="xp-board-scroll">
-        <div class="xp-sunken xp-grid-panel">
+        <div
+            class="xp-sunken xp-grid-panel"
+            @mouseup="finishChord"
+            @mouseleave="clearHighlight"
+            @touchend="finishChord"
+            @touchcancel="clearHighlight"
+        >
             <div v-for="(row, rIndex) in board" :key="rIndex" class="flex">
                 <div
                     v-for="(cell, cIndex) in row"
                     :key="cIndex"
                     class="xp-cell"
-                    :class="cell.isRevealed ? 'xp-cell-revealed' : 'xp-cell-hidden'"
-                    @click="revealCell(rIndex, cIndex)"
+                    :class="[
+                        cell.isRevealed ? 'xp-cell-revealed' : 'xp-cell-hidden',
+                        { 'xp-cell-highlighted': isCellHighlighted(rIndex, cIndex) },
+                    ]"
+                    @click="onCellClick(rIndex, cIndex)"
+                    @mousedown="beginChord(rIndex, cIndex)"
+                    @touchstart="beginChord(rIndex, cIndex)"
                     @contextmenu.prevent="rightClickCell(rIndex, cIndex)"
                 >
                     <template v-if="!cell.isRevealed">
@@ -350,6 +458,7 @@ defineExpose({ resetGame })
     font-family: Tahoma, 'MS Sans Serif', sans-serif;
     box-sizing: border-box;
     cursor: default;
+    touch-action: manipulation;
 }
 
 .xp-cell-hidden {
@@ -369,6 +478,29 @@ defineExpose({ resetGame })
     border-style: solid;
     border-width: max(2px, calc(var(--cell-size) * 0.08));
     border-color: #808080;
+}
+
+.xp-cell-highlighted {
+    animation: xp-chord-wiggle 0.12s ease-in-out infinite alternate;
+}
+
+.xp-cell-highlighted.xp-cell-hidden {
+    border-width: max(2px, calc(var(--cell-size) * 0.1));
+    border-color: #808080;
+}
+
+.xp-cell-highlighted.xp-cell-revealed {
+    background: #a8a8a8;
+    box-shadow: inset 0 0 0 1px #ffd700;
+}
+
+@keyframes xp-chord-wiggle {
+    from {
+        transform: translateX(-1px);
+    }
+    to {
+        transform: translateX(1px);
+    }
 }
 
 .xp-flag {

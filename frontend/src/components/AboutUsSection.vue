@@ -29,7 +29,8 @@
                     <strong>Chi</strong> Means <strong>"Life Energy"</strong> in <strong>Chinese</strong>
                     <br>
                     Also Means <strong>"What"</strong> in <strong>Persian</strong>
-                    <p>i like the persian one more <strong>"What Game"</strong></p>
+                    <br>
+                    i like the persian one more <strong>"What Game"</strong>
                 </p>
             </div>
         </div>

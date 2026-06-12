@@ -12,7 +12,6 @@
     min-height: 100dvh;
     background: url('/public/bliss.jpg') center / cover no-repeat;
     box-sizing: border-box;
-    padding: 2rem 0.5rem;
     overflow-x: hidden;
 }
 
