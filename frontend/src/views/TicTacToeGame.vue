@@ -213,12 +213,20 @@ defineExpose({ resetGame });
 
 @media (max-width: 640px) {
     .ttt-client {
-        --cell-size: 80px;
-        padding: 10px 12px 12px;
+        padding: 8px 8px 6px;
+    }
+
+    .ttt-size-3 {
+        --cell-size: min(96px, calc((100vw - 3.5rem) / 3));
     }
 
     .ttt-size-5 {
-        --cell-size: 56px;
+        --cell-size: min(68px, calc((100vw - 3.5rem) / 5));
+    }
+
+    .ttt-board-frame {
+        align-self: center;
+        max-width: 100%;
     }
 }
 

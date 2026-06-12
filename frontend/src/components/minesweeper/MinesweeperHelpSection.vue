@@ -121,4 +121,15 @@ import minesweeperLogo from '@/assets/games/minesweeper/minesweeper_logo.png';
 .help-body strong {
     font-weight: 700;
 }
+
+@media (max-width: 640px) {
+    .help-section {
+        margin-top: 0.75rem;
+        padding: 0 0.25rem 1.25rem;
+    }
+
+    .help-window {
+        width: 100%;
+    }
+}
 </style>

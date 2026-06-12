@@ -160,7 +160,16 @@ function clampZoom(value: number): number {
 }
 
 function updateBaseCellSize() {
-    baseCellSize.value = window.matchMedia(SMALL_SCREEN_QUERY).matches ? 34 : 26
+    if (!window.matchMedia(SMALL_SCREEN_QUERY).matches) {
+        baseCellSize.value = 26
+        return
+    }
+
+    const horizontalPadding = 56
+    const boardChrome = 14
+    const available = window.innerWidth - horizontalPadding
+    const fitSize = Math.floor((available - boardChrome) / props.cellWidth)
+    baseCellSize.value = Math.min(48, Math.max(22, fitSize))
 }
 
 function zoomIn() {
@@ -439,7 +448,10 @@ function revealAllMines() {
 
 watch(
     () => [props.cellWidth, props.cellHeight, props.mineCount],
-    () => resetGame(),
+    () => {
+        resetGame()
+        updateBaseCellSize()
+    },
 )
 
 function onViewportChange() {
@@ -582,7 +594,12 @@ defineExpose({ resetGame })
 @media (max-width: 640px) {
     .xp-client {
         --ui-cell-size: 34px;
-        padding: 12px 12px 6px;
+        width: 100%;
+        padding: 8px 8px 4px;
+    }
+
+    .xp-game-body {
+        width: 100%;
     }
 }
 

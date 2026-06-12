@@ -26,6 +26,7 @@
         --title-btn-size: 34px;
         --title-icon-size: 22px;
         --title-font-size: 16px;
+        width: 100%;
     }
 }
 </style>

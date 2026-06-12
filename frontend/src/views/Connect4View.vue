@@ -72,7 +72,8 @@ function closeGame() {
 <style scoped>
 @media (max-width: 640px) {
     .connect4-desktop {
-        padding: 0.5rem 0.25rem;
+        align-items: stretch;
+        padding: 0.25rem 0.25rem 0;
     }
 }
 </style>

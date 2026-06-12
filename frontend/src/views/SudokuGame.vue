@@ -216,8 +216,13 @@ defineExpose({ resetGame });
 
 @media (max-width: 640px) {
     .xp-client {
-        --cell-size: 34px;
-        padding: 12px 12px 6px;
+        --cell-size: min(38px, calc((100vw - 3.5rem) / 9));
+        width: 100%;
+        padding: 8px 8px 4px;
+    }
+
+    .xp-game-body {
+        width: 100%;
     }
 }
 

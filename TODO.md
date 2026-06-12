@@ -17,8 +17,8 @@ Focous on Offline only game for now
     [X] when I click on a number it highlights or wiggles the adjacent squares
     [X] Nice bomb animation
     [X] Mobile phones
+    [X] add custom boards
     [ ] how to play
-    [ ] add custom boards
 
 [ ] PWA?
 

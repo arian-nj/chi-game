@@ -228,9 +228,16 @@ defineExpose({ resetGame });
 
 @media (max-width: 640px) {
     .c4-client {
-        --cell-size: 40px;
-        --disc-size: 32px;
-        padding: 10px 12px 12px;
+        width: 100%;
+        --cell-size: min(52px, calc((100vw - 3.5rem) / 7));
+        --disc-size: calc(var(--cell-size) * 0.82);
+        padding: 8px 8px 6px;
+    }
+
+    .c4-board-frame {
+        width: fit-content;
+        max-width: 100%;
+        margin: 0 auto;
     }
 }
 

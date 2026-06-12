@@ -31,6 +31,17 @@ const { localePath } = useLocalePath();
     padding: 0 0.75rem;
 }
 
+@media (max-width: 640px) {
+    .site-header {
+        padding: 0 0.25rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .site-hero {
+        width: 100%;
+    }
+}
+
 .site-hero {
     display: block;
     width: min(100%, 26rem);

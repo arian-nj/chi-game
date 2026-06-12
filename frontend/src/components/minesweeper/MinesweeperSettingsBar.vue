@@ -285,4 +285,20 @@ function updateCustomField(field: keyof CustomGameConfig, rawValue: number) {
 .ms-new-game-btn:active {
     border-color: #808080 #fff #fff #808080;
 }
+
+@media (max-width: 640px) {
+    .ms-settings {
+        padding: 4px 8px 6px;
+    }
+
+    .ms-custom-panel {
+        max-width: none;
+    }
+
+    .ms-option,
+    .ms-new-game-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
 </style>
