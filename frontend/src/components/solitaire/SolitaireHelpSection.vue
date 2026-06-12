@@ -35,7 +35,8 @@ import solitaireLogo from '@/assets/games/solitaire/solitaire_logo.svg';
                     Click the <strong>stock</strong> pile (top left) to flip cards onto the waste
                     pile. The top waste card is always playable. When the stock is empty, click it
                     again to recycle the waste back. Choose <strong>Draw 1</strong> or
-                    <strong>Draw 3</strong> from the Game menu. Click the smiley face or
+                    <strong>Draw 3</strong> from the Game menu. Use <strong>Undo</strong> or
+                    <strong>Ctrl+Z</strong> to take back your last move. Click the smiley face or
                     <strong>New Game</strong> to deal again.
                 </p>
             </div>

@@ -5,6 +5,7 @@ import SolitairePile from '@/components/solitaire/SolitairePile.vue';
 import {
     applyMove,
     canSelectSource,
+    cloneGameState,
     flipStock,
     getMovingCards,
     getValidDestinations,
@@ -27,12 +28,17 @@ const props = defineProps<{
     drawMode: DrawMode;
 }>();
 
+const emit = defineEmits<{
+    'update:canUndo': [value: boolean];
+}>();
+
 const DRAG_THRESHOLD = 5;
 const GHOST_OFFSET_X = 20;
 const GHOST_OFFSET_Y = 12;
 const DOUBLE_CLICK_MS = 400;
 
 const gameState = ref<GameState>(newGame(props.drawMode));
+const history = ref<GameState[]>([]);
 const selection = ref<MoveSource | null>(null);
 const validDestinations = ref<MoveDestination[]>([]);
 const elapsedSeconds = ref(0);
@@ -49,6 +55,15 @@ let lastClickKey = '';
 let lastClickTime = 0;
 
 const gameWon = computed(() => isWon(gameState.value));
+const canUndo = computed(() => history.value.length > 0);
+
+watch(
+    canUndo,
+    (value) => {
+        emit('update:canUndo', value);
+    },
+    { immediate: true },
+);
 
 const faceEmoji = computed(() => {
     if (facePressed.value) return '😮';
@@ -80,6 +95,45 @@ function stopTimer() {
 function clearSelection() {
     selection.value = null;
     validDestinations.value = [];
+}
+
+function commitGameState(next: GameState): boolean {
+    if (next === gameState.value) {
+        return false;
+    }
+
+    history.value.push(cloneGameState(gameState.value));
+    gameState.value = next;
+    return true;
+}
+
+function undo() {
+    if (history.value.length === 0) {
+        return;
+    }
+
+    clearDragState();
+    clearSelection();
+    invalidMoveShake.value = false;
+    gameState.value = history.value.pop()!;
+}
+
+function onUndoKeydown(event: KeyboardEvent) {
+    if (event.key.toLowerCase() !== 'z' || !(event.ctrlKey || event.metaKey) || event.shiftKey) {
+        return;
+    }
+
+    const target = event.target;
+    if (
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement
+    ) {
+        return;
+    }
+
+    event.preventDefault();
+    undo();
 }
 
 function clearDragState() {
@@ -141,12 +195,11 @@ function tryAutoFoundationMove(pile: PileRef, cardIndex: number): boolean {
     }
 
     const next = applyMove(gameState.value, source, foundation);
-    if (!next) {
+    if (!next || !commitGameState(next)) {
         return false;
     }
 
     startTimer();
-    gameState.value = next;
     clearSelection();
     return true;
 }
@@ -191,13 +244,12 @@ function tryMoveTo(pile: PileRef): boolean {
     }
 
     const next = applyMove(gameState.value, selection.value, { pile });
-    if (!next) {
+    if (!next || !commitGameState(next)) {
         triggerInvalidMove();
         return false;
     }
 
     startTimer();
-    gameState.value = next;
     clearSelection();
     return true;
 }
@@ -255,9 +307,8 @@ function onSlotClick(pile: PileRef | { kind: 'stock' }) {
         }
         clearSelection();
         const next = flipStock(gameState.value);
-        if (next !== gameState.value) {
+        if (commitGameState(next)) {
             startTimer();
-            gameState.value = next;
         }
         return;
     }
@@ -357,6 +408,7 @@ function resetGame() {
     }
     invalidMoveShake.value = false;
     clearDragState();
+    history.value = [];
     gameState.value = newGame(props.drawMode);
     elapsedSeconds.value = 0;
     facePressed.value = false;
@@ -374,14 +426,16 @@ watch(
 
 onMounted(() => {
     resetGame();
+    document.addEventListener('keydown', onUndoKeydown);
 });
 
 onUnmounted(() => {
     stopTimer();
     clearDragState();
+    document.removeEventListener('keydown', onUndoKeydown);
 });
 
-defineExpose({ resetGame });
+defineExpose({ resetGame, undo });
 </script>
 
 <template>

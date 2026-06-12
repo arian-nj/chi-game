@@ -4,11 +4,13 @@ import type { DrawMode } from '@/lib/solitaire/types';
 
 defineProps<{
     drawMode: DrawMode;
+    canUndo: boolean;
 }>();
 
 const emit = defineEmits<{
     'new-game': [];
     'set-draw-mode': [mode: DrawMode];
+    undo: [];
 }>();
 
 const gameMenuOpen = ref(false);
@@ -29,6 +31,11 @@ function onNewGame() {
 
 function onSetDrawMode(mode: DrawMode) {
     emit('set-draw-mode', mode);
+    closeGameMenu();
+}
+
+function onUndo() {
+    emit('undo');
     closeGameMenu();
 }
 
@@ -57,6 +64,16 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
                 <button type="button" class="xp-dropdown-item" @click="onNewGame">
                     <span class="xp-dropdown-bullet" />
                     New Game
+                </button>
+                <button
+                    type="button"
+                    class="xp-dropdown-item"
+                    :class="{ 'xp-dropdown-item-disabled': !canUndo }"
+                    :disabled="!canUndo"
+                    @click="onUndo"
+                >
+                    <span class="xp-dropdown-bullet" />
+                    Undo
                 </button>
                 <div class="xp-dropdown-separator" />
                 <button type="button" class="xp-dropdown-item" @click="onSetDrawMode(1)">
@@ -143,6 +160,17 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
 .xp-dropdown-item:hover {
     background: #316ac5;
     color: #fff;
+}
+
+.xp-dropdown-item-disabled,
+.xp-dropdown-item:disabled {
+    color: #808080;
+}
+
+.xp-dropdown-item-disabled:hover,
+.xp-dropdown-item:disabled:hover {
+    background: none;
+    color: #808080;
 }
 
 .xp-dropdown-bullet {

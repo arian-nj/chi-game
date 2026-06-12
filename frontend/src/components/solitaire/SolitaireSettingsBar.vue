@@ -3,11 +3,13 @@ import type { DrawMode } from '@/lib/solitaire/types';
 
 defineProps<{
     drawMode: DrawMode;
+    canUndo: boolean;
 }>();
 
 const emit = defineEmits<{
     'new-game': [];
     'set-draw-mode': [mode: DrawMode];
+    undo: [];
 }>();
 </script>
 
@@ -32,6 +34,14 @@ const emit = defineEmits<{
         </div>
 
         <div class="sol-settings-actions">
+            <button
+                type="button"
+                class="sol-undo-btn"
+                :disabled="!canUndo"
+                @click="emit('undo')"
+            >
+                Undo
+            </button>
             <button type="button" class="sol-new-game-btn" @click="emit('new-game')">
                 New Game
             </button>
@@ -95,10 +105,12 @@ const emit = defineEmits<{
 .sol-settings-actions {
     display: flex;
     justify-content: center;
+    gap: 8px;
     padding-top: 4px;
     padding-bottom: 2px;
 }
 
+.sol-undo-btn,
 .sol-new-game-btn {
     padding: 4px 16px;
     font-size: 11px;
@@ -111,6 +123,11 @@ const emit = defineEmits<{
     cursor: default;
 }
 
+.sol-undo-btn:disabled {
+    color: #808080;
+}
+
+.sol-undo-btn:not(:disabled):active,
 .sol-new-game-btn:active {
     border-color: #808080 #fff #fff #808080;
 }
@@ -121,6 +138,7 @@ const emit = defineEmits<{
     }
 
     .sol-option,
+    .sol-undo-btn,
     .sol-new-game-btn {
         padding: 6px 10px;
         font-size: 12px;
