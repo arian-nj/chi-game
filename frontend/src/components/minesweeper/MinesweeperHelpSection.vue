@@ -31,8 +31,8 @@ import minesweeperLogo from '@/assets/games/minesweeper/minesweeper_logo.png';
                 </p>
                 <p>
                     Pick a difficulty from the Game menu — <strong>Beginner</strong> (9×9),
-                    <strong>Intermediate</strong> (16×16), or <strong>Expert</strong> (30×16) — for
-                    larger boards and more mines. Click the smiley face or choose
+                    <strong>Intermediate</strong> (16×16), <strong>Expert</strong> (30×16), or
+                    <strong>Custom</strong> to set your own board size and mine count. Click the smiley face or choose
                     <strong>New Game</strong> to start over.
                 </p>
             </div>

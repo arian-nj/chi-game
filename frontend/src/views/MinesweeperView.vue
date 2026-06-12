@@ -8,7 +8,7 @@ import MinesweeperSettingsBar from '@/components/minesweeper/MinesweeperSettings
 import MinesweeperHelpSection from '@/components/minesweeper/MinesweeperHelpSection.vue';
 import XpTitleBar from '@/components/xp/XpTitleBar.vue';
 import XpWindow from '@/components/xp/XpWindow.vue';
-import { DIFFICULTIES, type Difficulty } from '@/lib/minesweeper/types';
+import { DIFFICULTIES, DEFAULT_CUSTOM_CONFIG, clampCustomConfig, type CustomGameConfig, type Difficulty } from '@/lib/minesweeper/types';
 import MinesweeperGame from './MinesweeperGame.vue';
 import HeaderComponent from '@/components/header/HeaderComponent.vue';
 
@@ -16,9 +16,15 @@ const router = useRouter();
 const { localePath } = useLocalePath();
 
 const difficulty = ref<Difficulty>('beginner');
+const customConfig = ref<CustomGameConfig>({ ...DEFAULT_CUSTOM_CONFIG });
 const gameRef = useTemplateRef('gameRef');
 
-const gameConfig = computed(() => DIFFICULTIES[difficulty.value]);
+const gameConfig = computed(() => {
+    if (difficulty.value === 'custom') {
+        return clampCustomConfig(customConfig.value);
+    }
+    return DIFFICULTIES[difficulty.value];
+});
 
 function newGame() {
     gameRef.value?.resetGame();
@@ -26,6 +32,11 @@ function newGame() {
 
 function setDifficulty(level: Difficulty) {
     difficulty.value = level;
+}
+
+function setCustomConfig(config: CustomGameConfig) {
+    customConfig.value = clampCustomConfig(config);
+    difficulty.value = 'custom';
 }
 
 function closeGame() {
@@ -51,8 +62,10 @@ function closeGame() {
             />
             <MinesweeperSettingsBar
                 :difficulty="difficulty"
+                :custom-config="customConfig"
                 @new-game="newGame"
                 @set-difficulty="setDifficulty"
+                @set-custom-config="setCustomConfig"
             />
         </XpWindow>
     </div>

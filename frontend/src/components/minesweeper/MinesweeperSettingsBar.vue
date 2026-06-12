@@ -1,14 +1,37 @@
 <script setup lang="ts">
-import type { Difficulty } from '@/lib/minesweeper/types';
+import { computed } from 'vue';
+import {
+    CUSTOM_LIMITS,
+    clampCustomConfig,
+    maxMinesForBoard,
+    type CustomGameConfig,
+    type Difficulty,
+} from '@/lib/minesweeper/types';
 
-defineProps<{
+const props = defineProps<{
     difficulty: Difficulty;
+    customConfig: CustomGameConfig;
 }>();
 
 const emit = defineEmits<{
     'new-game': [];
     'set-difficulty': [level: Difficulty];
+    'set-custom-config': [config: CustomGameConfig];
 }>();
+
+const maxMines = computed(() =>
+    maxMinesForBoard(props.customConfig.cellWidth, props.customConfig.cellHeight),
+);
+
+function updateCustomField(field: keyof CustomGameConfig, rawValue: string) {
+    const parsed = Number.parseInt(rawValue, 10);
+    if (Number.isNaN(parsed)) return;
+
+    emit('set-custom-config', clampCustomConfig({
+        ...props.customConfig,
+        [field]: parsed,
+    }));
+}
 </script>
 
 <template>
@@ -34,7 +57,56 @@ const emit = defineEmits<{
                     :class="{ 'ms-option-active': difficulty === 'expert' }"
                     @click="emit('set-difficulty', 'expert')"
                 >Expert</button>
+                <button
+                    type="button"
+                    class="ms-option"
+                    :class="{ 'ms-option-active': difficulty === 'custom' }"
+                    @click="emit('set-difficulty', 'custom')"
+                >Custom</button>
             </div>
+        </div>
+
+        <div v-if="difficulty === 'custom'" class="ms-custom-panel">
+            <div class="ms-custom-field">
+                <label class="ms-custom-label" for="ms-custom-width">Width</label>
+                <input
+                    id="ms-custom-width"
+                    class="ms-custom-input"
+                    type="number"
+                    inputmode="numeric"
+                    :min="CUSTOM_LIMITS.minWidth"
+                    :max="CUSTOM_LIMITS.maxWidth"
+                    :value="customConfig.cellWidth"
+                    @change="updateCustomField('cellWidth', ($event.target as HTMLInputElement).value)"
+                >
+            </div>
+            <div class="ms-custom-field">
+                <label class="ms-custom-label" for="ms-custom-height">Height</label>
+                <input
+                    id="ms-custom-height"
+                    class="ms-custom-input"
+                    type="number"
+                    inputmode="numeric"
+                    :min="CUSTOM_LIMITS.minHeight"
+                    :max="CUSTOM_LIMITS.maxHeight"
+                    :value="customConfig.cellHeight"
+                    @change="updateCustomField('cellHeight', ($event.target as HTMLInputElement).value)"
+                >
+            </div>
+            <div class="ms-custom-field">
+                <label class="ms-custom-label" for="ms-custom-mines">Mines</label>
+                <input
+                    id="ms-custom-mines"
+                    class="ms-custom-input"
+                    type="number"
+                    inputmode="numeric"
+                    :min="CUSTOM_LIMITS.minMines"
+                    :max="maxMines"
+                    :value="customConfig.mineCount"
+                    @change="updateCustomField('mineCount', ($event.target as HTMLInputElement).value)"
+                >
+            </div>
+            <span class="ms-custom-hint">{{ customConfig.cellWidth }}×{{ customConfig.cellHeight }}, max {{ maxMines }} mines</span>
         </div>
 
         <div class="ms-settings-actions">
@@ -96,6 +168,42 @@ const emit = defineEmits<{
     border-color: #808080 #fff #fff #808080;
     background: #ece9d8;
     font-weight: bold;
+}
+
+.ms-custom-panel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 4px 2px 2px;
+}
+
+.ms-custom-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ms-custom-label {
+    color: #000;
+    min-width: 38px;
+}
+
+.ms-custom-input {
+    width: 52px;
+    padding: 2px 4px;
+    font-size: 11px;
+    font-family: inherit;
+    border: 2px solid;
+    border-color: #808080 #fff #fff #808080;
+    background: #fff;
+    color: #000;
+}
+
+.ms-custom-hint {
+    color: #404040;
+    font-size: 10px;
+    width: 100%;
 }
 
 .ms-settings-actions {

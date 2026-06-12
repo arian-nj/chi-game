@@ -83,6 +83,14 @@ onUnmounted(() => document.removeEventListener('click', onDocumentClick));
                     <span class="xp-dropdown-bullet">{{ difficulty === 'expert' ? '•' : '' }}</span>
                     Expert
                 </button>
+                <button
+                    type="button"
+                    class="xp-dropdown-item"
+                    @click="onSetDifficulty('custom')"
+                >
+                    <span class="xp-dropdown-bullet">{{ difficulty === 'custom' ? '•' : '' }}</span>
+                    Custom
+                </button>
             </div>
         </div>
         <a href="#how-to-play-minesweeper" class="xp-menu-item">Help</a>
