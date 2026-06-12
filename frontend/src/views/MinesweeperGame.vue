@@ -331,9 +331,19 @@ function checkWin() {
     row.every(cell => cell.isMine || cell.isRevealed)
   )
   if (allSafeRevealed) {
+    celebrateWin()
+  }
+}
+
+function celebrateWin() {
     gameState.value = 'won'
     stopTimer()
-  }
+
+    for (const row of board.value) {
+        for (const cell of row) {
+            if (cell.isMine) cell.isFlagged = true
+        }
+    }
 }
 
 function revealAllMines() {
@@ -405,12 +415,13 @@ defineExpose({ resetGame })
 
 <template>
 <div class="xp-client select-none">
-    <div class="xp-game-body">
+    <div class="xp-game-body" :class="{ 'xp-game-won': gameState === 'won' }">
         <div class="xp-sunken xp-status-panel">
             <div class="xp-led">{{ formatCounter(mineCounter) }}</div>
             <button
                 type="button"
                 class="xp-face-btn"
+                :class="{ 'xp-face-btn-won': gameState === 'won' }"
                 @click="resetGame"
                 @mousedown="facePressed = true"
                 @mouseup="facePressed = false"
@@ -437,9 +448,21 @@ defineExpose({ resetGame })
             >+</button>
         </div>
 
-        <div ref="boardScrollRef" class="xp-board-scroll" :style="boardStyle">
+        <div class="xp-board-area">
+            <div
+                v-if="gameState === 'won'"
+                class="xp-win-banner"
+                role="status"
+                aria-live="polite"
+            >
+                <span class="xp-win-title">You Win!</span>
+                <span class="xp-win-time">Cleared in {{ formatCounter(elapsedSeconds) }}s</span>
+            </div>
+
+            <div ref="boardScrollRef" class="xp-board-scroll" :style="boardStyle">
             <div
                 class="xp-sunken xp-grid-panel"
+                :class="{ 'xp-grid-panel-won': gameState === 'won' }"
                 @mouseup="finishNeighborPreview"
                 @mouseleave="clearHighlight"
                 @touchend="finishNeighborPreview"
@@ -471,6 +494,7 @@ defineExpose({ resetGame })
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </div>
@@ -512,6 +536,11 @@ defineExpose({ resetGame })
     box-sizing: border-box;
     padding: calc(var(--ui-cell-size) * 0.2) calc(var(--ui-cell-size) * 0.35);
     margin-bottom: calc(var(--ui-cell-size) * 0.3);
+    transition: box-shadow 0.3s ease;
+}
+
+.xp-game-won .xp-status-panel {
+    box-shadow: 0 0 0 2px #2e8b2e, 0 0 12px rgba(46, 139, 46, 0.55);
 }
 
 .xp-led {
@@ -544,6 +573,20 @@ defineExpose({ resetGame })
 
 .xp-face-btn:active {
     border-color: #808080 #fff #fff #808080;
+}
+
+.xp-face-btn-won {
+    background: #fff9b0;
+    animation: xp-win-face 0.55s ease-in-out infinite alternate;
+}
+
+@keyframes xp-win-face {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.12);
+    }
 }
 
 .xp-zoom-controls {
@@ -586,6 +629,71 @@ defineExpose({ resetGame })
 }
 
 
+.xp-board-area {
+    position: relative;
+}
+
+.xp-win-banner {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    pointer-events: none;
+    background: rgba(0, 80, 0, 0.28);
+    animation: xp-win-banner-in 0.45s ease-out;
+}
+
+.xp-win-title {
+    padding: 8px 20px;
+    background: linear-gradient(180deg, #fff9b0 0%, #ffd700 55%, #e6b800 100%);
+    border: 3px solid;
+    border-color: #fff #8b7500 #8b7500 #fff;
+    color: #1a4d1a;
+    font-size: clamp(1.25rem, 4vw, 1.75rem);
+    font-weight: bold;
+    font-family: Tahoma, 'MS Sans Serif', sans-serif;
+    text-shadow: 1px 1px 0 #fff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    animation: xp-win-title-pop 0.5s ease-out;
+}
+
+.xp-win-time {
+    padding: 4px 12px;
+    background: rgba(0, 0, 0, 0.72);
+    color: #7fff7f;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+@keyframes xp-win-banner-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes xp-win-title-pop {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    70% {
+        transform: scale(1.08);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
 .xp-board-scroll {
     overflow: auto;
     width: 100%;
@@ -600,6 +708,21 @@ defineExpose({ resetGame })
     display: inline-block;
     width: max-content;
     padding: calc(var(--cell-size) * 0.35);
+    transition: box-shadow 0.3s ease;
+}
+
+.xp-grid-panel-won {
+    box-shadow: 0 0 0 3px #2e8b2e, 0 0 18px rgba(80, 220, 80, 0.65);
+    animation: xp-win-grid-glow 1s ease-in-out infinite alternate;
+}
+
+@keyframes xp-win-grid-glow {
+    from {
+        box-shadow: 0 0 0 3px #2e8b2e, 0 0 12px rgba(80, 220, 80, 0.45);
+    }
+    to {
+        box-shadow: 0 0 0 3px #4caf50, 0 0 24px rgba(120, 255, 120, 0.75);
+    }
 }
 
 .xp-cell {
