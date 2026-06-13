@@ -276,15 +276,22 @@ function isCellHighlighted(row: number, col: number): boolean {
     return highlightedCells.value.has(cellKey(row, col))
 }
 
+function forEachNeighbor(
+    row: number,
+    col: number,
+    fn: (r: number, c: number, cell: Cell) => void,
+) {
+    for (const [dr, dc] of DIRS) {
+        const r = row + dr
+        const c = col + dc
+        const neighbor = board.value[r]?.[c]
+        if (neighbor) fn(r, c, neighbor)
+    }
+}
+
 function highlightNeighbors(row: number, col: number) {
     const next = new Set<string>()
-    for (let dr = -1; dr <= 1; dr++) {
-        for (let dc = -1; dc <= 1; dc++) {
-            const r = row + dr
-            const c = col + dc
-            if (board.value[r]?.[c]) next.add(cellKey(r, c))
-        }
-    }
+    forEachNeighbor(row, col, (r, c) => next.add(cellKey(r, c)))
     highlightedCells.value = next
 }
 
@@ -363,12 +370,48 @@ function beginNeighborPreview(row: number, col: number, event?: MouseEvent | Tou
     highlightNeighbors(row, col)
 }
 
+function chordCell(row: number, col: number): boolean {
+    if (gameState.value !== 'playing') return false
+
+    const cell = board.value[row]?.[col]
+    if (!cell?.isRevealed || cell.neighborMines === 0 || cell.isMine) return false
+
+    let flagCount = 0
+    const hidden: [number, number][] = []
+
+    forEachNeighbor(row, col, (r, c, neighbor) => {
+        if (neighbor.isFlagged) flagCount++
+        else if (!neighbor.isRevealed) hidden.push([r, c])
+    })
+
+    if (flagCount !== cell.neighborMines || hidden.length === 0) return false
+
+    for (const [r, c] of hidden) {
+        const neighbor = board.value[r]![c]!
+        if (neighbor.isMine) {
+            neighbor.isRevealed = true
+            gameState.value = 'lost'
+            stopTimer()
+            revealAllMines()
+            return true
+        }
+    }
+
+    for (const [r, c] of hidden) {
+        floodReveal(r, c)
+    }
+    checkWin()
+    return true
+}
+
 function finishNeighborPreview() {
     if (isPinching.value || isBoardPanning) return
     if (!previewSource.value) return
 
+    const [row, col] = previewSource.value
     suppressNumberClick = true
     clearHighlight()
+    chordCell(row, col)
 }
 
 function onCellClick(row: number, col: number) {
@@ -384,12 +427,20 @@ function onCellClick(row: number, col: number) {
             suppressNumberClick = false
             return
         }
-        highlightNeighbors(row, col)
-        window.setTimeout(clearHighlight, 200)
+        if (!chordCell(row, col)) {
+            highlightNeighbors(row, col)
+            window.setTimeout(clearHighlight, 200)
+        }
         return
     }
 
     revealCell(row, col)
+}
+
+function onCellAuxClick(row: number, col: number, event: MouseEvent) {
+    if (event.button !== 1) return
+    event.preventDefault()
+    chordCell(row, col)
 }
 
 function rightClickCell(row: number, col: number) {
@@ -561,6 +612,7 @@ defineExpose({ resetGame })
                             { 'xp-cell-mine-reveal': cell.isRevealed && cell.isMine },
                         ]"
                         @click="onCellClick(rIndex, cIndex)"
+                        @auxclick="onCellAuxClick(rIndex, cIndex, $event)"
                         @mousedown="beginNeighborPreview(rIndex, cIndex)"
                         @touchstart="beginNeighborPreview(rIndex, cIndex, $event)"
                         @contextmenu.prevent="rightClickCell(rIndex, cIndex)"
