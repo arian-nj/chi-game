@@ -29,7 +29,8 @@ Focous on Offline only game for now
 [ ] Write better sudoko
 [ ] Write better minesweeper
 
-[ ] Solarite
+[X] Solarite
+
 [ ] yahtzee
 [ ] hearts
 [ ] spades
@@ -40,3 +41,6 @@ Focous on Offline only game for now
 [ ] add a card games page
 
 Some kind of progression system
+
+# SEO
+set per page title

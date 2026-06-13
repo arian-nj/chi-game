@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { usePageSeo } from '@/composables/use-page-seo';
+
+usePageSeo();
+</script>
 
 <template>
   <div class="bliss-desktop">

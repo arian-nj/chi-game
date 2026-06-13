@@ -1,10 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <pattern id="card-back" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+      <rect width="3" height="6" fill="#1e4f9a"/>
+      <rect x="3" width="3" height="6" fill="#2a63b8"/>
+    </pattern>
+    <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0.5" dy="1" stdDeviation="0.6" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
   <rect width="48" height="48" rx="4" fill="#c0c0c0"/>
-  <rect x="8" y="6" width="28" height="38" rx="3" fill="#fff" stroke="#4a4a4a" stroke-width="1.5"/>
-  <text x="12" y="18" font-family="Tahoma, sans-serif" font-size="9" font-weight="bold" fill="#c00">A</text>
-  <text x="22" y="30" font-family="Tahoma, sans-serif" font-size="16" fill="#c00">e</text>
-  <rect x="14" y="10" width="24" height="34" rx="3" fill="#1e4f9a" stroke="#0f2f66" stroke-width="1.5"/>
-  <line x1="18" y1="14" x2="34" y2="14" stroke="#2a63b8" stroke-width="2"/>
-  <line x1="18" y1="22" x2="34" y2="22" stroke="#2a63b8" stroke-width="2"/>
-  <line x1="18" y1="30" x2="34" y2="30" stroke="#2a63b8" stroke-width="2"/>
+
+  <!-- Stock pile -->
+  <g filter="url(#card-shadow)">
+    <rect x="3" y="14" width="16" height="23" rx="2.5" fill="url(#card-back)" stroke="#0f2f66" stroke-width="0.75"/>
+    <rect x="3" y="9" width="16" height="23" rx="2.5" fill="url(#card-back)" stroke="#0f2f66" stroke-width="0.75"/>
+  </g>
+
+  <!-- Tableau cascade -->
+  <g filter="url(#card-shadow)">
+    <rect x="18" y="4" width="17" height="24" rx="2.5" fill="#fff" stroke="#4a4a4a" stroke-width="0.75"/>
+    <text x="20.5" y="13" font-family="Tahoma, 'MS Sans Serif', sans-serif" font-size="7.5" font-weight="bold" fill="#1a1a1a">K</text>
+    <text x="20.5" y="20.5" font-family="Tahoma, 'MS Sans Serif', sans-serif" font-size="7" fill="#1a1a1a">♠</text>
+
+    <rect x="21.5" y="10" width="17" height="24" rx="2.5" fill="#fff" stroke="#4a4a4a" stroke-width="0.75"/>
+    <text x="24" y="19" font-family="Tahoma, 'MS Sans Serif', sans-serif" font-size="7.5" font-weight="bold" fill="#cc0000">Q</text>
+    <text x="24" y="26.5" font-family="Tahoma, 'MS Sans Serif', sans-serif" font-size="7" fill="#cc0000">♥</text>
+
+    <rect x="25" y="16" width="17" height="24" rx="2.5" fill="#fff" stroke="#4a4a4a" stroke-width="0.75"/>
+    <text x="27.5" y="25" font-family="Tahoma, 'MS Sans Serif', sans-serif" font-size="7.5" font-weight="bold" fill="#1a1a1a">J</text>
+    <text x="27.5" y="32.5" font-family="Tahoma, 'MS Sans Serif', sans-serif" font-size="7" fill="#1a1a1a">♣</text>
+  </g>
 </svg>
